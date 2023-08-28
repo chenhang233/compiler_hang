@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "data.h": "c",
-        "errno.h": "c"
+        "errno.h": "c",
+        "scan.h": "c",
+        "ctype.h": "c"
     }
 }

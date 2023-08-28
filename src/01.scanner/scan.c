@@ -1,4 +1,9 @@
-#include <data.h>
+#include "data.h"
+
+static void putback(int c)
+{
+    Putback = c;
+}
 
 static int strIntPos(char *str, int c)
 {
@@ -44,11 +49,6 @@ static int scanInt(int c)
     }
     putback(c);
     return v;
-}
-
-static void putback(int c)
-{
-    Putback = c;
 }
 
 int scan(struct Token *t)

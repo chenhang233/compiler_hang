@@ -1,9 +1,9 @@
-#pragma once
-
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#pragma once
 
 //  + - * / int
 enum
@@ -15,9 +15,9 @@ enum
     T_INTLIT
 };
 
-extern int Line;
-extern int Putback;
-extern FILE *Infile;
+int Line;
+int Putback;
+FILE *Infile;
 
 struct Token
 {
