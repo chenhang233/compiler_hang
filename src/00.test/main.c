@@ -1,17 +1,13 @@
 #include <stdio.h>
-#include <string.h>
 
-static int strIntPos(char *str, int c)
+int main()
 {
-    char *p;
-    p = strchr(str, c);
-    printf("p=%d --str=%d\n", p, str);
-    return p ? p - str : -1;
-}
 
-int main(int argc, char const *argv[])
-{
-    strIntPos("0123456789", '0');
-    strIntPos("0123456789", '9');
+    int a = -15;
+    a >>= 2;
+    // 1000 1111
+    // 1111 0001 --> 1111 1100
+    // 1111 1011 --> 1000 0100 -4
+    printf("%d\n", a);
     return 0;
 }
