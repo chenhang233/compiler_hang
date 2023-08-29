@@ -3,6 +3,7 @@
         "data.h": "c",
         "errno.h": "c",
         "scan.h": "c",
-        "ctype.h": "c"
+        "ctype.h": "c",
+        "stdio.h": "c"
     }
 }
