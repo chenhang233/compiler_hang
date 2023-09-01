@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#define REG_LEN 4
 
 #pragma once
 
@@ -39,9 +40,13 @@ typedef struct ASTnode
 } ASTnode;
 
 FILE *Infile;
+FILE *Outfile;
 Token T;
 int Line;
 int InfileCache;
+const char tokenWeights[] = {0, 10, 10, 20, 20, 0};
+const char *RegisterList[REG_LEN] = {"%r8", "%r9", "%r10", "%r11"};
+int RegisterStatus[REG_LEN];
 
 void init();
 void usage(char *, char const *);
@@ -52,3 +57,20 @@ int scanDigit(int);
 int strPosInt(char *, char);
 ASTnode *mkASTnode(ASTtype, struct ASTnode *, struct ASTnode *, int);
 ASTnode *mkASTleaf(ASTtype, int);
+ASTnode *parseAST(int);
+ASTnode *parseInt();
+int calcScore(int);
+ASTtype transType(TokenType);
+int interpretAST(ASTnode *);
+void generatecode(ASTnode *);
+void RegisterFree(int);
+int RegisterAlloc();
+void cgpreamble();
+void cgpostamble();
+int generateAST(struct ASTnode *);
+void callprintint(int r);
+int callLoad(int);
+int callAdd(int, int);
+int callSub(int, int);
+int callMut(int, int);
+int callDiv(int, int);
