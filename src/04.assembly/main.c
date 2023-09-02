@@ -291,7 +291,7 @@ int callAdd(int i1, int i2)
 };
 int callSub(int i1, int i2)
 {
-    fprintf(Outfile, "\tsubq\t%s, %s\n", RegisterList[i1], RegisterList[i2]);
+    fprintf(Outfile, "\tsubq\t%s, %s\n", RegisterList[i2], RegisterList[i1]);
     RegisterFree(i2);
     return i1;
 };
