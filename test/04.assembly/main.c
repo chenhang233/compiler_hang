@@ -63,8 +63,8 @@ int scan(Token *t)
     switch (c)
     {
     case EOF:
-        return 0;
         t->token = T_EOF;
+        return 0;
     case '+':
         t->token = T_ADD;
         break;
@@ -110,7 +110,6 @@ AST_node *parse_INTLIT()
     {
     case T_INTLIT:
         return mk_AST_leaf(A_INTLIT, T.v);
-        break;
     default:
         usage("A number is needed, but something else is entered");
     }
@@ -151,7 +150,9 @@ AST_node *parse_AST(int prev)
     scan(&T);
     t = T.token;
     if (t == T_EOF)
+    {
         return l;
+    }
     while (get_priority_symbol(t) > prev)
     {
         scan(&T);
@@ -170,9 +171,9 @@ int interpret_AST(AST_node *n)
 {
     int l, r;
     if (n->l)
-        interpret_AST(n->l);
+        l = interpret_AST(n->l);
     if (n->r)
-        interpret_AST(n->r);
+        r = interpret_AST(n->r);
     switch (n->op)
     {
     case A_INTLIT:
