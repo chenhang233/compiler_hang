@@ -68,13 +68,14 @@ x86 GNU汇编
          movq (%rsp), %rax
          addq $8, %rsp
       )
-      leaq S, D         加载有效地址
-      inc{bwlq} D    	加 1
-      dec{bwlq} D       减 1
-      neg{bwlq} D       取反
-      add{bwlq} S, D    加
-      sub{bwlq} S, D    减
-      imul{bwlq} S, D   乘
+      leaq S, D               加载有效地址
+      inc{bwlq} D    	      加 1
+      dec{bwlq} D             减 1
+      neg{bwlq} D             取反
+      add{bwlq} S, D ->D      加
+      sub{bwlq} S, D ->S      减
+      imul{bwlq} S, D ->D     乘
+      idiv{bwlq} S, D ->S     除
       not{bwlq} D	      ~D → D	逻辑非
       or{bwlq} S, D	   D | S → D	逻辑或
       and{bwlq} S, D	   D & S → D	逻辑与
@@ -98,5 +99,5 @@ x86 GNU汇编
    .rodata	   只读数据段
    .data	      数据段
    .bss	      未初始化数据段。bss段用于本地通用变量存储。
-
+   .LC0        字符串常量标签，用于表示一个字符串常量的地址
 ```

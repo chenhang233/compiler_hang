@@ -44,6 +44,8 @@ FILE *Infile;
 FILE *Outfile;
 
 int priority_symbol[] = {0, 10, 10, 20, 20, 0};
+const char *allocate_register_arr[] = {"%r8", "%r9", "%r10", "%r11"};
+int allocate_register_free_lock[] = {0, 0, 0, 0};
 
 void usage(char *);
 void init();
@@ -52,10 +54,26 @@ int next();
 int skip();
 int scan_digit(int);
 int str_digit_index(char *, char);
+
 AST_node *mk_AST_node(AST_type, AST_node *, AST_node *, int);
 AST_node *mk_AST_leaf(AST_type, int);
 AST_node *parse_AST(int);
 AST_node *parse_INTLIT();
 int get_priority_symbol(Token_type);
 AST_type get_AST_type(Token_type);
-int interpret_AST(AST_node *n);
+int interpret_AST(AST_node *);
+
+void generate_assembly(AST_node *);
+void generate_before();
+int generate_ast(AST_node *);
+void generate_print_int(int);
+void generate_after();
+
+int call_load(int);
+int call_add(int, int);
+int call_sub(int, int);
+int call_mul(int, int);
+int call_div(int, int);
+
+int register_alloc();
+int register_free(int);

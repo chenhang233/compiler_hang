@@ -2,7 +2,7 @@
 
 void usage(char *ei)
 {
-    printf("ERROR: %s, line: %d\n", ei, Line);
+    printf("ERROR: %s, source code line: %d\n", ei, Line);
     exit(1);
 }
 
@@ -191,6 +191,142 @@ int interpret_AST(AST_node *n)
     }
 }
 
+void generate_before()
+{
+    fputs(
+        "\t.text\n"
+        ".LC0:\n"
+        "\t.string\t\"%d\\n\"\n"
+        "printint:\n"
+        "\tpushq\t%rbp\n"
+        "\tmovq\t%rsp, %rbp\n"
+        "\tsubq\t$16, %rsp\n"
+        "\tmovl\t%edi, -4(%rbp)\n"
+        "\tmovl\t-4(%rbp), %eax\n"
+        "\tmovl\t%eax, %esi\n"
+        "\tleaq	.LC0(%rip), %rdi\n"
+        "\tmovl	$0, %eax\n"
+        "\tcall	printf@PLT\n"
+        "\tnop\n"
+        "\tleave\n"
+        "\tret\n"
+        "\n"
+        "\t.globl\tmain\n"
+        "\t.type\tmain, @function\n"
+        "main:\n"
+        "\tpushq\t%rbp\n"
+        "\tmovq	%rsp, %rbp\n",
+        Outfile);
+}
+
+int register_alloc()
+{
+    for (int i = 0; i < REG_LEN; i++)
+    {
+        if (!allocate_register_free_lock[i])
+        {
+            allocate_register_free_lock[i] = 1;
+            return i;
+        }
+    }
+    usage("no registers available");
+}
+
+int register_free(int reg)
+{
+    if (!allocate_register_free_lock[reg])
+    {
+        usage("free unused register");
+    }
+    allocate_register_free_lock[reg] = 0;
+}
+
+int generate_ast(AST_node *ast)
+{
+    int l_reg, r_reg;
+    if (ast->l)
+        l_reg = generate_ast(ast->l);
+    if (ast->r)
+        r_reg = generate_ast(ast->r);
+    switch (ast->op)
+    {
+    case A_INTLIT:
+        return call_load(ast->v);
+    case A_ADD:
+        return call_add(l_reg, r_reg);
+    case A_SUB:
+        return call_sub(l_reg, r_reg);
+    case A_MUL:
+        return call_mul(l_reg, r_reg);
+    case A_DIV:
+        return call_div(l_reg, r_reg);
+    default:
+        break;
+    }
+    usage("uncatch generate_ast()");
+}
+
+void generate_print_int(int reg)
+{
+    fprintf(Outfile, "\tmovq\t%s, %%rdi\n", allocate_register_arr[reg]);
+    fprintf(Outfile, "\tcall\tprintint\n");
+}
+
+void generate_after()
+{
+    fputs(
+        "\tmovl	$0, %eax\n"
+        "\tpopq	%rbp\n"
+        "\tret\n",
+        Outfile);
+}
+
+int call_load(int v)
+{
+    int reg = register_alloc();
+    fprintf(Outfile, "\tmovq\t%d, %s\n", v, allocate_register_arr[reg]);
+    return reg;
+}
+
+int call_add(int reg_a, int reg_b)
+{
+    fprintf(Outfile, "\taddq\t%s, %s\n", allocate_register_arr[reg_a], allocate_register_arr[reg_b]);
+    register_free(reg_a);
+    return reg_b;
+}
+
+int call_sub(int reg_a, int reg_b)
+{
+    fprintf(Outfile, "\tsubq\t%s, %s\n", allocate_register_arr[reg_a], allocate_register_arr[reg_b]);
+    register_free(reg_b);
+    return reg_a;
+}
+
+int call_mul(int reg_a, int reg_b)
+{
+    fprintf(Outfile, "\timulq\t%s, %s\n", allocate_register_arr[reg_a], allocate_register_arr[reg_b]);
+    register_free(reg_a);
+    return reg_b;
+}
+
+int call_div(int reg_a, int reg_b)
+{
+    fprintf(Outfile, "\tmovq\t%s, %%rax\n", allocate_register_arr[reg_a]);
+    fprintf(Outfile, "\tcqo\n");
+    fprintf(Outfile, "\tidivq,\t%s\n", allocate_register_arr[reg_b]);
+    fprintf(Outfile, "\tmovq\t%%rax, %s\n", allocate_register_arr[reg_a]);
+    register_free(reg_b);
+    return reg_a;
+}
+
+void generate_assembly(AST_node *ast)
+{
+    generate_before();
+    int reg = generate_ast(ast);
+    generate_print_int(reg);
+    generate_after();
+}
+
 int main(int argc, char const *argv[])
 {
     if (argc != 2)
@@ -201,9 +337,16 @@ int main(int argc, char const *argv[])
     {
         usage("open infile");
     }
+    if (!(Outfile = fopen("out.s", "w")))
+    {
+        usage("open Outfile");
+    }
     init();
     scan(&T);
     AST_node *ast = parse_AST(0);
     printf("%d\n", interpret_AST(ast));
+    generate_assembly(ast);
+
+    fclose(Outfile);
     return 0;
 }
