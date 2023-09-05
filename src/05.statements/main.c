@@ -60,6 +60,7 @@ int scan_digit(int c)
 int scan(Token *t)
 {
     int c = skip();
+    Token_type token_type;
     switch (c)
     {
     case EOF:
@@ -77,6 +78,9 @@ int scan(Token *t)
     case '/':
         t->token = T_DIV;
         break;
+    case ';':
+        t->token = T_SEMI;
+        break;
     default:
         if (isdigit(c))
         {
@@ -84,9 +88,55 @@ int scan(Token *t)
             t->v = scan_digit(c);
             break;
         }
+        else if (isalpha(c) || c == '_')
+        {
+            scan_ident(c, Text, TEXTLEN);
+            if (token_type = keyword(Text))
+            {
+                T.token = token_type;
+                break;
+            }
+            usage("Unknown symbol");
+        }
+        else
+        {
+            printf("character=%c\n", c);
+        }
         usage("Unknown character");
     }
     return 1;
+}
+
+Token_type keyword(char *k)
+{
+    switch (*k)
+    {
+    case 'p':
+        if (!strcmp(k, "print"))
+            return T_PRINT;
+        break;
+    }
+    return 0;
+}
+
+int scan_ident(int c, char *buf, int buf_size)
+{
+    int i = 0;
+    while (isalpha(c) || isdigit(c) || c == '_')
+    {
+        if (i >= buf_size)
+        {
+            usage("identifier too long");
+        }
+        else
+        {
+            buf[i++] = c;
+        }
+        c = next();
+    }
+    Input_cache = c;
+    buf[i] = '\0';
+    return i;
 }
 
 AST_node *mk_AST_node(AST_type op, AST_node *l, AST_node *r, int v)
@@ -149,7 +199,7 @@ AST_node *parse_AST(int prev)
     l = parse_INTLIT();
     scan(&T);
     t = T.token;
-    if (t == T_EOF)
+    if (t == T_SEMI)
     {
         return l;
     }
@@ -159,7 +209,7 @@ AST_node *parse_AST(int prev)
         r = parse_AST(priority_symbol[t]);
         l = mk_AST_node(get_AST_type(t), l, r, 0);
         t = T.token;
-        if (t == T_EOF)
+        if (t == T_SEMI)
         {
             break;
         }
@@ -241,6 +291,14 @@ int register_free(int reg)
     allocate_register_free_lock[reg] = 0;
 }
 
+void register_free_all()
+{
+    for (int i = 0; i < REG_LEN; i++)
+    {
+        allocate_register_free_lock[i] = 0;
+    }
+}
+
 int generate_ast(AST_node *ast)
 {
     int l_reg, r_reg;
@@ -284,7 +342,7 @@ void generate_after()
 int call_load(int v)
 {
     int reg = register_alloc();
-    fprintf(Outfile, "\tmovq\t%d, %s\n", v, allocate_register_arr[reg]);
+    fprintf(Outfile, "\tmovq\t$%d, %s\n", v, allocate_register_arr[reg]);
     return reg;
 }
 
@@ -313,18 +371,44 @@ int call_div(int reg_a, int reg_b)
 {
     fprintf(Outfile, "\tmovq\t%s, %%rax\n", allocate_register_arr[reg_a]);
     fprintf(Outfile, "\tcqo\n");
-    fprintf(Outfile, "\tidivq,\t%s\n", allocate_register_arr[reg_b]);
+    fprintf(Outfile, "\tidivq\t%s\n", allocate_register_arr[reg_b]);
     fprintf(Outfile, "\tmovq\t%%rax, %s\n", allocate_register_arr[reg_a]);
     register_free(reg_b);
     return reg_a;
 }
 
-void generate_assembly(AST_node *ast)
+void match(Token_type t, char *some)
 {
-    generate_before();
-    int reg = generate_ast(ast);
-    generate_print_int(reg);
-    generate_after();
+    if (T.token == t)
+    {
+        scan(&T);
+    }
+    else
+    {
+        usage(some);
+    }
+}
+
+void semi()
+{
+    match(T_SEMI, "semicolon");
+}
+
+void statements()
+{
+    while (1)
+    {
+        match(T_PRINT, "print");
+        AST_node *ast = parse_AST(0);
+        int reg = generate_ast(ast);
+        generate_print_int(reg);
+        register_free_all();
+        semi();
+        if (T.token == T_EOF)
+        {
+            break;
+        }
+    }
 }
 
 int main(int argc, char const *argv[])
@@ -343,10 +427,9 @@ int main(int argc, char const *argv[])
     }
     init();
     scan(&T);
-    AST_node *ast = parse_AST(0);
-    printf("%d\n", interpret_AST(ast));
-    generate_assembly(ast);
-
+    generate_before();
+    statements();
+    generate_after();
     fclose(Outfile);
     return 0;
 }

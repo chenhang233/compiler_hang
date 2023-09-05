@@ -72,10 +72,10 @@ x86 GNU汇编
       inc{bwlq} D    	      加 1
       dec{bwlq} D             减 1
       neg{bwlq} D             取反
-      add{bwlq} S, D ->D      加
-      sub{bwlq} S, D ->S      减
-      imul{bwlq} S, D ->D     乘
-      idiv{bwlq} S, D ->S     除
+      add{bwlq}   S,D   D +S -> D        加
+      sub{bwlq}   S,D   D - S -> D        减
+      imul{bwlq}  S,D   D * S -> D     乘
+      idiv{bwlq}  S, D ->S     除
       not{bwlq} D	      ~D → D	逻辑非
       or{bwlq} S, D	   D | S → D	逻辑或
       and{bwlq} S, D	   D & S → D	逻辑与
@@ -86,7 +86,8 @@ x86 GNU汇编
       shr{bwlq} k, D	   D >>_L k → D	逻辑右移
 
       imulq S	S × R[%rax] → R[%rdx]: R[%rax]	64位有符号乘法
-      idivq S	R[%rdx]: R[%rax] mod S → R[%rdx] R[%rdx]: R[%rax] ÷ S → R[%rax]	64位有符号除法
+      // 除法单操作数 以 %rdx 对应的寄存器保存余数， %rax对应的寄存器保存商
+      idivq S	R[%rdx]: R[%rax] mod S → R[%rdx]    R[%rdx]: R[%rax] ÷ S → R[%rax]	64位有符号除法
 
 
       call Label     过程调用
