@@ -67,6 +67,7 @@ int scan_keys(int c, char *buf, int buf_size)
             usage("too long buf");
         c = next();
     }
+    Input_cache = c;
     buf[i] = '\0';
     return i;
 }
