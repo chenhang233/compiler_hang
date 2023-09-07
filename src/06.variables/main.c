@@ -23,5 +23,9 @@ int main(int argc, char const *argv[])
         usage("open Infile", argv[1]);
     }
     init();
+    scan(&T_instance);
+    generator_preamble();
+    statements();
+    generator_postamble();
     return 0;
 }

@@ -1,16 +1,10 @@
-#pragma once
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#pragma once
 
 #define TEXT_LEN 1024
-
-int Line;
-int Cache_c;
-FILE *Infile;
-FILE *Outfile;
-char TEXT[TEXT_LEN];
 
 typedef enum Token_type
 {
@@ -38,3 +32,10 @@ typedef struct Token
     Token_type type;
     Token_value v;
 } Token;
+
+int Line;
+int Cache_c;
+FILE *Infile;
+FILE *Outfile;
+char TEXT[TEXT_LEN];
+Token T_instance;

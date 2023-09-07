@@ -54,13 +54,32 @@ int scan_identifier(int c, char *buf, int buf_size)
         if (i == buf_size)
         {
             custom_error_char("too long identifier", c);
-            exit(0);
         }
         c = next();
     }
     buf[i] = '\0';
     Cache_c = c;
     return i;
+}
+
+Token_type scan_keys(char *buf)
+{
+    switch (*buf)
+    {
+    case 'p':
+        if (!strcmp("print", buf))
+        {
+            return T_PRINT;
+        }
+        break;
+    case 'i':
+        if (!strcmp("int", buf))
+        {
+            return T_INT;
+        }
+        break;
+    }
+    return 0;
 }
 
 int scan(Token *t)
@@ -100,7 +119,7 @@ int scan(Token *t)
             t->type = T_IDENT;
             break;
         }
-        // errr
         break;
     }
+    custom_error_int("Unrecognised character", c);
 }
