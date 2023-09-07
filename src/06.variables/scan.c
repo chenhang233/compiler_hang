@@ -106,7 +106,7 @@ int scan(Token *t)
         if (isdigit(c))
         {
             t->type = T_INTLIT;
-            t->v.int_v = scan_dight(c);
+            t->v = scan_dight(c);
         }
         else if (isalpha(c) || c == '_')
         {

@@ -23,3 +23,25 @@ void custom_error_int(char *c1, int i)
     printf("ERROR: %s ,int: %d\n", c1, i);
     custom_error_line();
 }
+
+static void match(Token_type t, char *str)
+{
+    if (T_instance.type == t)
+    {
+        scan(&T_instance);
+    }
+    else
+    {
+        custom_error_int(str, t);
+    }
+}
+
+void match_semi()
+{
+    return match(T_instance.type, ";");
+}
+
+void match_print()
+{
+    return match(T_instance.type, "print");
+}
