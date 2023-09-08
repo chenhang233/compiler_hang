@@ -10,6 +10,9 @@ void custom_error_int(char *, int);
 static void match(Token_type, char *);
 void match_semi();
 void match_print();
+void match_int();
+void match_ident();
+void match_equals();
 
 // main.c
 void usage(char *, const char *);
@@ -25,8 +28,19 @@ int scan_identifier(int, char *, int);
 Token_type scan_keys(char *);
 
 // generator.c
+int generator_AST(AST *, int);
 void generator_preamble();
 void generator_postamble();
+int generator_load_int(int);
+int generator_load_global(char *);
+int generator_global_symbol(char *);
+int generator_store_register(int, char *);
+int generator_add(int, int);
+int generator_sub(int, int);
+int generator_mul(int, int);
+int generator_div(int, int);
+int generator_printint(int);
+void generator_free_all_registers();
 
 // code_generator.c
 void free_all_registers();

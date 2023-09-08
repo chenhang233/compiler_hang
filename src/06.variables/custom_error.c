@@ -45,3 +45,18 @@ void match_print()
 {
     return match(T_instance.type, "print");
 }
+
+void match_int()
+{
+    return match(T_instance.type, "int");
+}
+
+void match_ident()
+{
+    return match(T_instance.type, "identifier");
+}
+
+void match_equals()
+{
+    return match(T_instance.type, "equals");
+}

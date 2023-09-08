@@ -36,6 +36,7 @@ typedef enum AST_NODE_TYPE
     A_DIV,
     A_INTLIT,
     A_IDENT,
+    A_IDENT2,
     A_ASSIGN
 } AST_TYPE;
 
