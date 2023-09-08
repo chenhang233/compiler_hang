@@ -38,6 +38,6 @@ int global_add(char *s)
         return i;
     }
     i = global_new();
-    Global_symbol_map[i].name = strdup(s);
+    Global_symbol_map[i].name = my_strdup(s);
     return i;
 }

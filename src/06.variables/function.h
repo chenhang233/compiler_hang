@@ -13,6 +13,7 @@ void match_print();
 void match_int();
 void match_ident();
 void match_equals();
+char *my_strdup(const char *);
 
 // main.c
 void usage(char *, const char *);

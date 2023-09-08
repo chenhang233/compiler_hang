@@ -2,7 +2,7 @@
 
 void usage(char *str, const char *c)
 {
-    custom_error_chars(str, c);
+    custom_error_chars(str, (char *)c);
     exit(1);
 };
 

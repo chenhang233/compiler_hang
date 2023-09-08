@@ -119,7 +119,6 @@ int scan(Token *t)
             t->type = T_IDENT;
             break;
         }
-        break;
+        custom_error_int("Unrecognised character", c);
     }
-    custom_error_int("Unrecognised character", c);
 }
