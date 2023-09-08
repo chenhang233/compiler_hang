@@ -34,8 +34,15 @@ void free_register(int);
 int alloc_register();
 void code_generator_preamble();
 void code_generator_postamble();
-static int call_code_generator_load_int(int);
-static int call_code_generator_load_identifier(char *);
+int code_generator_load_int(int);
+int code_generator_load_global(char *);
+int code_generator_global_symbol(char *);
+int code_generator_store_register(int, char *);
+int code_generator_add(int, int);
+int code_generator_sub(int, int);
+int code_generator_mul(int, int);
+int code_generator_div(int, int);
+int code_generator_printint(int);
 
 // statements.c
 void statements();

@@ -69,3 +69,66 @@ void code_generator_postamble()
           "\tret\n",
           Outfile);
 }
+
+int code_generator_load_int(int v)
+{
+    int r = alloc_register();
+    fprintf(Outfile, "\tmovq\t$%d, %s\n", v, register_list[r]);
+    return (r);
+}
+
+int code_generator_load_global(char *identifier)
+{
+    int r = alloc_register();
+    fprintf(Outfile, "\tmovq\t%s(\%%rip), %s\n", identifier, register_list[r]);
+    return (r);
+}
+
+int code_generator_global_symbol(char *symbol)
+{
+    fprintf(Outfile, "\t.comm\t%s,8,8\n", symbol);
+}
+
+int code_generator_store_register(int r, char *identifier)
+{
+    fprintf(Outfile, "\tmovq\t%s, %s(\%%rip)\n", register_list[r], identifier);
+    return r;
+}
+
+int code_generator_add(int r1, int r2)
+{
+    fprintf(Outfile, "\taddq\t%s, %s\n", register_list[r1], register_list[r2]);
+    free_register(r1);
+    return (r2);
+}
+
+int code_generator_sub(int r1, int r2)
+{
+    fprintf(Outfile, "\tsubq\t%s, %s\n", register_list[r2], register_list[r1]);
+    free_register(r2);
+    return (r1);
+}
+
+int code_generator_mul(int r1, int r2)
+{
+    fprintf(Outfile, "\timulq\t%s, %s\n", register_list[r1], register_list[r2]);
+    free_register(r1);
+    return (r2);
+}
+
+int code_generator_div(int r1, int r2)
+{
+    fprintf(Outfile, "\tmovq\t%s,%%rax\n", register_list[r1]);
+    fprintf(Outfile, "\tcqo\n");
+    fprintf(Outfile, "\tidivq\t%s\n", register_list[r2]);
+    fprintf(Outfile, "\tmovq\t%%rax,%s\n", register_list[r1]);
+    free_register(r2);
+    return (r1);
+}
+
+int code_generator_printint(int r)
+{
+    fprintf(Outfile, "\tmovq\t%s, %%rdi\n", register_list[r]);
+    fprintf(Outfile, "\tcall\tprintint\n");
+    free_register(r);
+}
