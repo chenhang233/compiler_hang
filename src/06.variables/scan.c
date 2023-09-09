@@ -89,7 +89,14 @@ int scan(Token *t)
     switch (c)
     {
     case EOF:
+        t->type = T_EOF;
         return 0;
+    case ';':
+        t->type = T_SEMI;
+        break;
+    case '=':
+        t->type = T_EQUALS;
+        break;
     case '+':
         t->type = T_ADD;
         break;
@@ -117,8 +124,10 @@ int scan(Token *t)
                 break;
             }
             t->type = T_IDENT;
-            break;
         }
-        custom_error_int("Unrecognised character", c);
+        else
+        {
+            custom_error_char("scan() Unrecognised character", c);
+        }
     }
 }

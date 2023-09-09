@@ -28,6 +28,7 @@ int alloc_register()
     {
         if (!free_register_list[i])
         {
+            free_register_list[i] = 1;
             return i;
         }
     }

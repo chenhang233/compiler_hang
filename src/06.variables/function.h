@@ -73,6 +73,7 @@ AST *mkast_leaf(AST_TYPE, AST_V);
 AST *ast_generator(int);
 AST *primary();
 int get_score(Token_type);
+static AST_TYPE arithop(Token_type);
 
 // symbol.c
 int global_find(char *);

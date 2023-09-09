@@ -50,16 +50,15 @@ void statements()
             statements_print();
             break;
         case T_INT:
-            statements_variable();
+            // statements_variable();
             break;
         case T_IDENT:
-            statements_assign();
+            // statements_assign();
             break;
         case T_EOF:
             return;
         default:
-            custom_error_int("Syntax error, token", T_instance.type);
-            break;
+            custom_error_int("Syntax error, T_instance type", T_instance.type);
         }
     }
 }

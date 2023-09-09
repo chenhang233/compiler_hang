@@ -38,6 +38,23 @@ int get_score(Token_type t)
     return c;
 }
 
+static AST_TYPE arithop(Token_type tokentype)
+{
+    switch (tokentype)
+    {
+    case T_ADD:
+        return A_ADD;
+    case T_SUB:
+        return T_SUB;
+    case T_MUL:
+        return A_MUL;
+    case T_DIV:
+        return A_DIV;
+    default:
+        custom_error_int("Syntax error, Token_type: ", tokentype);
+    }
+}
+
 AST *ast_generator(int prev)
 {
     AST *l, *r;
@@ -53,7 +70,8 @@ AST *ast_generator(int prev)
         scan(&T_instance);
         r = ast_generator(token_type_score[op]);
         AST_V v;
-        l = mkast_node(op, l, r, v);
+        printf("arithop=%d\n", arithop(op));
+        l = mkast_node(arithop(op), l, r, v);
         op = T_instance.type;
         if (op == T_SEMI)
         {

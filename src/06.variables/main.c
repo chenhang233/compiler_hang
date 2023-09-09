@@ -22,6 +22,10 @@ int main(int argc, char const *argv[])
     {
         usage("open Infile", argv[1]);
     }
+    if (!(Outfile = fopen("out.s", "w")))
+    {
+        usage("open Outfile", argv[1]);
+    }
     init();
     scan(&T_instance);
     generator_preamble();
