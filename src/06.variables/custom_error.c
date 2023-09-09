@@ -38,17 +38,17 @@ static void match(Token_type t, char *str)
 
 void match_semi()
 {
-    return match(T_instance.type, ";");
+    match(T_instance.type, ";");
 }
 
 void match_print()
 {
-    return match(T_instance.type, "print");
+    match(T_instance.type, "print");
 }
 
 void match_int()
 {
-    return match(T_instance.type, "int");
+    match(T_instance.type, "int");
 }
 
 void match_ident()

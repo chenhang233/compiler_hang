@@ -21,9 +21,9 @@ int generator_AST(AST *ast, int reg)
     case A_DIV:
         return code_generator_div(reg1, reg2);
     case A_IDENT:
-        return code_generator_global_symbol(Global_symbol_map[ast->v.id].name);
-    case A_IDENT2:
         return code_generator_load_global(Global_symbol_map[ast->v.id].name);
+    case A_IDENT2:
+        return code_generator_store_register(reg, Global_symbol_map[ast->v.id].name);
     case A_ASSIGN:
         return reg2;
     default:

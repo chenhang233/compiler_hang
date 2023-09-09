@@ -45,7 +45,7 @@ static AST_TYPE arithop(Token_type tokentype)
     case T_ADD:
         return A_ADD;
     case T_SUB:
-        return T_SUB;
+        return A_SUB;
     case T_MUL:
         return A_MUL;
     case T_DIV:
@@ -70,12 +70,11 @@ AST *ast_generator(int prev)
         scan(&T_instance);
         r = ast_generator(token_type_score[op]);
         AST_V v;
-        printf("arithop=%d\n", arithop(op));
         l = mkast_node(arithop(op), l, r, v);
         op = T_instance.type;
         if (op == T_SEMI)
         {
-            break;
+            return l;
         }
     }
     return l;

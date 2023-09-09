@@ -29,11 +29,14 @@ void statements_assign()
     {
         custom_error_int("Undeclared variable", id);
     }
-    match_equals();
-    r = ast_generator(0);
     AST_V v;
     v.id = id;
-    l = mkast_leaf(A_IDENT2, v);
+    r = mkast_leaf(A_IDENT2, v);
+
+    match_equals();
+
+    l = ast_generator(0);
+
     root = mkast_node(A_ASSIGN, l, r, v);
     generator_AST(root, 0);
     generator_free_all_registers();
@@ -50,10 +53,10 @@ void statements()
             statements_print();
             break;
         case T_INT:
-            // statements_variable();
+            statements_variable();
             break;
         case T_IDENT:
-            // statements_assign();
+            statements_assign();
             break;
         case T_EOF:
             return;
