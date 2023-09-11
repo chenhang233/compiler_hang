@@ -76,12 +76,12 @@ x86 GNU汇编
       sub{bwlq}   S,D   D - S -> D        减
       imul{bwlq}  S,D   D * S -> D     乘
       idiv{bwlq}  S, D ->S     除
-      not{bwlq} D	      ~D → D	逻辑非
-      or{bwlq} S, D	   D | S → D	逻辑或
-      and{bwlq} S, D	   D & S → D	逻辑与
-      xor{bwlq} S, D	   D ^ S → D	逻辑异或
-      sal{bwlq} k, D	   D << k → D	左移
-      shl{bwlq} k, D	   D << k → D	左移（等同于asl）
+      not{bwlq} D	      ~D → D	      逻辑非
+      or{bwlq} S, D	   D | S → D	   逻辑或
+      and{bwlq} S, D	   D & S → D	   逻辑与
+      xor{bwlq} S, D	   D ^ S → D	   逻辑异或
+      sal{bwlq} k, D	   D << k → D	   左移
+      shl{bwlq} k, D	   D << k → D	   左移（等同于asl）
       sar{bwlq} k, D	   D >>_A k → D	算术右移
       shr{bwlq} k, D	   D >>_L k → D	逻辑右移
 
@@ -94,6 +94,19 @@ x86 GNU汇编
       ret	         从过程调用返回
 
       jmp             无条件跳转
+
+      cmp{bwlq}         据两个操作数之差来控制标志位(sub)如果两个操作数相等，将零标志设置为1
+      setl (SF ^ OF 小于时设置（set less)           根据条件码的某种组合，将一个字节设置为 0 或者 1
+      setle (SF ^ OF) | ZF                         小于等于（有符号 <= ）
+      setne  ~ZF                                   不等/非零（set not equal）
+      sete  ZF                                     相等/零（set equal）
+      setge   ~(SF ^ OF)                           大于等于（有符号 >= ）
+      setg    ~(SF ^ OF) & ~ZF                     大于（有符号 > ）
+
+
+      and{bwlq}                                    逻辑与(andq	$255,%r9 移除高位无效数据)
+
+
 
 段相关:
    .text	      代码段
