@@ -87,3 +87,4 @@ FILE *Infile;
 FILE *Outfile;
 Token t_instance;
 char *Text[TEXT_LEN];
+symbol_table Gsym[TEXT_LEN];

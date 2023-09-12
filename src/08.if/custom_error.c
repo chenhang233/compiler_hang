@@ -1,5 +1,52 @@
 #include "function.h"
 
+void match(AST_type t, char *str)
+{
+    if (t_instance.token == t)
+    {
+        scan(&t_instance);
+    }
+    else
+    {
+        custom_error_chars("connot match", str);
+    }
+}
+
+void match_semi()
+{
+    return match(T_SEMI, ";");
+}
+
+void match_lbrace()
+{
+    match(T_LBRACE, "{");
+}
+
+void match_rbrace()
+{
+    match(T_RBRACE, "}");
+}
+
+void match_lparen()
+{
+    match(T_LPAREN, "(");
+}
+
+void match_rparen()
+{
+    match(T_RPAREN, ")");
+}
+
+void match_ident()
+{
+    match(T_IDENT, "identifier");
+}
+
+void match_int()
+{
+    match(T_INT, "int");
+}
+
 void custom_error_line()
 {
     printf("The source code error is on line %d\n", Line);

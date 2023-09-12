@@ -5,6 +5,14 @@ void custom_error_line();
 void custom_error_char(char *, char);
 void custom_error_chars(char *, char *);
 void custom_error_int(char *, int);
+void match(AST_type, char *);
+void match_semi();
+void match_lbrace();
+void match_rbrace();
+void match_lparen();
+void match_rparen();
+void match_ident();
+void match_int();
 
 // cg.c
 void cgpreamble();
@@ -44,3 +52,13 @@ AST_node *compound_statement(void);
 AST_node *print_statement(void);
 AST_node *assignment_statement(void);
 AST_node *if_statement(void);
+void var_declaration(void);
+
+// ast.c
+AST_node *mkAST_node(AST_type, AST_node *, AST_node *, AST_node *, int);
+
+// sym.c
+int findglob(char *);
+static int newglob();
+int addglob(char *);
+char *my_strdup(const char *);

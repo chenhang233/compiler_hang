@@ -22,7 +22,7 @@ int main(int argc, char const *argv[])
     }
     scan(&t_instance);
     genpreamble();
-
+    compound_statement();
     genpostamble();
     fclose(Outfile);
     return 0;
