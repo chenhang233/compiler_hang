@@ -16,6 +16,14 @@ int main(int argc, char const *argv[])
     {
         custom_error_chars("open Infile", (char *)argv[1]);
     }
+    if (!(Outfile = fopen("out.s", "w")))
+    {
+        custom_error_chars("open outfile", (char *)argv[1]);
+    }
     scan(&t_instance);
+    genpreamble();
+
+    genpostamble();
+    fclose(Outfile);
     return 0;
 }

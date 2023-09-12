@@ -23,6 +23,13 @@ void cglabel(int l);
 void cgjump(int l);
 int cgcompare_and_jump(int ASTop, int r1, int r2, int label);
 
+// gen.c
+void genpreamble();
+void genpostamble();
+void genfreeregs();
+void genprintint(int);
+void genglobsym(char *);
+
 // scan.c
 int scan(Token *);
 int skip();
@@ -31,3 +38,9 @@ int scanint(int);
 int int_pos(char *, int);
 int scanident(int, char *, int);
 int keyword(char *);
+
+// stm.c
+AST_node *compound_statement(void);
+AST_node *print_statement(void);
+AST_node *assignment_statement(void);
+AST_node *if_statement(void);

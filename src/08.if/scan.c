@@ -119,15 +119,33 @@ int scan(Token *t)
             {
                 t->token = T_IDENT;
             }
-            break;
         }
-        custom_error_chars("Unrecognised character", "Token_type");
+        else
+        {
+            custom_error_chars("Unrecognised character", "Token_type");
+        }
     }
     return 1;
 }
 
 int keyword(char *key)
 {
+    switch (*key)
+    {
+    case 'p':
+        if (!strcmp("print", key))
+            return T_PRINT;
+    case 'i':
+        if (!strcmp("int", T_INT))
+            return T_INT;
+        if (!strcmp("if", key))
+            return T_IF;
+    case 'e':
+        if (!strcmp("else", key))
+            return T_ELSE;
+    default:
+        return 0;
+    }
 }
 
 int scanident(int c, char *Text, int size)

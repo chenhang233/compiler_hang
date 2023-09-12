@@ -41,7 +41,7 @@ typedef struct Token
     int v;
 } Token;
 
-enum AST_type
+typedef enum AST_type
 {
     A_ADD = 1,
     A_SUBTRACT,
@@ -60,7 +60,26 @@ enum AST_type
     A_PRINT,   // 打印
     A_GLUE,    // 花括号里面如果多条语句,黏合在一个树中
     A_IF       // if
-};
+} AST_type;
+
+typedef struct AST_node
+{
+    AST_type op;
+    struct AST_node *left;
+    struct AST_node *mid;
+    struct AST_node *right;
+    union
+    {
+        int intv;
+        int id;
+    } v;
+
+} AST_node;
+
+typedef struct symbol_table
+{
+    char *name; // Name of a symbol
+} symbol_table;
 
 int Line;
 int Cache;
