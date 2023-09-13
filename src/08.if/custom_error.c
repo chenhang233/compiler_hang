@@ -47,6 +47,11 @@ void match_int()
     match(T_INT, "int");
 }
 
+void match_assign()
+{
+    match(T_ASSIGN, "assign");
+}
+
 void custom_error_line()
 {
     printf("The source code error is on line %d\n", Line);

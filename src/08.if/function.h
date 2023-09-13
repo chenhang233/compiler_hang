@@ -13,6 +13,7 @@ void match_lparen();
 void match_rparen();
 void match_ident();
 void match_int();
+void match_assign();
 
 // cg.c
 void cgpreamble();
@@ -56,6 +57,8 @@ void var_declaration(void);
 
 // ast.c
 AST_node *mkAST_node(AST_type, AST_node *, AST_node *, AST_node *, int);
+AST_node *mkAST_leaf(AST_type, int);
+AST_node *parse_ast_expr(int);
 
 // sym.c
 int findglob(char *);
