@@ -4,6 +4,12 @@
 
 AST_node *print_statement(void)
 {
+    AST_node *root;
+    match_print();
+    root = parse_ast_expr(0);
+    root = mkAST_left(A_PRINT, root);
+    match_semi();
+    return root;
 }
 
 AST_node *assignment_statement(void)
@@ -42,19 +48,25 @@ AST_node *compound_statement(void)
         case T_IDENT:
             tree = assignment_statement();
             break;
+        case T_PRINT:
+            tree = print_statement();
+            break;
+        case T_IF:
+            tree = if_statement();
+            break;
         default:
             custom_error_int("Syntax error, token", t_instance.token);
         }
-    }
-    if (tree)
-    {
-        if (!left)
+        if (tree)
         {
-            left = tree;
-        }
-        else
-        {
-            left = mkAST_node(A_GLUE, left, NULL, tree, 0);
+            if (!left)
+            {
+                left = tree;
+            }
+            else
+            {
+                left = mkAST_node(A_GLUE, left, NULL, tree, 0);
+            }
         }
     }
 }
@@ -70,4 +82,20 @@ void var_declaration(void)
 
 AST_node *if_statement(void)
 {
+    AST_node *condition_tree, *if_tree, *else_tree = NULL;
+    match_if();
+    match_lparen();
+    condition_tree = parse_ast_expr(0);
+    if (condition_tree < T_EQ || condition_tree > T_GE)
+    {
+        custom_error_int("Bad comparison operator", condition_tree);
+    }
+    match_rparen();
+    if_tree = compound_statement();
+    if (t_instance.token == T_ELSE)
+    {
+        scan(&t_instance);
+        else_tree = compound_statement();
+    }
+    return mkAST_node(A_IF, condition_tree, if_tree, else_tree, 0);
 }

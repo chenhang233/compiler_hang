@@ -52,6 +52,16 @@ void match_assign()
     match(T_ASSIGN, "assign");
 }
 
+void match_print()
+{
+    match(T_PRINT, "print");
+}
+
+void match_if()
+{
+    match(T_IF, "if");
+}
+
 void custom_error_line()
 {
     printf("The source code error is on line %d\n", Line);

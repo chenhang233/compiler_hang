@@ -14,6 +14,8 @@ void match_rparen();
 void match_ident();
 void match_int();
 void match_assign();
+void match_print();
+void match_if();
 
 // cg.c
 void cgpreamble();
@@ -58,6 +60,7 @@ void var_declaration(void);
 // ast.c
 AST_node *mkAST_node(AST_type, AST_node *, AST_node *, AST_node *, int);
 AST_node *mkAST_leaf(AST_type, int);
+AST_node *mkAST_left(AST_type, AST_node *);
 AST_node *parse_ast_expr(int);
 AST_node *primary();
 static int op_precedence(Token_type);

@@ -18,6 +18,11 @@ AST_node *mkAST_leaf(AST_type op, int id)
     return mkAST_node(op, NULL, NULL, NULL, id);
 }
 
+AST_node *mkAST_left(AST_type op, AST_node *left)
+{
+    return mkAST_node(op, left, NULL, NULL, 0);
+}
+
 static int OpPrec[] = {
     0, 10, 10,     // T_EOF, T_PLUS, T_MINUS
     20, 20,        // T_STAR, T_SLASH
