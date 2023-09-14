@@ -78,7 +78,7 @@ typedef struct AST_node
 
 typedef struct symbol_table
 {
-    char *name; // Name of a symbol
+    char *name;
 } symbol_table;
 
 int Line;

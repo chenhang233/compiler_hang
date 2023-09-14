@@ -10,6 +10,10 @@ int next()
         return c;
     }
     c = fgetc(Infile);
+    if (c == '\n')
+    {
+        Line++;
+    }
     return c;
 }
 
@@ -160,7 +164,9 @@ int scanident(int c, char *Text, int size)
         }
         c = next();
     }
+    Text[i] = '\0';
     Cache = c;
+    return i;
 }
 
 int int_pos(char *str, int s)

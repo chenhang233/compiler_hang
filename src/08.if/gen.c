@@ -10,16 +10,28 @@ static int label(void)
 
 static int genIFAST(AST_node *n)
 {
-    int L, R;
-    L = label();
+    int F_L, N_L;
+    F_L = label();
     if (n->right)
-        R = label();
+        N_L = label();
 
-    genAST(n->left, L, n->op);
+    genAST(n->left, F_L, n->op);
     genfreeregs();
 
     genAST(n->mid, NOREG, n->op);
     genfreeregs();
+    if (n->right)
+    {
+        cgjump(N_L);
+    }
+    cglabel(F_L);
+    if (n->right)
+    {
+        genAST(n->right, NOREG, n->op);
+        genfreeregs();
+        cglabel(N_L);
+    }
+    return NOREG;
 }
 
 int genAST(AST_node *n, int reg, AST_type parentASTop)
@@ -36,6 +48,7 @@ int genAST(AST_node *n, int reg, AST_type parentASTop)
         freeall_registers();
         return NOREG;
     }
+
     if (n->left)
         leftreg = genAST(n->left, NOREG, n->op);
     if (n->right)
