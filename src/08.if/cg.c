@@ -171,7 +171,7 @@ int cgcompare_and_set(int ASTop, int r1, int r2)
 
     // Check the range of the AST operation
     if (ASTop < A_EQ || ASTop > A_GE)
-        fatal("Bad ASTop in cgcompare_and_set()");
+        custom_error_int("Bad ASTop in cgcompare_and_set()", ASTop);
 
     fprintf(Outfile, "\tcmpq\t%s, %s\n", reglist[r2], reglist[r1]);
     fprintf(Outfile, "\t%s\t%s\n", cmplist[ASTop - A_EQ], breglist[r2]);

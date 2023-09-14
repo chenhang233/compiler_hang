@@ -21,9 +21,9 @@ AST_node *assignment_statement(void)
     {
         custom_error_chars("Undeclared variable", Text);
     }
-    left = mkAST_leaf(A_LVIDENT, id);
+    right = mkAST_leaf(A_LVIDENT, id);
     match_assign();
-    right = parse_ast_expr(0);
+    left = parse_ast_expr(0);
     root = mkAST_node(A_ASSIGN, left, NULL, right, 0);
     match_semi();
     return root;
@@ -86,9 +86,9 @@ AST_node *if_statement(void)
     match_if();
     match_lparen();
     condition_tree = parse_ast_expr(0);
-    if (condition_tree < T_EQ || condition_tree > T_GE)
+    if (condition_tree->op < T_EQ || condition_tree->op > T_GE)
     {
-        custom_error_int("Bad comparison operator", condition_tree);
+        custom_error_int("Bad comparison operator", condition_tree->op);
     }
     match_rparen();
     if_tree = compound_statement();

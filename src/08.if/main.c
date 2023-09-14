@@ -22,7 +22,8 @@ int main(int argc, char const *argv[])
     }
     scan(&t_instance);
     genpreamble();
-    compound_statement();
+    AST_node *n = compound_statement();
+    genAST(n, NOREG, 0);
     genpostamble();
     fclose(Outfile);
     return 0;

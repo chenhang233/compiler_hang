@@ -53,5 +53,5 @@ int addglob(char *name)
     }
     i = newglob();
     Gsym[i].name = my_strdup(name);
-    return;
+    return i;
 }

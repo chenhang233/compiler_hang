@@ -86,5 +86,5 @@ int Cache;
 FILE *Infile;
 FILE *Outfile;
 Token t_instance;
-char *Text[TEXT_LEN];
+char Text[TEXT_LEN];
 symbol_table Gsym[TEXT_LEN];

@@ -1,5 +1,5 @@
-SRCS = main.c custom_error.c  scan.c gen.c cg.c stm.c tree.c ast.c symbol.c
-SRCS2 = main.c custom_error.c  scan.c gen.c cgn.c stm.c tree.c ast.c symbol.c
+SRCS = main.c custom_error.c  scan.c gen.c cg.c stm.c tree.c ast.c symbol.c sym.c
+SRCS2 = main.c custom_error.c  scan.c gen.c cgn.c stm.c tree.c ast.c symbol.c sym.c
 
 parser1: $(SRCS)
 	gcc -std=c99 -o parser1 -g $(SRCS)

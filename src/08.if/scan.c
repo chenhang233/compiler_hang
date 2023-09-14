@@ -136,7 +136,7 @@ int keyword(char *key)
         if (!strcmp("print", key))
             return T_PRINT;
     case 'i':
-        if (!strcmp("int", T_INT))
+        if (!strcmp("int", key))
             return T_INT;
         if (!strcmp("if", key))
             return T_IF;

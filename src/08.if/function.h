@@ -33,6 +33,7 @@ int cgcompare_and_set(int ASTop, int r1, int r2);
 void cglabel(int l);
 void cgjump(int l);
 int cgcompare_and_jump(int ASTop, int r1, int r2, int label);
+void freeall_registers(void);
 
 // gen.c
 void genpreamble();
@@ -40,6 +41,9 @@ void genpostamble();
 void genfreeregs();
 void genprintint(int);
 void genglobsym(char *);
+static int genIFAST(AST_node *);
+int genAST(AST_node *, int, AST_type);
+static int label(void);
 
 // scan.c
 int scan(Token *);
