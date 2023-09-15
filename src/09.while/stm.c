@@ -54,7 +54,9 @@ AST_node *compound_statement(void)
         case T_IF:
             tree = if_statement();
             break;
-
+        case T_WHILE:
+            tree = while_statement();
+            break;
         default:
             custom_error_int("Syntax error, token", t_instance.token);
         }
@@ -99,4 +101,9 @@ AST_node *if_statement(void)
         else_tree = compound_statement();
     }
     return mkAST_node(A_IF, condition_tree, if_tree, else_tree, 0);
+}
+
+AST_node *while_statement()
+{
+    AST_node *condition_tree, *body;
 }
