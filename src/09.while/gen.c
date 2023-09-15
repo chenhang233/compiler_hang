@@ -34,6 +34,21 @@ static int genIFAST(AST_node *n)
     return NOREG;
 }
 
+static int genWhileAST(AST_node *n)
+{
+    int L1, L2;
+    L1 = label();
+    L2 = label();
+    cglabel(L1);
+    genAST(n->left, L2, n->op);
+    genfreeregs();
+    genAST(n->right, NOREG, n->op);
+    genfreeregs();
+    cgjump(L1);
+    cglabel(L2);
+    return NOREG;
+}
+
 int genAST(AST_node *n, int reg, AST_type parentASTop)
 {
     int leftreg, rightreg;
@@ -41,6 +56,8 @@ int genAST(AST_node *n, int reg, AST_type parentASTop)
     {
     case A_IF:
         return genIFAST(n);
+    case A_WHILE:
+        return genWhileAST(n);
     case A_GLUE:
         genAST(n->left, NOREG, n->op);
         freeall_registers();
@@ -70,7 +87,7 @@ int genAST(AST_node *n, int reg, AST_type parentASTop)
     case A_GT:
     case A_LE:
     case A_GE:
-        if (parentASTop == A_IF)
+        if (parentASTop == A_IF || parentASTop == A_WHILE)
             return cgcompare_and_jump(n->op, leftreg, rightreg, reg);
         else
             return cgcompare_and_set(n->op, leftreg, rightreg);

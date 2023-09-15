@@ -16,6 +16,7 @@ void match_int();
 void match_assign();
 void match_print();
 void match_if();
+void match_while();
 
 // cg.c
 void cgpreamble();
@@ -42,6 +43,7 @@ void genfreeregs();
 void genprintint(int);
 void genglobsym(char *);
 static int genIFAST(AST_node *);
+static int genWhileAST(AST_node *);
 int genAST(AST_node *, int, AST_type);
 static int label(void);
 

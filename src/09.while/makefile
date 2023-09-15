@@ -10,10 +10,10 @@ parser2: $(SRCS2)
 clean:
 	rm -f parser1 parser2 *.o *.s out
 
-test: parse1 tests/input06
-	./parse1 tests/input06
+test: parser1 tests/input06
+	./parser1 tests/input06
 	gcc -o out out.s
 	./out
 
-test2: parse1 tests/runtests
+test2: parser1 tests/runtests
 	(cd tests; chmod +x runtests; ./runtests)

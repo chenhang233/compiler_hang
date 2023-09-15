@@ -106,4 +106,14 @@ AST_node *if_statement(void)
 AST_node *while_statement()
 {
     AST_node *condition_tree, *body;
+    match_while();
+    match_lparen();
+    condition_tree = parse_ast_expr(0);
+    if (condition_tree->op < T_EQ || condition_tree->op > T_GE)
+    {
+        custom_error_int("Bad comparison operator", condition_tree->op);
+    }
+    match_rparen();
+    body = compound_statement();
+    return mkAST_node(A_WHILE, condition_tree, NULL, body, 0);
 }
