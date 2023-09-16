@@ -67,6 +67,11 @@ void match_while()
     match(T_WHILE, "while");
 }
 
+void match_for()
+{
+    match(T_FOR, "for");
+}
+
 void custom_error_line()
 {
     printf("The source code error is on line %d\n", Line);

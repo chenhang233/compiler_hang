@@ -8,7 +8,6 @@ AST_node *print_statement(void)
     match_print();
     root = parse_ast_expr(0);
     root = mkAST_left(A_PRINT, root);
-    match_semi();
     return root;
 }
 
@@ -25,8 +24,27 @@ AST_node *assignment_statement(void)
     match_assign();
     left = parse_ast_expr(0);
     root = mkAST_node(A_ASSIGN, left, NULL, right, 0);
-    match_semi();
     return root;
+}
+
+AST_node *for_statement()
+{
+    AST_node *left;
+    AST_node *prev, *cond, *post, *body;
+    match_for();
+    match_lparen();
+    prev = single_statement();
+    match_semi();
+    cond = parse_ast_expr(0);
+    match_semi();
+    post = single_statement();
+    match_rparen();
+    body = compound_statement();
+
+    left = mkAST_node(A_GLUE, body, NULL, post, 0);
+    left = mkAST_node(A_WHILE, cond, NULL, left, 0);
+    left = mkAST_node(A_GLUE, prev, NULL, left, 0);
+    return left;
 }
 
 static AST_node *single_statement()
@@ -35,7 +53,7 @@ static AST_node *single_statement()
     {
     case T_INT:
         var_declaration();
-        return;
+        return NULL;
     case T_IDENT:
         return assignment_statement();
     case T_PRINT:
@@ -44,6 +62,8 @@ static AST_node *single_statement()
         return if_statement();
     case T_WHILE:
         return while_statement();
+    case T_FOR:
+        return for_statement();
     default:
         custom_error_int("Syntax error, token", t_instance.token);
     }
@@ -57,6 +77,8 @@ AST_node *compound_statement(void)
     while (1)
     {
         tree = single_statement();
+        if (tree != NULL && (tree->op == A_PRINT || tree->op == A_ASSIGN))
+            match_semi();
         if (tree)
         {
             if (!left)

@@ -17,6 +17,7 @@ void match_assign();
 void match_print();
 void match_if();
 void match_while();
+void match_for();
 
 // cg.c
 void cgpreamble();
