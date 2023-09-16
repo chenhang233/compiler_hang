@@ -33,7 +33,8 @@ typedef enum Token_type
     T_INT,   // int
     T_IF,    // if
     T_ELSE,  // else
-    T_WHILE  // while
+    T_WHILE, // while
+    T_FOR    // for
 } Token_type;
 
 typedef struct Token
