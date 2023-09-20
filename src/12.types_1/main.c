@@ -1,5 +1,11 @@
 #include "function.h"
 
+int init()
+{
+    Line = 1;
+    cache = 0;
+}
+
 int main(int argc, char const *argv[])
 {
     if (argc != 2)
@@ -13,15 +19,15 @@ int main(int argc, char const *argv[])
         custom_error_int("Unable to create out.s", 0);
         exit(1);
     }
-    Token *t;
-    scan(&t);
+    init();
+    scan(&t_instance);
     genpreamble();
     ASTnode *tree;
     while (1)
     {
         tree = function_declaration();
         genAST(tree, NOREG, 0);
-        if (t->token == T_EOF)
+        if (t_instance.token == T_EOF)
             break;
     }
     fclose(Outfile);

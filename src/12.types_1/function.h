@@ -7,6 +7,20 @@ void custom_error_line();
 void custom_error_char(char *t, char c);
 void custom_error_chars(char *c1, char *c2);
 void custom_error_int(char *c1, int i);
+void match(AST_node_type t, char *str);
+void match_semi();
+void match_lbrace();
+void match_rbrace();
+void match_lparen();
+void match_rparen();
+void match_ident();
+void match_int();
+void match_assign();
+void match_print();
+void match_if();
+void match_while();
+void match_for();
+void match_void();
 
 // scan.c
 int next();
@@ -35,3 +49,14 @@ void cgglobsym(int id);
 
 // stm.c
 ASTnode *function_declaration();
+
+// ast.c
+ASTnode *mkAST_node(AST_node_type op, Primitive_type type, ASTnode *left, ASTnode *mid, ASTnode *right, int intv);
+ASTnode *mkAST_leaf(AST_node_type op, Primitive_type type, int id);
+ASTnode *mkAST_left(AST_node_type op, Primitive_type type, ASTnode *left, int v);
+
+// sym.c
+int findglob(char *s);
+char *my_strdup(const char *source);
+static int newglob();
+int addglob(char *name, Primitive_type type, Structural_type stype)

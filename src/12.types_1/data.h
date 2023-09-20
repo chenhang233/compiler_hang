@@ -108,7 +108,7 @@ typedef struct symtable
 int Line;
 int cache;
 char Text[TEXTLEN];
+Token t_instance;
 FILE *Infile;
 FILE *Outfile;
-
 symtable Gsym[TEXTLEN]; // global symbol table
