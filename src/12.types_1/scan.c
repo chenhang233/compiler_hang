@@ -28,6 +28,7 @@ int skip()
 int scan(Token *t)
 {
     int c = skip();
+    Token_type ttype;
     switch (c)
     {
     case EOF:
@@ -105,8 +106,89 @@ int scan(Token *t)
     default:
         if (isdigit(c))
         {
+            t->intvalue = scanint(c);
+            t->token = T_INTLIT;
         }
-        custom_error_char("unkown character ?", c);
+        else if (isalpha(c) || c == '_')
+        {
+            scanident(c, Text, TEXTLEN);
+            if (ttype = scankey(Text))
+            {
+                t->token = ttype;
+                break;
+            }
+            t->token = T_IDENT;
+        }
+        else
+        {
+            custom_error_chars("Unrecognised character", "Token_type");
+            custom_error_char("unkown character ?", c);
+        }
     }
     return 1;
+}
+
+int scankey(char *key)
+{
+    switch (*key)
+    {
+    case 'p':
+        if (!strcmp("print", key))
+            return T_PRINT;
+    case 'i':
+        if (!strcmp("int", key))
+            return T_INT;
+        if (!strcmp("if", key))
+            return T_IF;
+    case 'e':
+        if (!strcmp("else", key))
+            return T_ELSE;
+    case 'w':
+        if (!strcmp("while", key))
+            return T_WHILE;
+    case 'f':
+        if (!strcmp("for", key))
+            return T_FOR;
+    case 'v':
+        if (!strcmp("void", key))
+            return T_VOID;
+    case 'c':
+        if (!strcmp("char", key))
+            return T_CHAR;
+    default:
+        return 0;
+    }
+}
+
+int scanident(char c, char *str, int strlen)
+{
+    int i = 0;
+    while (isalpha(c) || isdigit(c) || c == '_')
+    {
+        str[i++] = c;
+        if (i == strlen - 1)
+            custom_error_char("too long ident", c);
+        c = next();
+    }
+    cache = c;
+    Text[i] = '\0';
+    return i;
+}
+
+int scanint(int c)
+{
+    int k, v = 0;
+    while ((k = int_pos("0123456789", c)) != -1)
+    {
+        v = v * 10 + k;
+        c = next();
+    }
+    cache = c;
+    return v;
+}
+
+int int_pos(char *str, int s)
+{
+    char *p = strchr(str, s);
+    return p ? p - str : -1;
 }
