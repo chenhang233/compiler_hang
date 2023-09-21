@@ -23,7 +23,7 @@ typedef enum Token_type
     T_GE,     //  >=
     T_INTLIT, // digit
     T_SEMI,   // ;
-    T_ASSIGN, // assign
+    T_ASSIGN, // assign =
     T_IDENT,  //  identify
     T_LBRACE, // {
     T_RBRACE, // }

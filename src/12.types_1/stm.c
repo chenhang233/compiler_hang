@@ -52,6 +52,23 @@ void var_declaration()
 
 static ASTnode *assignment_statement(void)
 {
+    ASTnode *left, *right, *root;
+    int id;
+    Primitive_type lt, rt;
+    match_ident();
+    if ((id = findglob(Text)) == -1)
+        custom_error_chars("undefined variable", Text);
+    right = mkAST_leaf(A_LVIDENT, Gsym[id].type, id);
+    match_assign();
+    left = binexpr(0);
+    lt = left->type;
+    rt = right->type;
+    if (!type_compatible(&lt, &rt, 1))
+        custom_error_int("Incompatible types", 0);
+    if (lt)
+        left = mkAST_left(left->type, right->type, left, 0);
+    root = mkAST_node(A_ASSIGN, P_INT, left, NULL, right, 0);
+    return root;
 }
 
 static ASTnode *single_statement(void)
@@ -64,7 +81,7 @@ static ASTnode *single_statement(void)
     case T_CHAR:
         var_declaration();
         break;
-    case T_ASSIGN:
+    case T_IDENT:
         return assignment_statement();
     case T_IF:
         return if_statement();
