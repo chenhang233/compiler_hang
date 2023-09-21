@@ -49,11 +49,23 @@ void cgglobsym(int id);
 
 // stm.c
 ASTnode *function_declaration();
+ASTnode *compound_statement();
+static ASTnode *single_statement(void);
+static ASTnode *print_statement(void);
+void var_declaration();
+static ASTnode *assignment_statement(void);
+static ASTnode *if_statement(void);
+static ASTnode *while_statement();
+static ASTnode *for_statement();
 
 // ast.c
 ASTnode *mkAST_node(AST_node_type op, Primitive_type type, ASTnode *left, ASTnode *mid, ASTnode *right, int intv);
 ASTnode *mkAST_leaf(AST_node_type op, Primitive_type type, int id);
 ASTnode *mkAST_left(AST_node_type op, Primitive_type type, ASTnode *left, int v);
+ASTnode *binexpr(int ptp);
+static ASTnode *primary(void);
+static int op_precedence(int tokentype);
+static int arithop(int tokentype);
 
 // sym.c
 int findglob(char *s);
