@@ -38,7 +38,7 @@ Primitive_type parse_type(Token_type t)
         return (P_INT);
     if (t == T_VOID)
         return (P_VOID);
-    fatald("Illegal type, token", t);
+    custom_error_int("Illegal type, token", t);
 }
 
 void var_declaration()
@@ -70,6 +70,10 @@ static ASTnode *assignment_statement(void)
     root = mkAST_node(A_ASSIGN, P_INT, left, NULL, right, 0);
     return root;
 }
+
+static ASTnode *if_statement(void) {}
+static ASTnode *while_statement() {}
+static ASTnode *for_statement() {}
 
 static ASTnode *single_statement(void)
 {

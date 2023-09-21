@@ -40,6 +40,7 @@ int genAST(ASTnode *n, int reg, AST_node_type parentASTop);
 
 // cg.c
 void freeall_registers(void);
+static void free_register(int reg);
 void cgpreamble();
 static int alloc_register(void);
 void cgfuncpreamble(char *name);
@@ -75,4 +76,4 @@ static int newglob();
 int addglob(char *name, Primitive_type type, Structural_type stype);
 
 // types.c
-int type_compatible(int *left, int *right, int onlyright);
+int type_compatible(Primitive_type *left, Primitive_type *right, int onlyright);

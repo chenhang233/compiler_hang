@@ -42,13 +42,14 @@ static int op_precedence(AST_node_type tokentype)
 {
     int prec = OpPrec[tokentype];
     if (prec == 0)
-        fatald("Syntax error, token", tokentype);
+        custom_error_int("Syntax error, token", tokentype);
     return (prec);
 }
 
 static ASTnode *primary(void)
 {
     ASTnode *n;
+    int id;
     switch (t_instance.token)
     {
     case T_INTLIT:
@@ -58,7 +59,7 @@ static ASTnode *primary(void)
             n = mkAST_leaf(A_INTLIT, P_INT, t_instance.intvalue);
         break;
     case T_IDENT:
-        int id = findglob(Text);
+        id = findglob(Text);
         if (id == -1)
             custom_error_chars("undefined variable", Text);
         n = mkAST_leaf(A_IDENT, Gsym[id].type, id);

@@ -9,10 +9,10 @@ int init()
 int main(int argc, char const *argv[])
 {
     if (argc != 2)
-        custom_error_chars("argc length", argv[0]);
+        custom_error_chars("argc length", (char *)argv[0]);
     if (!(Infile = fopen(argv[1], "r")))
     {
-        custom_error_chars("unable open", argv[1]);
+        custom_error_chars("unable open", (char *)argv[1]);
     }
     if ((Outfile = fopen("out.s", "w")) == NULL)
     {

@@ -18,7 +18,7 @@ int next()
 int skip()
 {
     int c = next();
-    while (c == ' ' || c == '/n' || c == '\r' || c == '\t')
+    while (c == ' ' || c == '\n' || c == '\r' || c == '\t')
     {
         c = next();
     }

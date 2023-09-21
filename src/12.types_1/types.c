@@ -1,6 +1,6 @@
 #include "function.h"
 
-int type_compatible(int *left, int *right, int onlyright)
+int type_compatible(Primitive_type *left, Primitive_type *right, int onlyright)
 {
     if ((*left == P_VOID) || (*right == P_VOID))
         return (0);

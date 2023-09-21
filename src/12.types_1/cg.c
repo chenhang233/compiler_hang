@@ -9,6 +9,13 @@ void freeall_registers(void)
     freereg[0] = freereg[1] = freereg[2] = freereg[3] = 1;
 }
 
+static void free_register(int reg)
+{
+    if (freereg[reg] != 0)
+        custom_error_int("Error trying to free register", reg);
+    freereg[reg] = 1;
+}
+
 static int alloc_register(void)
 {
     for (int i = 0; i < 4; i++)
@@ -19,7 +26,7 @@ static int alloc_register(void)
             return (i);
         }
     }
-    fatal("Out of registers");
+    custom_error_int("Out of registers", -2);
 }
 
 void cgpreamble()
