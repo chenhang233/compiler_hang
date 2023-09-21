@@ -15,7 +15,43 @@ ASTnode *function_declaration()
 
 static ASTnode *print_statement(void)
 {
+    ASTnode *tree;
+    Primitive_type l, r;
+
     match_print();
+    tree = binexpr(0);
+    l = P_INT;
+    r = tree->type;
+    if (!type_compatible(&l, &r, 0))
+        custom_error_int("Incompatible types", 0);
+    if (r)
+        tree = mkAST_left(r, P_INT, tree, 0);
+    tree = mkAST_left(A_PRINT, P_NONE, tree, 0);
+    return tree;
+}
+
+Primitive_type parse_type(Token_type t)
+{
+    if (t == T_CHAR)
+        return (P_CHAR);
+    if (t == T_INT)
+        return (P_INT);
+    if (t == T_VOID)
+        return (P_VOID);
+    fatald("Illegal type, token", t);
+}
+
+void var_declaration()
+{
+    Primitive_type pt = parse_type(t_instance.token);
+    scan(&t_instance);
+    int id = addglob(Text, pt, S_VARIABLE);
+    cgglobsym(id);
+    match_semi();
+};
+
+static ASTnode *assignment_statement(void)
+{
 }
 
 static ASTnode *single_statement(void)

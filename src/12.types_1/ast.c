@@ -31,16 +31,72 @@ static int OpPrec[] = {
     40, 40, 40, 40 // T_LT, T_GT, T_LE, T_GE
 };
 
-static int arithop(int tokentype) {}
-
-static int op_precedence(int tokentype)
+static int arithop(int tokentype)
 {
+    if (tokentype > T_EOF && tokentype < T_INTLIT)
+        return (tokentype);
+    custom_error_int("Syntax error", tokentype);
 }
 
-static ASTnode *primary(void){
+static int op_precedence(AST_node_type tokentype)
+{
+    int prec = OpPrec[tokentype];
+    if (prec == 0)
+        fatald("Syntax error, token", tokentype);
+    return (prec);
+}
 
+static ASTnode *primary(void)
+{
+    ASTnode *n;
+    switch (t_instance.token)
+    {
+    case T_INTLIT:
+        if (t_instance.intvalue >= 0 && t_instance.intvalue < 256)
+            n = mkAST_leaf(A_INTLIT, P_CHAR, t_instance.intvalue);
+        else
+            n = mkAST_leaf(A_INTLIT, P_INT, t_instance.intvalue);
+        break;
+    case T_IDENT:
+        int id = findglob(Text);
+        if (id == -1)
+            custom_error_chars("undefined variable", Text);
+        n = mkAST_leaf(A_IDENT, Gsym[id].type, id);
+        break;
+    default:
+        custom_error_int("primary token", t_instance.token);
+    }
+    scan(&t_instance);
+    return n;
 };
 
 ASTnode *binexpr(int ptp)
 {
+    ASTnode *left, *right;
+    AST_node_type tp;
+    Primitive_type lefttype, righttype;
+
+    left = primary();
+    tp = t_instance.token;
+    if (tp == T_EOF || tp == T_RPAREN)
+        return left;
+
+    while (op_precedence(tp) > ptp)
+    {
+        scan(&t_instance);
+        right = binexpr(OpPrec[tp]);
+        lefttype = left->type;
+        righttype = right->type;
+        if (!type_compatible(&lefttype, &righttype, 0))
+            custom_error_int("Incompatible types", 0);
+        if (lefttype)
+            left = mkAST_left(lefttype, right->type, left, 0);
+        if (righttype)
+            right = mkAST_left(righttype, left->type, right, 0);
+        left = mkAST_node(arithop(tp), left->type, left, NULL, right, 0);
+        tp = t_instance.token;
+        if (tp == T_EOF || tp == T_RBRACE)
+            break;
+    }
+    return left;
 }
