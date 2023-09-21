@@ -71,7 +71,25 @@ static ASTnode *assignment_statement(void)
     return root;
 }
 
-static ASTnode *if_statement(void) {}
+static ASTnode *if_statement()
+{
+    ASTnode *cond, *true_tp, *false_tp;
+    match_if();
+    match_lparen();
+    cond = binexpr(0);
+    if (cond->op < A_EQ || cond->op > A_GE)
+        custom_error_int("Bad comparison operator", cond->op);
+    match_rparen();
+
+    true_tp = compound_statement();
+
+    if (t_instance.token == T_ELSE)
+    {
+        scan(&t_instance);
+        false_tp = compound_statement();
+    }
+    return mkAST_node(A_IF, P_NONE, cond, true_tp, false_tp, 0);
+}
 static ASTnode *while_statement() {}
 static ASTnode *for_statement() {}
 
