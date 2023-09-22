@@ -15,5 +15,3 @@ printint:
 	leave
 	ret
 
-	.comm	i,8,8
-	.comm	j,1,1

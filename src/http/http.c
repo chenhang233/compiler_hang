@@ -168,13 +168,26 @@ void bad_request(int client)
 void cat(int client, FILE *resource)
 {
     char buf[1024];
+    size_t len;
 
-    fgets(buf, sizeof(buf), resource);
-    while (!feof(resource))
+    while ((len = fread(buf, 1, sizeof(buf) - 1, resource)) > 0)
     {
-        send(client, buf, strlen(buf), 0);
-        fgets(buf, sizeof(buf), resource);
+        buf[len] = '\0';
+        if (send(client, buf, len, 0) == -1)
+        {
+            perror("send");
+            exit(EXIT_FAILURE);
+        }
     }
+    // char buf[1024];
+
+    // fgets(buf, sizeof(buf), resource);
+    // printf("buf=%s\n", buf);
+    // while (!feof(resource))
+    // {
+    //     send(client, buf, strlen(buf), 0);
+    //     fgets(buf, sizeof(buf), resource);
+    // }
 }
 
 /**********************************************************************/
