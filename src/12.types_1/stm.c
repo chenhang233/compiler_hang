@@ -45,9 +45,11 @@ void var_declaration()
 {
     Primitive_type pt = parse_type(t_instance.token);
     scan(&t_instance);
+    match_ident();
     int id = addglob(Text, pt, S_VARIABLE);
     cgglobsym(id);
     match_semi();
+    printf("token=%d\n", t_instance.token);
 };
 
 static ASTnode *assignment_statement(void)
@@ -112,20 +114,24 @@ static ASTnode *for_statement()
     pre = single_statement();
     match_semi();
     cond = binexpr(0);
+
     if (cond->op < A_EQ || cond->op > A_GE)
         custom_error_int("Bad comparison operator", cond->op);
     match_semi();
+
     post = single_statement();
     match_rparen();
     body = compound_statement();
     tree = mkAST_node(A_GLUE, P_NONE, body, NULL, post, 0);
     tree = mkAST_node(A_WHILE, P_NONE, cond, NULL, tree, 0);
     tree = mkAST_node(A_GLUE, P_NONE, pre, NULL, tree, 0);
+
     return tree;
 }
 
 static ASTnode *single_statement(void)
 {
+    printf("t_instance.token=%d\n", t_instance.token);
     switch (t_instance.token)
     {
     case T_PRINT:
@@ -133,7 +139,7 @@ static ASTnode *single_statement(void)
     case T_INT:
     case T_CHAR:
         var_declaration();
-        break;
+        return NULL;
     case T_IDENT:
         return assignment_statement();
     case T_IF:
@@ -143,7 +149,7 @@ static ASTnode *single_statement(void)
     case T_FOR:
         return for_statement();
     default:
-        custom_error_char("Syntax error, token", t_instance.token);
+        custom_error_char("147 Syntax error, token", t_instance.token);
     }
 }
 
@@ -154,7 +160,7 @@ ASTnode *compound_statement()
     while (1)
     {
         tree = single_statement();
-        if (tree->op == A_PRINT || tree->op == A_ASSIGN)
+        if (tree && (tree->op == A_PRINT || tree->op == A_ASSIGN))
             match_semi();
         if (tree)
         {

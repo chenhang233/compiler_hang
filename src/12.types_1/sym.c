@@ -40,5 +40,6 @@ int addglob(char *name, Primitive_type type, Structural_type stype)
     Gsym[id].name = my_strdup(name);
     Gsym[id].type = type;
     Gsym[id].stype = stype;
+
     return id;
 };

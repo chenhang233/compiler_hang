@@ -79,7 +79,7 @@ ASTnode *binexpr(int ptp)
 
     left = primary();
     tp = t_instance.token;
-    if (tp == T_EOF || tp == T_RPAREN)
+    if (tp == T_SEMI || tp == T_RPAREN)
         return left;
 
     while (op_precedence(tp) > ptp)
@@ -96,7 +96,7 @@ ASTnode *binexpr(int ptp)
             right = mkAST_left(righttype, left->type, right, 0);
         left = mkAST_node(arithop(tp), left->type, left, NULL, right, 0);
         tp = t_instance.token;
-        if (tp == T_EOF || tp == T_RBRACE)
+        if (tp == T_SEMI || tp == T_RPAREN)
             break;
     }
     return left;

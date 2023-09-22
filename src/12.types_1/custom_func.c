@@ -14,7 +14,7 @@ void custom_error_char(char *t, char c)
 
 void custom_error_chars(char *c1, char *c2)
 {
-    printf("ERROR: %s ,char*: %s\n", c1, c2);
+    printf("ERROR: %s ,info: %s\n", c1, c2);
     custom_error_line();
 };
 
@@ -32,6 +32,7 @@ void match(AST_node_type t, char *str)
     }
     else
     {
+        printf("need: %d, your AST_node_type: %d\n", t, t_instance.token);
         custom_error_chars("connot match", str);
     }
 }

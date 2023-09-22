@@ -40,6 +40,12 @@ typedef enum Token_type
     T_CHAR   // char
 } Token_type;
 
+typedef enum Structural_type
+{
+    S_VARIABLE,
+    S_FUNCTION
+} Structural_type;
+
 typedef enum Primitive_type
 {
     P_NONE,
@@ -47,12 +53,6 @@ typedef enum Primitive_type
     P_CHAR,
     P_INT
 } Primitive_type;
-
-typedef enum Structural_type
-{
-    S_VARIABLE,
-    S_FUNCTION
-} Structural_type;
 
 typedef enum AST_node_type
 {

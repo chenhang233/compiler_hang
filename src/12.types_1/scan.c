@@ -59,7 +59,7 @@ int scan(Token *t)
         t->token = T_LPAREN;
         break;
     case ')':
-        t->token = T_RBRACE;
+        t->token = T_RPAREN;
         break;
     case '=':
         if ((c = next()) == '=')
