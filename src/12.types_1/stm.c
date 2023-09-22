@@ -90,8 +90,39 @@ static ASTnode *if_statement()
     }
     return mkAST_node(A_IF, P_NONE, cond, true_tp, false_tp, 0);
 }
-static ASTnode *while_statement() {}
-static ASTnode *for_statement() {}
+
+static ASTnode *while_statement()
+{
+    ASTnode *cond, *body;
+    match_while();
+    match_lparen();
+    cond = binexpr(0);
+    if (cond->op < A_EQ || cond->op > A_GE)
+        custom_error_int("condition expression", cond->op);
+    match_rparen();
+    body = compound_statement();
+    return mkAST_node(A_WHILE, P_NONE, cond, NULL, body, 0);
+}
+static ASTnode *for_statement()
+{
+    ASTnode *pre, *cond, *body, *post;
+    ASTnode *tree;
+    match_for();
+    match_lparen();
+    pre = single_statement();
+    match_semi();
+    cond = binexpr(0);
+    if (cond->op < A_EQ || cond->op > A_GE)
+        custom_error_int("Bad comparison operator", cond->op);
+    match_semi();
+    post = single_statement();
+    match_rparen();
+    body = compound_statement();
+    tree = mkAST_node(A_GLUE, P_NONE, body, NULL, post, 0);
+    tree = mkAST_node(A_WHILE, P_NONE, cond, NULL, tree, 0);
+    tree = mkAST_node(A_GLUE, P_NONE, pre, NULL, tree, 0);
+    return tree;
+}
 
 static ASTnode *single_statement(void)
 {
