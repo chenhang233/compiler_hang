@@ -77,7 +77,7 @@
     dfs(data)
     console.log(data);
 
-    // bfs(data)
+    bfs(data)
 })
 
     function bfs(data) {
@@ -116,10 +116,11 @@
         }
 
     }
-
+    let ids= 0
     function dfs(data,id) {
         if (!data) return
         data.pid = id
+        data.id = ids++
         if (data.left) {
         dfs(data.left,data.id)
         }

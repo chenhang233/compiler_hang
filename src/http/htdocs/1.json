@@ -1,5 +1,162 @@
 {
-	"a":1,
-	"b":1,
-	"c":2
+	"AST_node_type":	19,
+	"Primitive_type":	1,
+	"v_id":	0,
+	"v_intvalue":	0,
+	"left":	{
+		"AST_node_type":	16,
+		"Primitive_type":	0,
+		"v_id":	0,
+		"v_intvalue":	0,
+		"left":	{
+			"AST_node_type":	16,
+			"Primitive_type":	0,
+			"v_id":	0,
+			"v_intvalue":	0,
+			"left":	{
+				"AST_node_type":	15,
+				"Primitive_type":	0,
+				"v_id":	0,
+				"v_intvalue":	0,
+				"left":	{
+					"AST_node_type":	3,
+					"Primitive_type":	2,
+					"v_id":	0,
+					"v_intvalue":	0,
+					"left":	{
+						"AST_node_type":	11,
+						"Primitive_type":	2,
+						"v_id":	12,
+						"v_intvalue":	12
+					},
+					"right":	{
+						"AST_node_type":	11,
+						"Primitive_type":	2,
+						"v_id":	3,
+						"v_intvalue":	3
+					}
+				}
+			},
+			"right":	{
+				"AST_node_type":	15,
+				"Primitive_type":	0,
+				"v_id":	0,
+				"v_intvalue":	0,
+				"left":	{
+					"AST_node_type":	2,
+					"Primitive_type":	2,
+					"v_id":	0,
+					"v_intvalue":	0,
+					"left":	{
+						"AST_node_type":	11,
+						"Primitive_type":	2,
+						"v_id":	18,
+						"v_intvalue":	18
+					},
+					"right":	{
+						"AST_node_type":	3,
+						"Primitive_type":	2,
+						"v_id":	0,
+						"v_intvalue":	0,
+						"left":	{
+							"AST_node_type":	11,
+							"Primitive_type":	2,
+							"v_id":	2,
+							"v_intvalue":	2
+						},
+						"right":	{
+							"AST_node_type":	11,
+							"Primitive_type":	2,
+							"v_id":	4,
+							"v_intvalue":	4
+						}
+					}
+				}
+			}
+		},
+		"right":	{
+			"AST_node_type":	15,
+			"Primitive_type":	0,
+			"v_id":	0,
+			"v_intvalue":	0,
+			"left":	{
+				"AST_node_type":	1,
+				"Primitive_type":	2,
+				"v_id":	0,
+				"v_intvalue":	0,
+				"left":	{
+					"AST_node_type":	2,
+					"Primitive_type":	2,
+					"v_id":	0,
+					"v_intvalue":	0,
+					"left":	{
+						"AST_node_type":	1,
+						"Primitive_type":	2,
+						"v_id":	0,
+						"v_intvalue":	0,
+						"left":	{
+							"AST_node_type":	1,
+							"Primitive_type":	2,
+							"v_id":	0,
+							"v_intvalue":	0,
+							"left":	{
+								"AST_node_type":	11,
+								"Primitive_type":	2,
+								"v_id":	1,
+								"v_intvalue":	1
+							},
+							"right":	{
+								"AST_node_type":	11,
+								"Primitive_type":	2,
+								"v_id":	2,
+								"v_intvalue":	2
+							}
+						},
+						"right":	{
+							"AST_node_type":	11,
+							"Primitive_type":	2,
+							"v_id":	9,
+							"v_intvalue":	9
+						}
+					},
+					"right":	{
+						"AST_node_type":	4,
+						"Primitive_type":	2,
+						"v_id":	0,
+						"v_intvalue":	0,
+						"left":	{
+							"AST_node_type":	11,
+							"Primitive_type":	2,
+							"v_id":	5,
+							"v_intvalue":	5
+						},
+						"right":	{
+							"AST_node_type":	11,
+							"Primitive_type":	2,
+							"v_id":	2,
+							"v_intvalue":	2
+						}
+					}
+				},
+				"right":	{
+					"AST_node_type":	3,
+					"Primitive_type":	2,
+					"v_id":	0,
+					"v_intvalue":	0,
+					"left":	{
+						"AST_node_type":	11,
+						"Primitive_type":	2,
+						"v_id":	3,
+						"v_intvalue":	3
+					},
+					"right":	{
+						"AST_node_type":	11,
+						"Primitive_type":	2,
+						"v_id":	5,
+						"v_intvalue":	5
+					}
+				}
+			}
+		}
+	}
 }
