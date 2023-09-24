@@ -37,6 +37,9 @@ void genfreeregs();
 void genprintint(int reg);
 void genglobsym(int id);
 int genAST(ASTnode *n, int reg, AST_node_type parentASTop);
+int genIf(ASTnode *n);
+int genWhile(ASTnode *n);
+int label();
 
 // cg.c
 void freeall_registers(void);

@@ -22,10 +22,15 @@ static ASTnode *print_statement(void)
     tree = binexpr(0);
     l = P_INT;
     r = tree->type;
+    // printf("r type %d\n", r);
     if (!type_compatible(&l, &r, 0))
         custom_error_int("Incompatible types", 0);
+    // printf("r type %d\n", r);
+
     if (r)
+    {
         tree = mkAST_left(r, P_INT, tree, 0);
+    }
     tree = mkAST_left(A_PRINT, P_NONE, tree, 0);
     return tree;
 }
@@ -47,9 +52,8 @@ void var_declaration()
     scan(&t_instance);
     match_ident();
     int id = addglob(Text, pt, S_VARIABLE);
-    cgglobsym(id);
+    genglobsym(id);
     match_semi();
-    printf("token=%d\n", t_instance.token);
 };
 
 static ASTnode *assignment_statement(void)
@@ -68,8 +72,10 @@ static ASTnode *assignment_statement(void)
     if (!type_compatible(&lt, &rt, 1))
         custom_error_int("Incompatible types", 0);
     if (lt)
-        left = mkAST_left(left->type, right->type, left, 0);
+        left = mkAST_left(lt, right->type, left, 0);
+    // printf("id62=%d %s %d %d\n", id, Text, left->v.intvalue, left->type);
     root = mkAST_node(A_ASSIGN, P_INT, left, NULL, right, 0);
+    // printf("root type %d\n", root->type);
     return root;
 }
 
@@ -131,7 +137,6 @@ static ASTnode *for_statement()
 
 static ASTnode *single_statement(void)
 {
-    printf("t_instance.token=%d\n", t_instance.token);
     switch (t_instance.token)
     {
     case T_PRINT:
@@ -149,14 +154,15 @@ static ASTnode *single_statement(void)
     case T_FOR:
         return for_statement();
     default:
+        printf("t_instance.token: %d\n", t_instance.token);
         custom_error_char("147 Syntax error, token", t_instance.token);
     }
 }
 
 ASTnode *compound_statement()
 {
-    match_lbrace();
     ASTnode *tree, *left = NULL;
+    match_lbrace();
     while (1)
     {
         tree = single_statement();
@@ -167,7 +173,9 @@ ASTnode *compound_statement()
             if (!left)
                 left = tree;
             else
+            {
                 left = mkAST_node(A_GLUE, P_NONE, left, NULL, tree, 0);
+            }
         }
         if (t_instance.token == T_RBRACE)
         {

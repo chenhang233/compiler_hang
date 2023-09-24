@@ -65,7 +65,7 @@ static AST_node *single_statement()
     case T_FOR:
         return for_statement();
     default:
-        custom_error_int("Syntax error, token", t_instance.token);
+        custom_error_int("Syntax error token", t_instance.token);
     }
 }
 

@@ -66,12 +66,12 @@ typedef enum AST_node_type
     A_GT,
     A_LE,
     A_GE,
-    A_INTLIT,
-    A_IDENT,
-    A_LVIDENT,
-    A_ASSIGN,
-    A_PRINT,
-    A_GLUE,
+    A_INTLIT,  // 11
+    A_IDENT,   // 12
+    A_LVIDENT, // 13
+    A_ASSIGN,  // 14
+    A_PRINT,   // 15
+    A_GLUE,    // 16
     A_IF,
     A_WHILE,
     A_FUNCTION,

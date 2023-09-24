@@ -11,6 +11,10 @@ void freeall_registers(void)
 
 static void free_register(int reg)
 {
+    if (reg >= 4)
+    {
+        custom_error_int("free_register", reg);
+    }
     if (freereg[reg] != 0)
         custom_error_int("Error trying to free register", reg);
     freereg[reg] = 1;
@@ -70,13 +74,6 @@ void cgfuncpostamble()
           "\tpopq	%rbp\n"
           "\tret\n",
           Outfile);
-}
-
-void cgprintint(int r)
-{
-    fprintf(Outfile, "\tmovq\t%s, %%rdi\n", reglist[r]);
-    fprintf(Outfile, "\tcall\tprintint\n");
-    free_register(r);
 }
 
 void cgglobsym(int id)

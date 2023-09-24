@@ -21,6 +21,7 @@ int type_compatible(Primitive_type *left, Primitive_type *right, int onlyright)
             return 0;
         *right = A_WIDEN;
         *left = 0;
+        return 1;
     }
     *left = *right = 0;
     return 1;
