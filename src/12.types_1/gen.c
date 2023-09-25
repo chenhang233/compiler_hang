@@ -2,7 +2,7 @@
 
 int label()
 {
-    static int label = 0;
+    static int label = 1;
     return label++;
 }
 
@@ -86,22 +86,22 @@ int genAST(ASTnode *n, int reg, AST_node_type parentASTop)
     case A_GT:
     case A_LE:
     case A_GE:
-        if (n->op == A_IF || n->op == A_WHILE)
+        if (parentASTop == A_IF || parentASTop == A_WHILE)
             return cgcompare_and_jump(n->op, left_reg, right_reg, reg);
         else
             return cgcompare_and_set(n->op, left_reg, right_reg);
     case A_INTLIT:
-        printf("n->v.intvalue=%d type=%d\n", n->v.intvalue, n->type);
+        // printf("n->v.intvalue=%d type=%d\n", n->v.intvalue, n->type);
         return cgloadint(n->v.intvalue, n->type);
     case A_ASSIGN:
-        printf("A_ASSIGN=%d\n", right_reg);
+        // printf("A_ASSIGN=%d\n", right_reg);
         return right_reg;
     case A_IDENT:
         return cgloadglob(n->v.id);
     case A_LVIDENT:
         return cgstorglob(reg, n->v.id);
     case A_WIDEN:
-        printf("A_WIDEN=%d\n", left_reg);
+        // printf("A_WIDEN=%d\n", left_reg);
         return cgwiden(left_reg, n->left->type, n->type);
     case A_PRINT:
         cgprintint(left_reg);

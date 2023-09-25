@@ -19,19 +19,19 @@ static ASTnode *print_statement(void)
     Primitive_type l, r;
 
     match_print();
+
     tree = binexpr(0);
     l = P_INT;
     r = tree->type;
-    // printf("r type %d\n", r);
     if (!type_compatible(&l, &r, 0))
         custom_error_int("Incompatible types", 0);
     // printf("r type %d\n", r);
-
     if (r)
     {
         tree = mkAST_left(r, P_INT, tree, 0);
     }
     tree = mkAST_left(A_PRINT, P_NONE, tree, 0);
+    // printf("token: %d\n", t_instance.token);
     return tree;
 }
 
@@ -81,7 +81,7 @@ static ASTnode *assignment_statement(void)
 
 static ASTnode *if_statement()
 {
-    ASTnode *cond, *true_tp, *false_tp;
+    ASTnode *cond, *true_tp, *false_tp = NULL;
     match_if();
     match_lparen();
     cond = binexpr(0);
@@ -137,12 +137,15 @@ static ASTnode *for_statement()
 
 static ASTnode *single_statement(void)
 {
+    // printf("140 t_instance.token: %d\n", t_instance.token);
+
     switch (t_instance.token)
     {
     case T_PRINT:
         return print_statement();
     case T_INT:
     case T_CHAR:
+        // printf("149 pt---\n");
         var_declaration();
         return NULL;
     case T_IDENT:
@@ -154,20 +157,24 @@ static ASTnode *single_statement(void)
     case T_FOR:
         return for_statement();
     default:
-        printf("t_instance.token: %d\n", t_instance.token);
-        custom_error_char("147 Syntax error, token", t_instance.token);
+        // printf("t_instance.token: %d\n", t_instance.token);
+        custom_error_int("147 Syntax error, token", t_instance.token);
     }
 }
 
 ASTnode *compound_statement()
 {
+    // printf("run\n");
     ASTnode *tree, *left = NULL;
     match_lbrace();
     while (1)
     {
         tree = single_statement();
+        // printf("tree->op: %d\n", tree->op);
         if (tree && (tree->op == A_PRINT || tree->op == A_ASSIGN))
+        {
             match_semi();
+        }
         if (tree)
         {
             if (!left)

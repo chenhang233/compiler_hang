@@ -16,31 +16,19 @@ printint:
 	ret
 
 	.comm	i,8,8
-	.comm	j,1,1
 	.text
 	.globl	main
 	.type	main, @function
 main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movq	$20, %r8
-	movb	%r8b, j(%rip)
-	movzbq	j(%rip), %r8
-	movq	%r8, %rdi
-	call	printint
-	movq	$10, %r8
-	movq	%r8, i(%rip)
-	movq	i(%rip), %r8
-	movq	%r8, %rdi
-	call	printint
 	movq	$1, %r8
 	movq	%r8, i(%rip)
-L0:
+L1:
 	movq	i(%rip), %r8
-	movq	$5, %r9
+	movq	$10, %r9
 	cmpq	%r9, %r8
-	setle	%r9b
-	movzbq	%r9b, %r9
+	jg	L2
 	movq	i(%rip), %r8
 	movq	%r8, %rdi
 	call	printint
@@ -48,25 +36,42 @@ L0:
 	movq	$1, %r9
 	addq	%r8, %r9
 	movq	%r9, i(%rip)
-	jmp	L0
-L1:
-	movq	$253, %r8
-	movb	%r8b, j(%rip)
+	jmp	L1
 L2:
-	movzbq	j(%rip), %r8
-	movq	$2, %r9
+	movl	$0, %eax
+	popq	%rbp
+	ret
+	.comm	a,8,8
+	.comm	b,8,8
+	.text
+	.globl	fred
+	.type	fred, @function
+fred:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	movq	$12, %r8
+	movq	%r8, a(%rip)
+	movq	$3, %r8
+	movq	a(%rip), %r9
+	imulq	%r8, %r9
+	movq	%r9, b(%rip)
+	movq	a(%rip), %r8
+	movq	b(%rip), %r9
 	cmpq	%r9, %r8
-	setl	%r9b
-	movzbq	%r9b, %r9
-	movzbq	j(%rip), %r8
+	jl	L3
+	movq	$2, %r8
+	movq	b(%rip), %r9
+	imulq	%r8, %r9
+	movq	a(%rip), %r8
+	subq	%r8, %r9
+	movq	%r9, %rdi
+	call	printint
+	jmp	L4
+L3:
+	movq	$3, %r8
 	movq	%r8, %rdi
 	call	printint
-	movzbq	j(%rip), %r8
-	movq	$1, %r9
-	addq	%r8, %r9
-	movb	%r9b, j(%rip)
-	jmp	L2
-L3:
+L4:
 	movl	$0, %eax
 	popq	%rbp
 	ret

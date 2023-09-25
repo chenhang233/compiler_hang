@@ -75,12 +75,14 @@ int scan(Token *t)
     case '!':
         if ((c = next()) == '=')
         {
+            // printf("test\n");
             t->token = T_NE;
         }
         else
         {
             custom_error_char("unkown character !=", c);
         }
+        break;
     case '<':
         if ((c = next()) == '=')
         {
@@ -125,6 +127,7 @@ int scan(Token *t)
             custom_error_char("unkown character ?", c);
         }
     }
+    // printf(" t->token=%d\n", t->token);
     return 1;
 }
 

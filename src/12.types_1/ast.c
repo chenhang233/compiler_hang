@@ -97,7 +97,9 @@ ASTnode *binexpr(int ptp)
         left = mkAST_node(arithop(tp), left->type, left, NULL, right, 0);
         tp = t_instance.token;
         if (tp == T_SEMI || tp == T_RPAREN)
-            break;
+        {
+            return left;
+        }
     }
     return left;
 }
