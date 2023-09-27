@@ -1,0 +1,24 @@
+{
+	"AST_node_type":	19,
+	"Primitive_type":	3,
+	"v_id":	1,
+	"v_intvalue":	1,
+	"left":	{
+		"AST_node_type":	21,
+		"Primitive_type":	0,
+		"v_id":	0,
+		"v_intvalue":	0,
+		"left":	{
+			"AST_node_type":	20,
+			"Primitive_type":	0,
+			"v_id":	0,
+			"v_intvalue":	0,
+			"left":	{
+				"AST_node_type":	11,
+				"Primitive_type":	2,
+				"v_id":	20,
+				"v_intvalue":	20
+			}
+		}
+	}
+}
