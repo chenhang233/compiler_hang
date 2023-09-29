@@ -68,10 +68,10 @@ x86 GNU汇编
          movq (%rsp), %rax
          addq $8, %rsp
       )
-      leaq S, D               加载有效地址
-      inc{bwlq} D    	      加 1
-      dec{bwlq} D             减 1
-      neg{bwlq} D             取反
+      leaq S, D        &S → D       加载有效地址(load effective address) 将有效地址写入到目的操作数
+      inc{bwlq} D    	               加 1
+      dec{bwlq} D                      减 1
+      neg{bwlq} D                      取反
       add{bwlq}   S,D   D +S -> D        加
       sub{bwlq}   S,D   D - S -> D        减
       imul{bwlq}  S,D   D * S -> D     乘
