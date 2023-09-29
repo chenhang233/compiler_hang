@@ -34,7 +34,7 @@ static ASTnode *print_statement(void)
     l = P_INT;
     r = tree->type;
     if (!type_compatible(&l, &r, 0))
-        custom_error_int("Incompatible types", 0);
+        custom_error_int("print_statement Incompatible types", 0);
     // printf("r type %d\n", r);
     if (r)
     {
@@ -74,6 +74,7 @@ static ASTnode *assignment_statement(void)
     int id;
     Primitive_type lt, rt;
     match_ident();
+    // printf("t_instance.token=%d\n", t_instance.token);
     if (t_instance.token == T_LPAREN)
         return funccall();
     if ((id = findglob(Text)) == -1)
@@ -84,7 +85,7 @@ static ASTnode *assignment_statement(void)
     lt = left->type;
     rt = right->type;
     if (!type_compatible(&lt, &rt, 1))
-        custom_error_int("Incompatible types", 0);
+        custom_error_int("assignment_statement Incompatible types", 0);
     if (lt)
         left = mkAST_left(lt, right->type, left, 0);
     // printf("id62=%d %s %d %d\n", id, Text, left->v.intvalue, left->type);
@@ -161,7 +162,7 @@ static ASTnode *return_statement(void)
     returntype = tree->type;
     functype = Gsym[Functionid].type;
     if (!type_compatible(&returntype, &functype, 1))
-        custom_error_int("Incompatible types", 1);
+        custom_error_int("return_statement Incompatible types", 1);
     if (returntype)
         tree = mkAST_left(returntype, functype, tree, 0);
     tree = mkAST_left(A_RETURN, P_NONE, tree, 0);

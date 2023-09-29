@@ -54,7 +54,7 @@ ASTnode *funccall(void)
         custom_error_chars("Undeclared function", Text);
     match_lparen();
     tree = binexpr(0);
-    tree = mkAST_left(A_FUNCCALL, P_NONE, tree, id);
+    tree = mkAST_left(A_FUNCCALL, Gsym[id].type, tree, id);
     match_rparen();
 
     return tree;
@@ -74,6 +74,7 @@ static ASTnode *primary(void)
         break;
     case T_IDENT:
         scan(&t_instance);
+        // printf("t_instance.token=%d\n", t_instance.token);
         if (t_instance.token == T_LPAREN)
             return funccall();
 

@@ -43,7 +43,7 @@ int genIf(ASTnode *n)
 
 int genAST(ASTnode *n, int reg, AST_node_type parentASTop)
 {
-    printf("n--%d\n", n->op);
+    // printf("n--%d\n", n->op);
     int left_reg, right_reg;
     switch (n->op)
     {

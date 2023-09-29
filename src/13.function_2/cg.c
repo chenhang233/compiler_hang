@@ -132,11 +132,23 @@ int cgloadglob(int id)
     // Get a new register
     int r = alloc_register();
 
-    // Print out the code to initialise it: P_CHAR or P_INT
-    if (Gsym[id].type == P_INT)
+    // Print out the code to initialise it
+    switch (Gsym[id].type)
+    {
+    case P_CHAR:
+        fprintf(Outfile, "\tmovzbq\t%s(\%%rip), %s\n", Gsym[id].name,
+                reglist[r]);
+        break;
+    case P_INT:
+        fprintf(Outfile, "\tmovzbl\t%s(\%%rip), %s\n", Gsym[id].name,
+                reglist[r]);
+        break;
+    case P_LONG:
         fprintf(Outfile, "\tmovq\t%s(\%%rip), %s\n", Gsym[id].name, reglist[r]);
-    else
-        fprintf(Outfile, "\tmovzbq\t%s(\%%rip), %s\n", Gsym[id].name, reglist[r]);
+        break;
+    default:
+        custom_error_int("Bad type in cgloadglob:", Gsym[id].type);
+    }
     return (r);
 }
 
@@ -186,16 +198,27 @@ void cgprintint(int r)
     free_register(r);
 }
 
+// Store a register's value into a variable
 int cgstorglob(int r, int id)
 {
-    // Choose P_INT or P_CHAR
-    if (Gsym[id].type == P_INT)
+    switch (Gsym[id].type)
+    {
+    case P_CHAR:
+        fprintf(Outfile, "\tmovb\t%s, %s(\%%rip)\n", breglist[r],
+                Gsym[id].name);
+        break;
+    case P_INT:
+        fprintf(Outfile, "\tmovl\t%s, %s(\%%rip)\n", dreglist[r],
+                Gsym[id].name);
+        break;
+    case P_LONG:
         fprintf(Outfile, "\tmovq\t%s, %s(\%%rip)\n", reglist[r], Gsym[id].name);
-    else
-        fprintf(Outfile, "\tmovb\t%s, %s(\%%rip)\n", breglist[r], Gsym[id].name);
+        break;
+    default:
+        custom_error_int("Bad type in cgloadglob:", Gsym[id].type);
+    }
     return (r);
 }
-
 // List of comparison instructions,
 // in AST order: A_EQ, A_NE, A_LT, A_GT, A_LE, A_GE
 static char *cmplist[] =
