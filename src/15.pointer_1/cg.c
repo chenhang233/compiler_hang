@@ -101,25 +101,34 @@ int cgcall(int r, int id)
 
 // Array of type sizes in P_XXX order.
 // 0 means no size.
-static int psize[] = {0, 0, 1, 4, 8};
+static int psize[] = {0, 0, 1, 4, 8, 8, 8, 8};
 
 // Given a P_XXX type value, return the
 // size of a primitive type in bytes.
 int cgprimsize(Primitive_type type)
 {
     // Check the type is valid
-    if (type < P_NONE || type > P_LONG)
+    if (type < P_NONE || type > P_LONGPTR)
         custom_error_int("Bad type in cgprimsize()", type);
     return (psize[type]);
 }
 
+// void cgglobsym(int id)
+// {
+//     // Choose P_INT or P_CHAR
+//     if (Gsym[id].type == P_INT)
+//         fprintf(Outfile, "\t.comm\t%s,8,8\n", Gsym[id].name);
+//     else
+//         fprintf(Outfile, "\t.comm\t%s,1,1\n", Gsym[id].name);
+// }
+
 void cgglobsym(int id)
 {
-    // Choose P_INT or P_CHAR
-    if (Gsym[id].type == P_INT)
-        fprintf(Outfile, "\t.comm\t%s,8,8\n", Gsym[id].name);
-    else
-        fprintf(Outfile, "\t.comm\t%s,1,1\n", Gsym[id].name);
+    int typesize;
+    // Get the size of the type
+    typesize = cgprimsize(Gsym[id].type);
+
+    fprintf(Outfile, "\t.comm\t%s,%d,%d\n", Gsym[id].name, typesize, typesize);
 }
 
 int cgloadint(int value, int type)

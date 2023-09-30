@@ -13,11 +13,11 @@ L1:
 	popq	%rbp
 	ret
 	.comm	a,1,1
-	.comm	b,1,1
+	.comm	b,8,8
 	.comm	c,1,1
-	.comm	d,8,8
-	.comm	e,1,1
-	.comm	f,8,8
+	.comm	d,4,4
+	.comm	e,8,8
+	.comm	f,4,4
 	.text
 	.globl	main
 	.type	main, @function
