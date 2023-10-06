@@ -116,6 +116,17 @@ int genAST(ASTnode *n, int reg, AST_node_type parentASTop)
         return (cgaddress(n->v.id));
     case A_DEREF:
         return (cgderef(left_reg, n->left->type));
+    case A_SCALE:
+        switch (n->v.size)
+        {
+        case 4:
+            return (cgshlconst(left_reg, 2));
+        case 8:
+            return (cgshlconst(left_reg, 3));
+        default:
+            right_reg = cgloadint(n->v.size, P_INT);
+            return (cgmul(left_reg, right_reg));
+        }
     default:
         custom_error_int("Unknown AST operator", n->op);
     }

@@ -33,6 +33,57 @@ int type_compatible(Primitive_type *left, Primitive_type *right, int onlyright)
     return 1;
 }
 
+ASTnode *modify_type(ASTnode *tree, Primitive_type rtype, AST_node_type op)
+{
+    Primitive_type ltype;
+    int lszie, rsize;
+
+    ltype = tree->type;
+    if (inttype(ltype) && inttype(rtype))
+    {
+        if (ltype == rtype)
+            return tree;
+        if (ltype > rtype)
+            return NULL;
+        lszie = genprimsize(ltype);
+        rsize = genprimsize(rtype);
+        if (ltype < rtype)
+        {
+            return mkAST_left(A_WIDEN, rtype, tree, 0);
+        }
+    }
+    if (ptrtype(ltype))
+    {
+        if (op == 0 && ltype == rtype)
+            return tree;
+    }
+    if (op == A_ADD || op == A_SUBTRACT)
+    {
+        if (inttype(ltype) && ptrtype(rtype))
+        {
+            rsize = genprimsize(value_at(rtype));
+            if (rsize > 1)
+                return mkAST_left(A_SCALE, rtype, tree, rsize);
+        }
+    }
+    return NULL;
+}
+
+int inttype(Primitive_type type)
+{
+    if (type == P_CHAR || type == P_INT || type == P_LONG)
+        return (1);
+    return (0);
+}
+
+int ptrtype(Primitive_type type)
+{
+    if (type == P_VOIDPTR || type == P_CHARPTR ||
+        type == P_INTPTR || type == P_LONGPTR)
+        return (1);
+    return (0);
+}
+
 Primitive_type pointer_to(Primitive_type type)
 {
     Primitive_type newtype;

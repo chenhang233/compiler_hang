@@ -133,12 +133,10 @@ static ASTnode *assignment_statement(void)
     right = mkAST_leaf(A_LVIDENT, Gsym[id].type, id);
     match_assign();
     left = binexpr(0);
-    lt = left->type;
-    rt = right->type;
-    if (!type_compatible(&lt, &rt, 1))
-        custom_error_int("assignment_statement Incompatible types", 0);
-    if (lt)
-        left = mkAST_left(lt, right->type, left, 0);
+
+    left = modify_type(left, right->type, 0);
+    if (!left)
+        custom_error_int("Incompatible expression in assignment", 0);
     // printf("id62=%d %s %d %d\n", id, Text, left->v.intvalue, left->type);
     root = mkAST_node(A_ASSIGN, P_INT, left, NULL, right, 0);
     // printf("root type %d\n", root->type);

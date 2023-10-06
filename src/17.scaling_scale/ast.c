@@ -121,6 +121,7 @@ ASTnode *prefix(void)
 ASTnode *binexpr(int ptp)
 {
     ASTnode *left, *right;
+    ASTnode *lt, *rt;
     AST_node_type tp;
     Primitive_type lefttype, righttype;
 
@@ -133,15 +134,24 @@ ASTnode *binexpr(int ptp)
     {
         scan(&t_instance);
         right = binexpr(OpPrec[tp]);
-        lefttype = left->type;
-        righttype = right->type;
-        if (!type_compatible(&lefttype, &righttype, 0))
-            custom_error_int("Incompatible types", 0);
-        if (lefttype)
-            left = mkAST_left(lefttype, right->type, left, 0);
-        if (righttype)
-            right = mkAST_left(righttype, left->type, right, 0);
-        left = mkAST_node(arithop(tp), left->type, left, NULL, right, 0);
+        // lefttype = left->type;
+        // righttype = right->type;
+        // if (!type_compatible(&lefttype, &righttype, 0))
+        //     custom_error_int("Incompatible types", 0);
+        // if (lefttype)
+        //     left = mkAST_left(lefttype, right->type, left, 0);
+        // if (righttype)
+        //     right = mkAST_left(righttype, left->type, right, 0);
+        AST_node_type op = arithop(tp);
+        lt = modify_type(left, right->type, op);
+        rt = modify_type(right, left->type, op);
+        if (!lt && !rt)
+            custom_error_int("Incompatible types in binary expression", 0);
+        if (lt)
+            left = lt;
+        if (rt)
+            right = rt;
+        left = mkAST_node(op, left->type, left, NULL, right, 0);
         tp = t_instance.token;
         if (tp == T_SEMI || tp == T_RPAREN)
         {

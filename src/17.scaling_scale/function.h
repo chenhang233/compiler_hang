@@ -73,6 +73,7 @@ int cgcall(int r, int id);
 int cgaddress(int id);
 int cgderef(int r, int type);
 void cgpostamble();
+int cgshlconst(int r, int val);
 
 // stm.c
 ASTnode *function_declaration(Primitive_type type);
@@ -109,3 +110,6 @@ int addglob(char *name, Primitive_type type, Structural_type stype, int endlabel
 int type_compatible(Primitive_type *left, Primitive_type *right, int onlyright);
 Primitive_type pointer_to(Primitive_type type);
 Primitive_type value_at(Primitive_type type);
+ASTnode *modify_type(ASTnode *tree, Primitive_type rtype, AST_node_type op);
+int inttype(Primitive_type type);
+int ptrtype(Primitive_type type);

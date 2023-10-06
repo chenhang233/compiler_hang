@@ -93,7 +93,8 @@ typedef enum AST_node_type
     A_RETURN,
     A_FUNCCALL,
     A_DEREF,
-    A_ADDR
+    A_ADDR,
+    A_SCALE
 } AST_node_type;
 
 typedef struct ASTnode
@@ -107,6 +108,7 @@ typedef struct ASTnode
     {
         int intvalue; // For A_INTLIT, the integer value
         int id;       // For A_IDENT, the symbol slot number
+        int size;     // For A_SCALE, the size to scale by
     } v;              // For A_FUNCTION, the symbol slot number
 } ASTnode;
 

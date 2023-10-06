@@ -97,7 +97,8 @@ int cgcall(int r, int id)
 
 // Array of type sizes in P_XXX order.
 // 0 means no size.
-static int psize[] = {0, 0, 1, 4, 8};
+// static int psize[] = {0, 0, 1, 4, 8};
+static int psize[] = {0, 0, 1, 4, 8, 8, 8, 8, 8};
 
 // Given a P_XXX type value, return the
 // size of a primitive type in bytes.
