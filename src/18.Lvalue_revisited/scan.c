@@ -91,21 +91,66 @@ int scan(Token *t)
         }
         break;
     default:
-        break;
+        if (isdigit(c))
+        {
+            t->intvalue = scanint(c);
+            t->token = T_INTLIT;
+        }
+        else if (isalpha(c) || '_' == c)
+        {
+            if (token_type = scankey(c))
+            {
+                t->token = token_type;
+                break;
+            }
+            t->token = T_IDENT;
+            break;
+        }
+        custom_error_char("Unrecognised character", c);
     }
-    return 0;
+    return 1;
 }
 
 int next()
 {
+    int c;
+    if (cache)
+    {
+        c = cache;
+        cache = 0;
+        return c;
+    }
+    c = fgetc(Infile);
+    if (c == '\n')
+        Line++;
+    return c;
 }
 
 int skip()
 {
+    int c = next();
+    while (' ' == c || '\t' == c || '\n' == c || '\r' == c || '\f' == c)
+    {
+        c = next();
+    }
+    return c;
 }
-
 int scanint(int c)
 {
+    int k, v = 0;
+    while ((k = int_pos("0123456789", c)) != -1)
+    {
+        v = v * 10 + k;
+        c = next();
+    }
+    cache = c;
+    return v;
+}
+
+int int_pos(char *str, int s)
+{
+    char *p = strchr(str, s);
+    return p ? p - str : -1;
 }
 
 int scanident(char c, char *str, int strlen)
@@ -114,6 +159,44 @@ int scanident(char c, char *str, int strlen)
 
 int scankey(char *s)
 {
+    switch (*s)
+    {
+    case 'c':
+        if (!strcmp(s, "char"))
+            return (T_CHAR);
+        break;
+    case 'e':
+        if (!strcmp(s, "else"))
+            return (T_ELSE);
+        break;
+    case 'f':
+        if (!strcmp(s, "for"))
+            return (T_FOR);
+        break;
+    case 'i':
+        if (!strcmp(s, "if"))
+            return (T_IF);
+        if (!strcmp(s, "int"))
+            return (T_INT);
+        break;
+    case 'l':
+        if (!strcmp(s, "long"))
+            return (T_LONG);
+        break;
+    case 'r':
+        if (!strcmp(s, "return"))
+            return (T_RETURN);
+        break;
+    case 'w':
+        if (!strcmp(s, "while"))
+            return (T_WHILE);
+        break;
+    case 'v':
+        if (!strcmp(s, "void"))
+            return (T_VOID);
+        break;
+    }
+    return (0);
 }
 
 void reject_token(Token *t)

@@ -7,6 +7,7 @@
 
 #define TEXTLEN 1024
 #define NOREG -1
+#define NOLABEL 0 // Use NOLABEL when we have no label to
 
 typedef enum Token_type
 {

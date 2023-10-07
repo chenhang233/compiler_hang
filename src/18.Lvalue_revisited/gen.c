@@ -1,5 +1,11 @@
 #include "function.h"
 
+int genlabel(void)
+{
+    static int id = 1;
+    return (id++);
+}
+
 void genpreamble()
 {
     cgpreamble();

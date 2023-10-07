@@ -44,6 +44,7 @@ int genWhile(ASTnode *n);
 int label();
 int genprimsize(int type);
 void genpostamble();
+int genlabel(void);
 
 // cg.c
 void freeall_registers(void);
@@ -86,7 +87,7 @@ static ASTnode *if_statement(void);
 static ASTnode *while_statement();
 static ASTnode *for_statement();
 static ASTnode *return_statement(void);
-Primitive_type parse_type(Token_type t);
+Primitive_type parse_type();
 void global_declarations();
 
 // ast.c
