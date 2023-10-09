@@ -22,3 +22,7 @@ Primitive_type pointer_to(Primitive_type type)
     }
     return newtype;
 }
+
+ASTnode *modify_type(ASTnode *tree, Primitive_type rtype, AST_node_type op)
+{
+}
