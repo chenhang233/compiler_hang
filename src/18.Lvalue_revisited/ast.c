@@ -1,3 +1,5 @@
 #include "function.h"
 
-ASTnode *binexpr(int ptp) {}
+ASTnode *binexpr(int ptp)
+{
+}

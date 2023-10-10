@@ -102,6 +102,7 @@ typedef struct ASTnode
 {
     AST_node_type op;
     Primitive_type type;  // Type of any expression this tree generates
+    int rvalue;           // True if the node is an rvalue
     struct ASTnode *left; // Left, middle and right child trees
     struct ASTnode *mid;
     struct ASTnode *right;
