@@ -199,6 +199,11 @@ int scankey(char *s)
     return (0);
 }
 
+static Token *Rejtoken = NULL;
+
 void reject_token(Token *t)
 {
+    if (!Rejtoken)
+        custom_error_int("Can't reject token twice", 0);
+    Rejtoken = t;
 }
