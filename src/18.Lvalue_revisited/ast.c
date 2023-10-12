@@ -1,11 +1,56 @@
 #include "function.h"
 
+static int OpPrec[] = {
+    0, 10,         // T_EOF,  T_ASSIGN
+    20, 20,        // T_PLUS, T_MINUS
+    30, 30,        // T_STAR, T_SLASH
+    40, 40,        // T_EQ, T_NE
+    50, 50, 50, 50 // T_LT, T_GT, T_LE, T_GE
+};
+
+static int op_precedence(Token_type tokentype)
+{
+    int prec = OpPrec[tokentype];
+    if (prec == 0)
+        custom_error_int("Syntax error, token", tokentype);
+    return (prec);
+}
+
+static int rightassoc(Token_type tokentype)
+{
+    if (tokentype == T_ASSIGN)
+        return (1);
+    return (0);
+}
+
+static AST_node_type binastop(Token_type tokentype)
+{
+    if (tokentype > T_EOF && tokentype < T_INTLIT)
+        return (tokentype);
+    custom_error_int("Syntax error, token", tokentype);
+}
+
 ASTnode *binexpr(int ptp)
 {
     ASTnode *left, *right;
     ASTnode *l_temp, *r_temp;
     left = prefix();
     Token_type type = t_instance.token;
+    if (type == T_SEMI || type == T_RPAREN)
+    {
+        left->rvalue = 1;
+        return left;
+    }
+    while (op_precedence(type) > ptp || (rightassoc(type) && op_precedence(type) == ptp))
+    {
+        right = binexpr(OpPrec[type]);
+        if (type == T_ASSIGN)
+        {
+        }
+        else
+        {
+        }
+    }
 }
 
 static ASTnode *primary(void)
