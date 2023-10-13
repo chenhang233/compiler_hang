@@ -3,6 +3,12 @@
 int scan(Token *t)
 {
     int token_type;
+    if (Rejtoken != NULL)
+    {
+        t = Rejtoken;
+        Rejtoken = NULL;
+        return 1;
+    }
     int c = skip();
     switch (c)
     {

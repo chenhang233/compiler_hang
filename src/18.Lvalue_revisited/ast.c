@@ -22,7 +22,7 @@ static int rightassoc(Token_type tokentype)
         return (1);
     return (0);
 }
-
+//  binary ast operator
 static AST_node_type binastop(Token_type tokentype)
 {
     if (tokentype > T_EOF && tokentype < T_INTLIT)
@@ -36,6 +36,7 @@ ASTnode *binexpr(int ptp)
     ASTnode *l_temp, *r_temp;
     left = prefix();
     Token_type type = t_instance.token;
+    AST_node_type ast_type;
     if (type == T_SEMI || type == T_RPAREN)
     {
         left->rvalue = 1;
@@ -44,13 +45,40 @@ ASTnode *binexpr(int ptp)
     while (op_precedence(type) > ptp || (rightassoc(type) && op_precedence(type) == ptp))
     {
         right = binexpr(OpPrec[type]);
+        ast_type = binastop(type);
         if (type == T_ASSIGN)
         {
+            right->rvalue = 1;
+            right = modify_type(right, left->type, 0);
+            if (!right)
+                custom_error_char("Incompatible expression in assignment", 0);
+            l_temp = left;
+            left = right;
+            right = l_temp;
         }
         else
         {
+            left->rvalue = 1;
+            right->rvalue = 1;
+            l_temp = modify_type(left, right->type, ast_type);
+            r_temp = modify_type(right, left->type, ast_type);
+            if (!l_temp && !r_temp)
+                custom_error_int("Incompatible types in binary expression", 0);
+            if (l_temp)
+                left = l_temp;
+            if (r_temp)
+                right = r_temp;
+        }
+        left = mkAST_node(ast_type, left->type, left, NULL, right, 0);
+        type = t_instance.token;
+        if (type == T_SEMI || type == T_RPAREN)
+        {
+            left->rvalue = 1;
+            return left;
         }
     }
+    left->rvalue = 1;
+    return left;
 }
 
 static ASTnode *primary(void)
