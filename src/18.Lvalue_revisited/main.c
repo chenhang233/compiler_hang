@@ -26,13 +26,13 @@ int main(int argc, char const *argv[])
     }
     if (!(Infile = fopen(argv[i], "r")))
         custom_error_chars("open infile", (char *)argv[i]);
-    if (!(Outfile = fopen(argv[i], "r")))
+    if (!(Outfile = fopen("out.s", "w")))
         custom_error_chars("open Outfile", (char *)argv[i]);
 
     addglob("printint", P_CHAR, S_FUNCTION, 0);
     scan(&t_instance);
     genpreamble();
-
+    // printf("t=%d\n", t_instance.token);
     global_declarations();
 
     genpostamble();

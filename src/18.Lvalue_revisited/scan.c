@@ -107,8 +107,10 @@ int scan(Token *t)
         }
         else if (isalpha(c) || '_' == c)
         {
+            scanident(c, Text, TEXTLEN);
             if (token_type = scankey(Text))
             {
+                // printf("token_type=%d\n", token_type);
                 t->token = token_type;
                 break;
             }
@@ -162,12 +164,24 @@ int int_pos(char *str, int s)
     return p ? p - str : -1;
 }
 
-int scanident(char c, char *str, int strlen)
+static int scanident(char c, char *str, int strlen)
 {
+    int i = 0;
+    while (isalpha(c) || isdigit(c) || c == '_')
+    {
+        str[i++] = c;
+        if (i == strlen)
+            custom_error_int("scanident TEXT out of range", strlen);
+        c = next();
+    }
+    cache = c;
+    str[i] = '\0';
+    return i;
 }
 
 int scankey(char *s)
 {
+    // printf("--%s\n", s);
     switch (*s)
     {
     case 'c':
@@ -210,7 +224,7 @@ int scankey(char *s)
 
 void reject_token(Token *t)
 {
-    if (!Rejtoken)
+    if (Rejtoken)
         custom_error_int("Can't reject token twice", 0);
     Rejtoken = t;
 }

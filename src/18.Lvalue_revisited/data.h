@@ -11,7 +11,8 @@
 
 typedef enum Token_type
 {
-    T_EOF, //  eof
+    T_EOF,    //  eof
+    T_ASSIGN, // assign =
     // Operators
     T_PLUS,  //  +
     T_MINUS, // -
@@ -31,7 +32,6 @@ typedef enum Token_type
     // Structural tokens
     T_INTLIT, // digit
     T_SEMI,   // ;
-    T_ASSIGN, // assign =
     T_IDENT,  //  identify
     T_LBRACE, // {
     T_RBRACE, // }
@@ -39,9 +39,7 @@ typedef enum Token_type
     T_RPAREN, // )
     T_AMPER,  // &
     T_LOGAND, // &&
-    T_COMMA,  // ,
     // Other keywords
-    T_PRINT,  // print
     T_IF,     // if
     T_ELSE,   // else
     T_WHILE,  // while
@@ -71,7 +69,8 @@ typedef enum Primitive_type
 
 typedef enum AST_node_type
 {
-    A_ADD = 1,
+    A_ASSIGN = 1,
+    A_ADD,
     A_SUBTRACT,
     A_MULTIPLY,
     A_DIVIDE,
@@ -81,12 +80,9 @@ typedef enum AST_node_type
     A_GT,
     A_LE,
     A_GE,
-    A_INTLIT,  // 11
-    A_IDENT,   // 12
-    A_LVIDENT, // 13
-    A_ASSIGN,  // 14
-    A_PRINT,   // 15
-    A_GLUE,    // 16
+    A_INTLIT,
+    A_IDENT,
+    A_GLUE,
     A_IF,
     A_WHILE,
     A_FUNCTION,

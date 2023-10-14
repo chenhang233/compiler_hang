@@ -7,7 +7,7 @@ void custom_error_line();
 void custom_error_char(char *t, char c);
 void custom_error_chars(char *c1, char *c2);
 void custom_error_int(char *c1, int i);
-void match(AST_node_type t, char *str);
+void match(Token_type t, char *str);
 void match_semi();
 void match_lbrace();
 void match_rbrace();
@@ -16,7 +16,6 @@ void match_rparen();
 void match_ident();
 void match_int();
 void match_assign();
-void match_print();
 void match_if();
 void match_while();
 void match_for();
@@ -29,7 +28,7 @@ int skip();
 int scan(Token *);
 int int_pos(char *str, int s);
 int scanint(int c);
-int scanident(char c, char *str, int strlen);
+static int scanident(char c, char *str, int strlen);
 int scankey(char *s);
 void reject_token(Token *t);
 
@@ -102,6 +101,9 @@ static AST_node_type binastop(Token_type tokentype);
 static int arithop(int tokentype);
 ASTnode *funccall(void);
 ASTnode *prefix(void);
+
+static int gendumplabel(void);
+void dumpAST(ASTnode *n, int label, int level);
 
 // sym.c
 int findglob(char *s);

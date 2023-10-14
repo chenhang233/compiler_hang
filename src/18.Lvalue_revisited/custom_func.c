@@ -24,7 +24,7 @@ void custom_error_int(char *c1, int i)
     custom_error_line();
 }
 
-void match(AST_node_type t, char *str)
+void match(Token_type t, char *str)
 {
     if (t_instance.token == t)
     {
@@ -32,7 +32,7 @@ void match(AST_node_type t, char *str)
     }
     else
     {
-        printf("need: %d, your AST_node_type: %d\n", t, t_instance.token);
+        printf("need: %d, your t_instance.token: %d\n", t, t_instance.token);
         custom_error_chars("connot match", str);
     }
 }
@@ -75,11 +75,6 @@ void match_int()
 void match_assign()
 {
     match(T_ASSIGN, "assign");
-}
-
-void match_print()
-{
-    match(T_PRINT, "print");
 }
 
 void match_if()

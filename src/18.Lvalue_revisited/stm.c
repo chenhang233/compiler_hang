@@ -23,6 +23,7 @@ Primitive_type parse_type()
     while (1)
     {
         scan(&t_instance);
+        printf("26--token=%d\n", t_instance.token);
         if (t_instance.token != T_STAR)
             break;
         type = pointer_to(type);
@@ -44,9 +45,10 @@ void global_declarations()
             if (DumpAST)
             {
                 // dumpAST
-                fprintf(stdout, "\n\n");
+                // dumpAST(tree, NOLABEL, 0);
+                // fprintf(stdout, "\n\n");
             }
-            genAST(tree, NOLABEL, 0);
+            // genAST(tree, NOLABEL, 0);
         }
         else
         {
@@ -62,7 +64,7 @@ ASTnode *function_declaration(Primitive_type type)
     ASTnode *tree, *final_stm;
     int name_id, label_id;
     label_id = genlabel();
-    addglob(Text, type, S_FUNCTION, label_id);
+    name_id = addglob(Text, type, S_FUNCTION, label_id);
     Functionid = label_id;
 
     match_lparen();
@@ -73,16 +75,15 @@ ASTnode *function_declaration(Primitive_type type)
     {
         if (!tree)
             custom_error_int("No statements in function with non-void type", 0);
-        final_stm = tree->op == A_GLUE ? tree->left : tree;
+        final_stm = tree->op == A_GLUE ? tree->right : tree;
         if (!final_stm || final_stm->op != A_RETURN)
             custom_error_int("No return for function with non-void type", 0);
     }
-    return mkAST_left(A_FUNCTION, type, tree, 0);
+    return mkAST_left(A_FUNCTION, type, tree, name_id);
 }
 
 void var_declaration(Primitive_type type)
 {
-    match_ident();
     int id = addglob(Text, type, S_VARIABLE, 0);
     genglobsym(id);
     match_semi();
@@ -93,6 +94,7 @@ ASTnode *compound_statement()
     ASTnode *tree, *left = NULL;
 
     match_lbrace();
+    // printf("100---%d\n", t_instance.token);
     while (1)
     {
         tree = single_statement();
