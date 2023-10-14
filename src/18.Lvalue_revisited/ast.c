@@ -1,5 +1,30 @@
 #include "function.h"
 
+ASTnode *mkAST_node(AST_node_type op, Primitive_type type,
+                    ASTnode *left, ASTnode *mid, ASTnode *right, int intv)
+{
+    ASTnode *n = malloc(sizeof(ASTnode));
+    if (!n)
+        custom_error_char("unable malloc", 0);
+    n->op = op;
+    n->type = type;
+    n->left = left;
+    n->right = right;
+    n->mid = mid;
+    n->v.intvalue = intv;
+    return n;
+};
+ASTnode *mkAST_leaf(AST_node_type op, Primitive_type type, int id)
+{
+    return mkAST_node(op, type, NULL, NULL, NULL, id);
+};
+ASTnode *mkAST_left(AST_node_type op, Primitive_type type, ASTnode *left,
+                    int v)
+{
+    return mkAST_node(op, type, left, NULL, NULL, v);
+    ;
+};
+
 static int OpPrec[] = {
     0, 10,         // T_EOF,  T_ASSIGN
     20, 20,        // T_PLUS, T_MINUS

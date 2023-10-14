@@ -6,6 +6,10 @@ int genlabel(void)
     return (id++);
 }
 
+int genAST(ASTnode *n, int reg, AST_node_type parentASTop)
+{
+}
+
 void genpreamble()
 {
     cgpreamble();

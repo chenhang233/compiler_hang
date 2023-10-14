@@ -38,6 +38,29 @@ Primitive_type pointer_to(Primitive_type type)
     return newtype;
 }
 
+Primitive_type value_at(Primitive_type type)
+{
+    int newtype;
+    switch (type)
+    {
+    case P_VOIDPTR:
+        newtype = P_VOID;
+        break;
+    case P_CHARPTR:
+        newtype = P_CHAR;
+        break;
+    case P_INTPTR:
+        newtype = P_INT;
+        break;
+    case P_LONGPTR:
+        newtype = P_LONG;
+        break;
+    default:
+        custom_error_int("Unrecognised in value_at: type", type);
+    }
+    return (newtype);
+}
+
 ASTnode *modify_type(ASTnode *tree, Primitive_type rtype, AST_node_type op)
 {
     int ltype;
