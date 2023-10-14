@@ -1,5 +1,7 @@
 #include "function.h"
 
+static Token *Rejtoken = NULL;
+
 int scan(Token *t)
 {
     int token_type;
@@ -101,10 +103,11 @@ int scan(Token *t)
         {
             t->intvalue = scanint(c);
             t->token = T_INTLIT;
+            break;
         }
         else if (isalpha(c) || '_' == c)
         {
-            if (token_type = scankey(c))
+            if (token_type = scankey(Text))
             {
                 t->token = token_type;
                 break;
@@ -204,8 +207,6 @@ int scankey(char *s)
     }
     return (0);
 }
-
-static Token *Rejtoken = NULL;
 
 void reject_token(Token *t)
 {

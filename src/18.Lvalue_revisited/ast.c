@@ -84,11 +84,11 @@ ASTnode *binexpr(int ptp)
 static ASTnode *primary(void)
 {
     ASTnode *n;
-
+    int v;
     switch (t_instance.token)
     {
     case T_INTLIT:
-        int v = t_instance.intvalue;
+        v = t_instance.intvalue;
         if (v >= 0 && v < 256)
             n = mkAST_leaf(A_INTLIT, P_CHAR, v);
         else
@@ -143,7 +143,7 @@ ASTnode *funccall(void)
     ASTnode *tree;
     int id;
     if (findglob(Text) == -1)
-        custom_error_cahrs("undefined variable", Text);
+        custom_error_chars("undefined variable", Text);
 
     match_lparen();
     tree = binexpr(0);

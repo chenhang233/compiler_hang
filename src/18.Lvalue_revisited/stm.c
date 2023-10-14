@@ -123,12 +123,13 @@ ASTnode *compound_statement()
 
 static ASTnode *single_statement(void)
 {
+    Primitive_type type;
     switch (t_instance.token)
     {
     case T_CHAR:
     case T_INT:
     case T_LONG:
-        Primitive_type type = parse_type();
+        type = parse_type();
         match_ident();
         var_declaration(type);
         return NULL;
