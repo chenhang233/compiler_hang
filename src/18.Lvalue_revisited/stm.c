@@ -23,7 +23,7 @@ Primitive_type parse_type()
     while (1)
     {
         scan(&t_instance);
-        printf("26--token=%d\n", t_instance.token);
+        // printf("26--token=%d\n", t_instance.token);
         if (t_instance.token != T_STAR)
             break;
         type = pointer_to(type);
@@ -45,10 +45,10 @@ void global_declarations()
             if (DumpAST)
             {
                 // dumpAST
-                // dumpAST(tree, NOLABEL, 0);
-                // fprintf(stdout, "\n\n");
+                dumpAST(tree, NOLABEL, 0);
+                fprintf(stdout, "\n\n");
             }
-            // genAST(tree, NOLABEL, 0);
+            genAST(tree, NOLABEL, 0);
         }
         else
         {

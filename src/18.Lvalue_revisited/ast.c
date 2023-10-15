@@ -169,7 +169,7 @@ ASTnode *funccall(void)
 {
     ASTnode *tree;
     int id;
-    if (findglob(Text) == -1)
+    if ((id = findglob(Text)) == -1)
         custom_error_chars("undefined variable", Text);
 
     match_lparen();
