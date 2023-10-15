@@ -37,7 +37,7 @@ void genpreamble();
 void genfreeregs();
 void genprintint(int reg);
 void genglobsym(int id);
-int genAST(ASTnode *n, int reg, AST_node_type parentASTop);
+int genAST(ASTnode *n, int label, AST_node_type parentASTop);
 int genIf(ASTnode *n);
 int genWhile(ASTnode *n);
 int label();
@@ -74,6 +74,7 @@ int cgaddress(int id);
 int cgderef(int r, int type);
 void cgpostamble();
 int cgshlconst(int r, int val);
+int cgstorderef(int r1, int r2, int type);
 
 // stm.c
 ASTnode *function_declaration(Primitive_type type);
