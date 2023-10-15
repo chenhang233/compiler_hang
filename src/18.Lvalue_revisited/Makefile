@@ -15,6 +15,10 @@ clean:
 test: comp1 tests/runtests
 	(cd tests; chmod +x runtests; ./runtests)
 
+test5: comp1 tests/input05.c lib/printint.c
+	./comp1 tests/input05.c
+	cc -o out out.s lib/printint.c
+	./out
 
 test18: comp1 tests/input18.c lib/printint.c
 	./comp1 tests/input18.c

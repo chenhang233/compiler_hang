@@ -31,7 +31,11 @@ int genIf(ASTnode *n)
     // If there is an optional ELSE clause,
     // generate the jump to skip to the end
     if (n->right)
-        cgjump(Lend);
+    {
+        genAST(n->right, NOLABEL, n->op);
+        genfreeregs();
+        cglabel(Lend);
+    }
 
     // Now the false label
     cglabel(Lfalse);

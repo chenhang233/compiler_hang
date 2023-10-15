@@ -65,7 +65,7 @@ ASTnode *function_declaration(Primitive_type type)
     int name_id, label_id;
     label_id = genlabel();
     name_id = addglob(Text, type, S_FUNCTION, label_id);
-    Functionid = label_id;
+    Functionid = name_id;
 
     match_lparen();
     match_rparen();
@@ -206,16 +206,16 @@ static ASTnode *for_statement()
 static ASTnode *return_statement(void)
 {
     ASTnode *tree;
-    match_return();
     Primitive_type need_type = Gsym[Functionid].type;
     if (need_type == P_VOID)
-        custom_error_int("Can't return from a void function", need_type);
+        custom_error_int("can not return from a void function", 1);
+    match_return();
     match_lparen();
+    tree = binexpr(0);
 
     tree = modify_type(tree, need_type, 0);
     if (!tree)
         custom_error_int("Incompatible type to return", 0);
-    tree = binexpr(0);
     tree = mkAST_left(A_RETURN, tree->type, tree, 0);
     match_rparen();
     return tree;

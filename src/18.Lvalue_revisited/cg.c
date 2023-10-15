@@ -307,6 +307,7 @@ void cgreturn(int reg, int id)
     default:
         custom_error_int("Bad function type in cgreturn:", Gsym[id].type);
     }
+    printf("Gsym[id].endlabel=%d %s\n", Gsym[id].endlabel, Gsym[id].name);
     cgjump(Gsym[id].endlabel);
 }
 
