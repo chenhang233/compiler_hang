@@ -134,6 +134,7 @@ x86 GNU汇编
    .int	         32位整数
    .long	         32位整数 (same as .int)
    .quad	         8字节整数
+   .globl         全局符号
 
 
 指令符号:
