@@ -214,18 +214,20 @@ void cgglobsym(int id)
     fprintf(Outfile, "\t.data\n"
                      "\t.globl\t%s\n",
             Gsym[id].name);
+    fprintf(Outfile, "%s:", Gsym[id].name);
+
     for (int i = 0; i < Gsym[id].size; i++)
     {
         switch (typesize)
         {
         case 1:
-            fprintf(Outfile, "%s:\t.byte\t0\n", Gsym[id].name);
+            fprintf(Outfile, "\t.byte\t0\n");
             break;
         case 4:
-            fprintf(Outfile, "%s:\t.long\t0\n", Gsym[id].name);
+            fprintf(Outfile, "\t.long\t0\n");
             break;
         case 8:
-            fprintf(Outfile, "%s:\t.quad\t0\n", Gsym[id].name);
+            fprintf(Outfile, "\t.quad\t0\n");
             break;
         default:
             custom_error_int("Unknown typesize in cgglobsym: ", typesize);

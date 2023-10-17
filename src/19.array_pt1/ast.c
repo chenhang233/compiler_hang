@@ -63,7 +63,7 @@ ASTnode *binexpr(int ptp)
     left = prefix();
     Token_type type = t_instance.token;
     // printf("v =%d\n", left->v.intvalue);
-    if (type == T_SEMI || type == T_RPAREN)
+    if (type == T_SEMI || type == T_RPAREN || type == T_RBRACKET)
     {
         left->rvalue = 1;
         return left;
@@ -98,7 +98,7 @@ ASTnode *binexpr(int ptp)
         }
         left = mkAST_node(binastop(type), left->type, left, NULL, right, 0);
         type = t_instance.token;
-        if (type == T_SEMI || type == T_RPAREN)
+        if (type == T_SEMI || type == T_RPAREN || type == T_RBRACKET)
         {
             left->rvalue = 1;
             return left;
@@ -132,6 +132,8 @@ static ASTnode *primary(void)
 {
     ASTnode *n;
     int v;
+    // printf("t_instance.token=%d\n", t_instance.token);
+
     switch (t_instance.token)
     {
     case T_INTLIT:
@@ -153,6 +155,11 @@ static ASTnode *primary(void)
             custom_error_int("unknown variable", id);
         n = mkAST_leaf(A_IDENT, Gsym[id].type, id);
         break;
+    case T_LPAREN:
+        match_lparen();
+        n = binexpr(0);
+        match_rparen();
+        return n;
     default:
         custom_error_int("primary syntax error, token: ", t_instance.token);
     }

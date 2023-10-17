@@ -30,6 +30,13 @@ test18a: comp1 tests/input18a.c lib/printint.c
 	cc -o out out.s lib/printint.c
 	./out
 
+
+test20: comp1 tests/input20.c lib/printint.c
+	./comp1 tests/input20.c
+	cc -o out out.s lib/printint.c
+	./out
+
+
 testn: compn tests/runtestsn
 	(cd tests; chmod +x runtestsn; ./runtestsn)
 
