@@ -114,6 +114,18 @@ static ASTnode *array_access(void)
     int id;
     if ((id = findglob(Text)) == -1 || Gsym[id].stype != S_ARRAY)
         custom_error_chars("Undeclared array", Text);
+    left = mkAST_leaf(A_ADDR, Gsym[id].type, id);
+    match_lbracket();
+    right = binexpr(0);
+    match_rbracket();
+    if (!inttype(right->type))
+        custom_error_int("Array index is not of integer type", right->type);
+
+    right = modify_type(right, left->type, A_ADD);
+
+    left = mkAST_node(A_ADD, Gsym[id].type, left, NULL, right, 0);
+    left = mkAST_left(A_DEREF, value_at(left->type), left, 0);
+    return left;
 }
 
 static ASTnode *primary(void)
