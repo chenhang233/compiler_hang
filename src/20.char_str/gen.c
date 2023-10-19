@@ -123,6 +123,8 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
             return (cgcompare_and_set(n->op, leftreg, rightreg));
     case A_INTLIT:
         return (cgloadint(n->v.intvalue, n->type));
+    case A_STRLIT:
+        return (cgloadglobstr(n->v.id));
     case A_IDENT:
         // Load our value if we are an rvalue
         // or we are being dereferenced
@@ -204,4 +206,11 @@ void genglobsym(int id)
 int genprimsize(int type)
 {
     return (cgprimsize(type));
+}
+
+int genglobstr(char *strvalue)
+{
+    int l = label();
+    cgglobstr(l, strvalue);
+    return l;
 }

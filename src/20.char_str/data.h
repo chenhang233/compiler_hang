@@ -85,6 +85,7 @@ typedef enum AST_node_type
     A_LE,
     A_GE,
     A_INTLIT,
+    A_STRLIT,
     A_IDENT,
     A_GLUE,
     A_IF,

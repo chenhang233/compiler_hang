@@ -131,7 +131,7 @@ static ASTnode *array_access(void)
 static ASTnode *primary(void)
 {
     ASTnode *n;
-    int v;
+    int v, id;
     // printf("t_instance.token=%d\n", t_instance.token);
 
     switch (t_instance.token)
@@ -142,6 +142,10 @@ static ASTnode *primary(void)
             n = mkAST_leaf(A_INTLIT, P_CHAR, v);
         else
             n = mkAST_leaf(A_INTLIT, P_INT, v);
+        break;
+    case T_STRLIT:
+        id = genglobstr(Text);
+        n = mkAST_leaf(A_STRLIT, P_CHARPTR, id);
         break;
     case T_IDENT:
         scan(&t_instance);

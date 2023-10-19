@@ -25,7 +25,7 @@ int main(int argc, char const *argv[])
         }
     }
     if (i == argc)
-        custom_error_chars("May not have input infile", argv[0]);
+        custom_error_chars("May not have input infile", (char *)argv[0]);
     if (!(Infile = fopen(argv[i], "r")))
         custom_error_chars("open infile", (char *)argv[i]);
     if (!(Outfile = fopen("out.s", "w")))

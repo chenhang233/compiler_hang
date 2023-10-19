@@ -34,6 +34,7 @@ static int scanident(char c, char *str, int strlen);
 int scankey(char *s);
 void reject_token(Token *t);
 static int scan_ch(void);
+static int scanstr(char *buf);
 
 // gen.c
 void genpreamble();
@@ -47,6 +48,7 @@ int label();
 int genprimsize(int type);
 void genpostamble();
 int genlabel(void);
+int genglobstr(char *strvalue);
 
 // cg.c
 void freeall_registers(void);
@@ -57,8 +59,10 @@ void cgfuncpreamble(int id);
 void cgfuncpostamble(int id);
 void cgprintint(int r);
 void cgglobsym(int id);
+void cgglobstr(int l, char *strvalue);
 int cgloadint(int value, int type);
 int cgloadglob(int id);
+int cgloadglobstr(int id);
 int cgadd(int r1, int r2);
 int cgsub(int r1, int r2);
 int cgmul(int r1, int r2);

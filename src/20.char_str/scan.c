@@ -104,6 +104,16 @@ int scan(Token *t)
             t->token = T_AMPER;
         }
         break;
+    case '\'':
+        t->intvalue = scan_ch();
+        t->token = T_INTLIT;
+        if (next() != '\'')
+            custom_error_int("Expected '\\'' at end of char literal", 0);
+        break;
+    case '"':
+        scanstr(Text);
+        t->token = T_STRLIT;
+        break;
     default:
         if (isdigit(c))
         {
@@ -268,4 +278,21 @@ static int scan_ch()
         }
     }
     return c;
+}
+
+static int scanstr(char *buf)
+{
+    int c, i = 0;
+    while (1)
+    {
+        c = scan_ch();
+        if (c == '"')
+        {
+            buf[i] = '\0';
+            return i;
+        }
+        buf[i++] = c;
+        if (i == TEXTLEN)
+            custom_error_int("String literal too long", 0);
+    }
 }
