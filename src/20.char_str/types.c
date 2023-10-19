@@ -90,6 +90,8 @@ ASTnode *modify_type(ASTnode *tree, Primitive_type rtype, AST_node_type op)
             int rsize = genprimsize(value_at(rtype));
             if (rsize > 1)
                 return mkAST_left(A_SCALE, rtype, tree, rsize);
+            else
+                return tree;
         }
     }
     return NULL;

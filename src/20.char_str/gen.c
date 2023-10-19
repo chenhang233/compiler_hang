@@ -210,7 +210,7 @@ int genprimsize(int type)
 
 int genglobstr(char *strvalue)
 {
-    int l = label();
+    int l = genlabel();
     cgglobstr(l, strvalue);
     return l;
 }

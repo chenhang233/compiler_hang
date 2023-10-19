@@ -37,11 +37,21 @@ test20: comp1 tests/input20.c lib/printint.c
 	./out
 
 
-testn: compn tests/runtestsn
-	(cd tests; chmod +x runtestsn; ./runtestsn)
-
-test10n: compn tests/input10
-	./compn tests/input10
-	nasm -f elf64 out.s
-	cc -no-pie -o out out.o
+test21: comp1 tests/input21.c lib/printint.c
+	./comp1 tests/input21.c
+	cc -o out out.s lib/printint.c
 	./out
+
+
+
+
+
+
+# testn: compn tests/runtestsn
+# 	(cd tests; chmod +x runtestsn; ./runtestsn)
+
+# test10n: compn tests/input10
+# 	./compn tests/input10
+# 	nasm -f elf64 out.s
+# 	cc -no-pie -o out out.o
+# 	./out

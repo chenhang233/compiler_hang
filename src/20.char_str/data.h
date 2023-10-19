@@ -84,9 +84,9 @@ typedef enum AST_node_type
     A_GT,
     A_LE,
     A_GE,
-    A_INTLIT,
+    A_INTLIT, // 12
     A_STRLIT,
-    A_IDENT,
+    A_IDENT, // 14
     A_GLUE,
     A_IF,
     A_WHILE,

@@ -54,15 +54,15 @@ static AST_node_type binastop(Token_type tokentype)
         return (tokentype);
     custom_error_int("binastop Syntax error, token", tokentype);
 }
-
+// binary operator.
 ASTnode *binexpr(int ptp)
 {
     ASTnode *left, *right;
     ASTnode *l_temp, *r_temp;
     AST_node_type ast_type;
     left = prefix();
+    // printf("v=%d %d\n", left->v.intvalue, left->op);
     Token_type type = t_instance.token;
-    // printf("v =%d\n", left->v.intvalue);
     if (type == T_SEMI || type == T_RPAREN || type == T_RBRACKET)
     {
         left->rvalue = 1;
@@ -90,7 +90,9 @@ ASTnode *binexpr(int ptp)
             l_temp = modify_type(left, right->type, ast_type);
             r_temp = modify_type(right, left->type, ast_type);
             if (!l_temp && !r_temp)
+            {
                 custom_error_int("Incompatible types in binary expression", 0);
+            }
             if (l_temp)
                 left = l_temp;
             if (r_temp)
