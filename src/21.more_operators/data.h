@@ -14,26 +14,43 @@ typedef enum Token_type
     T_EOF, //  eof
     // Binary operators
     T_ASSIGN, // assign =
-    T_PLUS,   //  +
-    T_MINUS,  // -
-    T_STAR,   //  *
-    T_SLASH,  //  /
+    T_LOGOR,  // ||
+    T_LOGAND, // &&
+    T_OR,     // |
+    T_XOR,    //^
+    T_AMPER,  // &
     T_EQ,     // ==
     T_NE,     // !=
     T_LT,     // <
     T_GT,     // >
     T_LE,     // <=
     T_GE,     //  >=
+    T_LSHIFT, // <<
+    T_RSHIFT, // >>
+
+    T_PLUS,  //  +
+    T_MINUS, // -
+    T_STAR,  //  *
+    T_SLASH, //  /
+
     // Other operators
     T_INC,    //++
     T_DEC,    //--
-    T_INVERT, //!
-    T_LOGNOT, //
+    T_INVERT, // ~
+    T_LOGNOT, // !
     // Type keywords
     T_VOID, // void
     T_CHAR, // char
     T_INT,  // int
     T_LONG, // long
+
+    // Other keywords
+    T_IF,
+    T_ELSE,
+    T_WHILE,
+    T_FOR,
+    T_RETURN,
+
     // Structural tokens
     T_INTLIT,   // digit
     T_STRLIT,   // string
@@ -45,14 +62,6 @@ typedef enum Token_type
     T_RPAREN,   // )
     T_LBRACKET, // [
     T_RBRACKET, // ]
-    T_AMPER,    // &
-    T_LOGAND,   // &&
-    // Other keywords
-    T_IF,     // if
-    T_ELSE,   // else
-    T_WHILE,  // while
-    T_FOR,    // for
-    T_RETURN, // return
 
 } Token_type;
 
@@ -79,19 +88,26 @@ typedef enum Primitive_type
 typedef enum AST_node_type
 {
     A_ASSIGN = 1,
-    A_ADD,
-    A_SUBTRACT,
-    A_MULTIPLY,
-    A_DIVIDE,
+    A_LOGOR,
+    A_LOGAND,
+    A_OR,
+    A_XOR,
+    A_AND,
     A_EQ,
     A_NE,
     A_LT,
     A_GT,
     A_LE,
     A_GE,
-    A_INTLIT, // 12
+    A_LSHIFT,
+    A_RSHIFT,
+    A_ADD,
+    A_SUBTRACT,
+    A_MULTIPLY,
+    A_DIVIDE,
+    A_INTLIT,
     A_STRLIT,
-    A_IDENT, // 14
+    A_IDENT,
     A_GLUE,
     A_IF,
     A_WHILE,
@@ -101,7 +117,15 @@ typedef enum AST_node_type
     A_FUNCCALL,
     A_DEREF,
     A_ADDR,
-    A_SCALE
+    A_SCALE,
+    A_PREINC,
+    A_PREDEC,
+    A_POSTINC,
+    A_POSTDEC,
+    A_NEGATE,
+    A_INVERT,
+    A_LOGNOT,
+    A_TOBOOL
 } AST_node_type;
 
 typedef struct ASTnode
