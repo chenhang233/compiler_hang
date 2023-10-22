@@ -18,10 +18,26 @@ int scan(Token *t)
         t->token = T_EOF;
         return (0);
     case '+':
-        t->token = T_PLUS;
+        if ((c = next()) == '+')
+        {
+            t->token = T_INC;
+        }
+        else
+        {
+            cache = c;
+            t->token = T_PLUS;
+        }
         break;
     case '-':
-        t->token = T_MINUS;
+        if ((c = next()) == '-')
+        {
+            t->token = T_DEC;
+        }
+        else
+        {
+            cache = c;
+            t->token = T_MINUS;
+        }
         break;
     case '*':
         t->token = T_STAR;
@@ -50,6 +66,12 @@ int scan(Token *t)
     case ']':
         t->token = T_RBRACKET;
         break;
+    case '~':
+        t->token = T_INVERT;
+        break;
+    case '^':
+        t->token = T_XOR;
+        break;
     case '=':
         if ((c = next()) == '=')
         {
@@ -68,7 +90,8 @@ int scan(Token *t)
         }
         else
         {
-            custom_error_char("Unrecognised character", c);
+            cache = c;
+            t->token = T_LOGNOT;
         }
         break;
     case '<':
@@ -76,9 +99,13 @@ int scan(Token *t)
         {
             t->token = T_LE;
         }
+        else if (c == '<')
+        {
+            t->token = T_LSHIFT;
+        }
         else
         {
-            cache = c;
+            putback(c);
             t->token = T_LT;
         }
         break;
@@ -87,9 +114,13 @@ int scan(Token *t)
         {
             t->token = T_GE;
         }
+        else if (c == '>')
+        {
+            t->token = T_RSHIFT;
+        }
         else
         {
-            cache = c;
+            putback(c);
             t->token = T_GT;
         }
         break;
@@ -102,6 +133,17 @@ int scan(Token *t)
         {
             cache = c;
             t->token = T_AMPER;
+        }
+        break;
+    case '|':
+        if ((c = next()) == '|')
+        {
+            t->token = T_LOGOR;
+        }
+        else
+        {
+            putback(c);
+            t->token = T_OR;
         }
         break;
     case '\'':

@@ -76,7 +76,7 @@ x86 GNU汇编
       sub{bwlq}   S,D   D - S -> D        减
       imul{bwlq}  S,D   D * S -> D     乘
       idiv{bwlq}  S, D ->S     除
-      not{bwlq} D	      ~D → D	      逻辑非
+      not{bwlq} D	      ~D → D	      逻辑非(整数存的反码,反码按位取反)
       or{bwlq} S, D	   D | S → D	   逻辑或
       and{bwlq} S, D	   D & S → D	   逻辑与
       xor{bwlq} S, D	   D ^ S → D	   逻辑异或
@@ -94,9 +94,8 @@ x86 GNU汇编
       ret	         从过程调用返回
 
       jmp             无条件跳转
-      
-      CMP 和 TEST 指令(它们只设置条件码而不改变任何其他寄存器,和sub一样):
-      cmp{bwlq}                                    如果两个操作数相等，将零标志设置为1
+
+      SET 指令的目的操作数是低位单字节寄存器或是一个字节的内存地址，指令会将这个字节设置成 0 或者 1:
       setl (SF ^ OF 小于时设置（set less)           根据条件码的某种组合，将一个字节设置为 0 或者 1
       setle (SF ^ OF) | ZF                         小于等于（有符号 <= ）
       setne  ~ZF                                   不等/非零（set not equal）
@@ -104,6 +103,12 @@ x86 GNU汇编
       setge   ~(SF ^ OF)                           大于等于（有符号 >= ）
       setg    ~(SF ^ OF) & ~ZF                     大于（有符号 > ）
 
+      CMP 和 TEST 指令(它们只设置条件码而不改变任何其他寄存器,
+      CMP 指令与 SUB 指令的行为是一样的,
+      TEST 指令的行为与 AND 指令一样:
+      cmp{bwlq}                                    如果两个操作数相等，将零标志设置为1
+
+      TEST S1, S2    	S1 & S2	测试
 
       and{bwlq}                                    逻辑与(andq	$255,%r9 移除高位无效数据)
 
