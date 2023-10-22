@@ -105,7 +105,7 @@ int scan(Token *t)
         }
         else
         {
-            putback(c);
+            cache = c;
             t->token = T_LT;
         }
         break;
@@ -120,7 +120,7 @@ int scan(Token *t)
         }
         else
         {
-            putback(c);
+            cache = c;
             t->token = T_GT;
         }
         break;
@@ -142,7 +142,7 @@ int scan(Token *t)
         }
         else
         {
-            putback(c);
+            cache = c;
             t->token = T_OR;
         }
         break;

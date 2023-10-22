@@ -26,15 +26,19 @@ ASTnode *mkAST_left(AST_node_type op, Primitive_type type, ASTnode *left,
 };
 
 static int OpPrec[] = {
-    0, 10,         // T_EOF,  T_ASSIGN
-    20, 20,        // T_PLUS, T_MINUS
-    30, 30,        // T_STAR, T_SLASH
-    40, 40,        // T_EQ, T_NE
-    50, 50, 50, 50 // T_LT, T_GT, T_LE, T_GE
+    0, 10, 20, 30,  // T_EOF, T_ASSIGN, T_LOGOR, T_LOGAND
+    40, 50, 60,     // T_OR, T_XOR, T_AMPER
+    70, 70,         // T_EQ, T_NE
+    80, 80, 80, 80, // T_LT, T_GT, T_LE, T_GE
+    90, 90,         // T_LSHIFT, T_RSHIFT
+    100, 100,       // T_PLUS, T_MINUS
+    110, 110        // T_STAR, T_SLASH
 };
 
 static int op_precedence(Token_type tokentype)
 {
+    if (tokentype > T_SLASH)
+        custom_error_int("Token with no precedence in op_precedence:", tokentype);
     int prec = OpPrec[tokentype];
     if (prec == 0)
         custom_error_int("op_precedence Syntax error, token", tokentype);
@@ -150,6 +154,7 @@ static ASTnode *primary(void)
         n = mkAST_leaf(A_STRLIT, P_CHARPTR, id);
         break;
     case T_IDENT:
+        // postfix...
         scan(&t_instance);
         if (t_instance.token == T_LPAREN)
             return funccall();
@@ -193,6 +198,39 @@ ASTnode *prefix(void)
         if (tree->op != A_IDENT && tree->op != A_DEREF)
             custom_error_int("Get an address that is not an A_IDENT", tree->op);
         tree = mkAST_left(A_DEREF, value_at(tree->type), tree, 0);
+        break;
+    case T_MINUS:
+        scan(&t_instance);
+        tree = prefix();
+        tree->rvalue = 1;
+        tree = modify_type(tree, P_INT, 0);
+        tree = mkAST_left(A_NEGATE, tree->type, tree, 0);
+        break;
+    case T_INVERT:
+        scan(&t_instance);
+        tree = prefix();
+        tree->rvalue = 1;
+        tree = mkAST_left(A_INVERT, tree->type, tree, 0);
+        break;
+    case T_LOGNOT:
+        scan(&t_instance);
+        tree = prefix();
+        tree->rvalue = 1;
+        tree = mkAST_left(A_LOGNOT, tree->type, tree, 0);
+        break;
+    case T_INC:
+        scan(&t_instance);
+        tree = prefix();
+        if (tree->op != A_IDENT)
+            custom_error_int("operator must be followed by an identifier", tree->op);
+        tree = mkAST_left(A_PREINC, tree->type, tree, 0);
+        break;
+    case T_DEC:
+        scan(&t_instance);
+        tree = prefix();
+        if (tree->op != A_IDENT)
+            custom_error_int("operator must be followed by an identifier", tree->op);
+        tree = mkAST_left(A_PREDEC, tree->type, tree, 0);
         break;
     default:
         tree = primary();

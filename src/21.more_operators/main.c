@@ -1,5 +1,5 @@
 #include "function.h"
-
+#include "data.h"
 void init()
 {
     Line = 1;
