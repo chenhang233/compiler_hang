@@ -23,6 +23,7 @@ void match_void();
 void match_return();
 void match_lbracket();
 void match_rbracket();
+void jsonify_tree(ASTnode *root, const char *filename);
 
 // scan.c
 int next();
@@ -61,7 +62,7 @@ void cgprintint(int r);
 void cgglobsym(int id);
 void cgglobstr(int l, char *strvalue);
 int cgloadint(int value, int type);
-int cgloadglob(int id);
+int cgloadglob(int id, int op);
 int cgloadglobstr(int id);
 int cgadd(int r1, int r2);
 int cgsub(int r1, int r2);
@@ -82,6 +83,11 @@ int cgderef(int r, int type);
 void cgpostamble();
 int cgshlconst(int r, int val);
 int cgstorderef(int r1, int r2, int type);
+int cgand(int r1, int r2);
+int cgor(int r1, int r2);
+int cgxor(int r1, int r2);
+int cgshl(int r1, int r2);
+int cgshr(int r1, int r2);
 
 // stm.c
 ASTnode *function_declaration(Primitive_type type);

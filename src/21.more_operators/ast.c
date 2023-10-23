@@ -142,7 +142,7 @@ static ASTnode *postfix(void)
         return funccall();
     if (t_instance.token == T_LBRACKET)
         return array_access();
-    reject_token(&t_instance);
+
     int id = findglob(Text);
     if (id == -1)
         custom_error_int("unknown variable", id);
@@ -199,6 +199,7 @@ ASTnode *prefix(void)
 {
     ASTnode *tree;
     Primitive_type type;
+    // printf("t_instance.token=%d\n", t_instance.token);
     switch (t_instance.token)
     {
     case T_AMPER:

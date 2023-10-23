@@ -70,7 +70,7 @@ int cgloadint(int value, int type)
     return (r);
 }
 
-int cgloadglob(int id)
+int cgloadglob(int id, int op)
 {
     // Get a new register
     int r = alloc_register();
@@ -79,18 +79,42 @@ int cgloadglob(int id)
     switch (Gsym[id].type)
     {
     case P_CHAR:
+        if (op == A_PREINC)
+            fprintf(Outfile, "\tincb\t%s(\%%rip)\n", Gsym[id].name);
+        if (op == A_PREDEC)
+            fprintf(Outfile, "\tdecb\t%s(\%%rip)\n", Gsym[id].name);
         fprintf(Outfile, "\tmovzbq\t%s(%%rip), %s\n", Gsym[id].name,
                 reglist[r]);
+        if (op == A_POSTINC)
+            fprintf(Outfile, "\tincb\t%s(\%%rip)\n", Gsym[id].name);
+        if (op == A_POSTDEC)
+            fprintf(Outfile, "\tdecb\t%s(\%%rip)\n", Gsym[id].name);
         break;
     case P_INT:
-        fprintf(Outfile, "\tmovzbl\t%s(\%%rip), %s\n", Gsym[id].name,
+        if (op == A_PREINC)
+            fprintf(Outfile, "\tincl\t%s(\%%rip)\n", Gsym[id].name);
+        if (op == A_PREDEC)
+            fprintf(Outfile, "\tdecl\t%s(\%%rip)\n", Gsym[id].name);
+        fprintf(Outfile, "\tmovslq\t%s(\%%rip), %s\n", Gsym[id].name,
                 reglist[r]);
+        if (op == A_POSTINC)
+            fprintf(Outfile, "\tincl\t%s(\%%rip)\n", Gsym[id].name);
+        if (op == A_POSTDEC)
+            fprintf(Outfile, "\tdecl\t%s(\%%rip)\n", Gsym[id].name);
         break;
     case P_LONG:
     case P_CHARPTR:
     case P_INTPTR:
     case P_LONGPTR:
+        if (op == A_PREINC)
+            fprintf(Outfile, "\tincq\t%s(\%%rip)\n", Gsym[id].name);
+        if (op == A_PREDEC)
+            fprintf(Outfile, "\tdecq\t%s(\%%rip)\n", Gsym[id].name);
         fprintf(Outfile, "\tmovq\t%s(\%%rip), %s\n", Gsym[id].name, reglist[r]);
+        if (op == A_POSTINC)
+            fprintf(Outfile, "\tincq\t%s(\%%rip)\n", Gsym[id].name);
+        if (op == A_POSTDEC)
+            fprintf(Outfile, "\tdecq\t%s(\%%rip)\n", Gsym[id].name);
         break;
     default:
         custom_error_int("Bad type in cgloadglob:", Gsym[id].type);
@@ -143,6 +167,43 @@ int cgdiv(int r1, int r2)
     fprintf(Outfile, "\tcqo\n");
     fprintf(Outfile, "\tidivq\t%s\n", reglist[r2]);
     fprintf(Outfile, "\tmovq\t%%rax,%s\n", reglist[r1]);
+    free_register(r2);
+    return (r1);
+}
+
+int cgand(int r1, int r2)
+{
+    fprintf(Outfile, "\tandq\t%s, %s\n", reglist[r1], reglist[r2]);
+    free_register(r1);
+    return (r2);
+}
+
+int cgor(int r1, int r2)
+{
+    fprintf(Outfile, "\torq\t%s, %s\n", reglist[r1], reglist[r2]);
+    free_register(r1);
+    return (r2);
+}
+
+int cgxor(int r1, int r2)
+{
+    fprintf(Outfile, "\txorq\t%s, %s\n", reglist[r1], reglist[r2]);
+    free_register(r1);
+    return (r2);
+}
+
+int cgshl(int r1, int r2)
+{
+    fprintf(Outfile, "\tmovb\t%s, %%cl\n", breglist[r2]);
+    fprintf(Outfile, "\tshlq\t%%cl, %s\n", reglist[r1]);
+    free_register(r2);
+    return (r1);
+}
+
+int cgshr(int r1, int r2)
+{
+    fprintf(Outfile, "\tmovb\t%s, %%cl\n", breglist[r2]);
+    fprintf(Outfile, "\tshrq\t%%cl, %s\n", reglist[r1]);
     free_register(r2);
     return (r1);
 }

@@ -1,5 +1,5 @@
 SRCS= ast.c cg.c custom_func.c gen.c main.c scan.c stm.c sym.c \
- types.c
+ types.c ../cjson/cjson.c
 SRCN= cgn.c decl.c expr.c gen.c main.c misc.c scan.c stmt.c sym.c \
  tree.c types.c
 

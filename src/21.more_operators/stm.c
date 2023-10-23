@@ -42,13 +42,14 @@ void global_declarations()
         if (t_instance.token == T_LPAREN)
         {
             tree = function_declaration(type);
+            jsonify_tree(tree, "1.json");
             if (DumpAST)
             {
                 // dumpAST
                 dumpAST(tree, NOLABEL, 0);
                 fprintf(stdout, "\n\n");
             }
-            genAST(tree, NOLABEL, 0);
+            // genAST(tree, NOLABEL, 0);
         }
         else
         {

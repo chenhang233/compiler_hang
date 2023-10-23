@@ -1,0 +1,126 @@
+{
+	"AST_node_type":	25,
+	"AST_node_type_key":	"A_FUNCTION",
+	"Primitive_type":	3,
+	"v_id":	11,
+	"v_intvalue":	11,
+	"left":	{
+		"AST_node_type":	22,
+		"AST_node_type_key":	"A_GLUE",
+		"Primitive_type":	0,
+		"v_id":	0,
+		"v_intvalue":	0,
+		"left":	{
+			"AST_node_type":	22,
+			"AST_node_type_key":	"A_GLUE",
+			"Primitive_type":	0,
+			"v_id":	0,
+			"v_intvalue":	0,
+			"left":	{
+				"AST_node_type":	22,
+				"AST_node_type_key":	"A_GLUE",
+				"Primitive_type":	0,
+				"v_id":	0,
+				"v_intvalue":	0,
+				"left":	{
+					"AST_node_type":	1,
+					"AST_node_type_key":	"A_ASSIGN",
+					"Primitive_type":	2,
+					"v_id":	0,
+					"v_intvalue":	0,
+					"left":	{
+						"AST_node_type":	19,
+						"AST_node_type_key":	"A_INTLIT",
+						"Primitive_type":	2,
+						"v_id":	5,
+						"v_intvalue":	5
+					},
+					"right":	{
+						"AST_node_type":	21,
+						"AST_node_type_key":	"A_IDENT",
+						"Primitive_type":	2,
+						"v_id":	3,
+						"v_intvalue":	3
+					}
+				},
+				"right":	{
+					"AST_node_type":	1,
+					"AST_node_type_key":	"A_ASSIGN",
+					"Primitive_type":	2,
+					"v_id":	0,
+					"v_intvalue":	0,
+					"left":	{
+						"AST_node_type":	19,
+						"AST_node_type_key":	"A_INTLIT",
+						"Primitive_type":	2,
+						"v_id":	7,
+						"v_intvalue":	7
+					},
+					"right":	{
+						"AST_node_type":	21,
+						"AST_node_type_key":	"A_IDENT",
+						"Primitive_type":	2,
+						"v_id":	4,
+						"v_intvalue":	4
+					}
+				}
+			},
+			"right":	{
+				"AST_node_type":	1,
+				"AST_node_type_key":	"A_ASSIGN",
+				"Primitive_type":	2,
+				"v_id":	0,
+				"v_intvalue":	0,
+				"left":	{
+					"AST_node_type":	15,
+					"AST_node_type_key":	"A_ADD",
+					"Primitive_type":	2,
+					"v_id":	0,
+					"v_intvalue":	0,
+					"left":	{
+						"AST_node_type":	21,
+						"AST_node_type_key":	"A_IDENT",
+						"Primitive_type":	2,
+						"v_id":	3,
+						"v_intvalue":	3
+					},
+					"right":	{
+						"AST_node_type":	34,
+						"AST_node_type_key":	"A_POSTINC",
+						"Primitive_type":	2,
+						"v_id":	4,
+						"v_intvalue":	4
+					}
+				},
+				"right":	{
+					"AST_node_type":	21,
+					"AST_node_type_key":	"A_IDENT",
+					"Primitive_type":	2,
+					"v_id":	2,
+					"v_intvalue":	2
+				}
+			}
+		},
+		"right":	{
+			"AST_node_type":	27,
+			"AST_node_type_key":	"A_RETURN",
+			"Primitive_type":	3,
+			"v_id":	0,
+			"v_intvalue":	0,
+			"left":	{
+				"AST_node_type":	26,
+				"AST_node_type_key":	"A_WIDEN",
+				"Primitive_type":	3,
+				"v_id":	0,
+				"v_intvalue":	0,
+				"left":	{
+					"AST_node_type":	19,
+					"AST_node_type_key":	"A_INTLIT",
+					"Primitive_type":	2,
+					"v_id":	0,
+					"v_intvalue":	0
+				}
+			}
+		}
+	}
+}

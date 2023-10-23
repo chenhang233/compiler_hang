@@ -108,6 +108,16 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
         return (cgmul(leftreg, rightreg));
     case A_DIVIDE:
         return (cgdiv(leftreg, rightreg));
+    case A_AND:
+        return (cgand(leftreg, rightreg));
+    case A_OR:
+        return (cgor(leftreg, rightreg));
+    case A_XOR:
+        return (cgxor(leftreg, rightreg));
+    case A_LSHIFT:
+        return (cgshl(leftreg, rightreg));
+    case A_RSHIFT:
+        return (cgshr(leftreg, rightreg));
     case A_EQ:
     case A_NE:
     case A_LT:
@@ -129,7 +139,7 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
         // Load our value if we are an rvalue
         // or we are being dereferenced
         if (n->rvalue || parentASTop == A_DEREF)
-            return (cgloadglob(n->v.id));
+            return (cgloadglob(n->v.id, n->op));
         else
             return (NOREG);
     case A_ASSIGN:
@@ -177,6 +187,20 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
             rightreg = cgloadint(n->v.size, P_INT);
             return (cgmul(leftreg, rightreg));
         }
+    case A_POSTINC:
+        // Load the variable's value into a register,
+        // then increment it
+        return (cgloadglob(n->v.id, n->op));
+    case A_POSTDEC:
+        // Load the variable's value into a register,
+        // then decrement it
+        return (cgloadglob(n->v.id, n->op));
+    case A_PREINC:
+        // Load and increment the variable's value into a register
+        return (cgloadglob(n->left->v.id, n->op));
+    case A_PREDEC:
+        // Load and decrement the variable's value into a register
+        return (cgloadglob(n->left->v.id, n->op));
     default:
         custom_error_int("Unknown AST operator", n->op);
     }
