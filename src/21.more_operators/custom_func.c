@@ -152,16 +152,25 @@ static char *AST_node_type_keys[] = {
     "A_INVERT",
     "A_LOGNOT",
     "A_TOBOOL"};
-
+static char *Primitive_type_keys[] = {
+    "P_NONE",
+    "P_VOID",
+    "P_CHAR",
+    "P_INT",
+    "P_LONG",
+    "P_VOIDPTR",
+    "P_CHARPTR",
+    "P_INTPTR",
+    "P_LONGPTR"};
 static cJSON *find_next_tree(ASTnode *root, cJSON *json)
 {
     if (root != NULL)
     {
         // cJSON_AddNumberToObject(json, "AST_node_type", root->op);
         cJSON_AddStringToObject(json, "AST_node_type", AST_node_type_keys[root->op - 1]);
-        cJSON_AddNumberToObject(json, "Primitive_type", root->type);
+        cJSON_AddStringToObject(json, "Primitive_type", Primitive_type_keys[root->type]);
         cJSON_AddNumberToObject(json, "v_id", root->v.id);
-        cJSON_AddNumberToObject(json, "v_intvalue", root->v.intvalue);
+        cJSON_AddNumberToObject(json, "rvalue", root->rvalue);
 
         cJSON *left = find_next_tree(root->left, cJSON_CreateObject());
         cJSON *mid = find_next_tree(root->mid, cJSON_CreateObject());

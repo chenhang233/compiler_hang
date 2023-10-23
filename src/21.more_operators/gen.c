@@ -201,6 +201,17 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
     case A_PREDEC:
         // Load and decrement the variable's value into a register
         return (cgloadglob(n->left->v.id, n->op));
+    case A_NEGATE: // -digit
+        return (cgnegate(leftreg));
+    case A_INVERT:
+        return (cginvert(leftreg));
+    case A_LOGNOT:
+        return (cglognot(leftreg));
+    case A_TOBOOL:
+        // If the parent AST node is an A_IF or A_WHILE, generate
+        // a compare followed by a jump. Otherwise, set the register
+        // to 0 or 1 based on it's zeroeness or non-zeroeness
+        return (cgboolean(leftreg, parentASTop, label));
     default:
         custom_error_int("Unknown AST operator", n->op);
     }

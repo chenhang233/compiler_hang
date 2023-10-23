@@ -88,6 +88,10 @@ int cgor(int r1, int r2);
 int cgxor(int r1, int r2);
 int cgshl(int r1, int r2);
 int cgshr(int r1, int r2);
+int cgnegate(int r);
+int cginvert(int r);
+int cglognot(int r);
+int cgboolean(int r, int op, int label);
 
 // stm.c
 ASTnode *function_declaration(Primitive_type type);

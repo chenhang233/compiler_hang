@@ -74,7 +74,6 @@ int cgloadglob(int id, int op)
 {
     // Get a new register
     int r = alloc_register();
-
     // Print out the code to initialise it
     switch (Gsym[id].type)
     {
@@ -208,12 +207,49 @@ int cgshr(int r1, int r2)
     return (r1);
 }
 
+// Negate a register's value
+int cgnegate(int r)
+{
+    fprintf(Outfile, "\tnegq\t%s\n", reglist[r]);
+    return (r);
+}
+// Invert a register's value
+int cginvert(int r)
+{
+    fprintf(Outfile, "\tnotq\t%s\n", reglist[r]);
+    return (r);
+}
+
+// Convert an integer value to a boolean value. Jump if
+// it's an IF or WHILE operation
+int cgboolean(int r, int op, int label)
+{
+    fprintf(Outfile, "\ttest\t%s, %s\n", reglist[r], reglist[r]);
+    if (op == A_IF || op == A_WHILE)
+        fprintf(Outfile, "\tje\tL%d\n", label);
+    else
+    {
+        fprintf(Outfile, "\tsetnz\t%s\n", breglist[r]);
+        fprintf(Outfile, "\tmovzbq\t%s, %s\n", breglist[r], reglist[r]);
+    }
+    return (r);
+}
+
 // Call printint() with the given register
 void cgprintint(int r)
 {
     fprintf(Outfile, "\tmovq\t%s, %%rdi\n", reglist[r]);
     fprintf(Outfile, "\tcall\tprintint\n");
     free_register(r);
+}
+
+// Logically negate a register's value
+int cglognot(int r)
+{
+    fprintf(Outfile, "\ttest\t%s, %s\n", reglist[r], reglist[r]);
+    fprintf(Outfile, "\tsete\t%s\n", breglist[r]);
+    fprintf(Outfile, "\tmovzbq\t%s, %s\n", breglist[r], reglist[r]);
+    return (r);
 }
 
 // Call a function with one argument from the given register

@@ -49,7 +49,7 @@ void global_declarations()
                 dumpAST(tree, NOLABEL, 0);
                 fprintf(stdout, "\n\n");
             }
-            // genAST(tree, NOLABEL, 0);
+            genAST(tree, NOLABEL, 0);
         }
         else
         {
@@ -171,8 +171,10 @@ static ASTnode *if_statement(void)
     match_if();
     match_lparen();
     cond = binexpr(0);
-    if (cond->op < T_EQ || cond->op > T_GE)
-        custom_error_int("Bad comparison operator", cond->op);
+    // if (cond->op < T_EQ || cond->op > T_GE)
+    //     custom_error_int("Bad comparison operator", cond->op);
+    if (cond->op < A_EQ || cond->op > A_GE)
+        cond = mkAST_left(A_TOBOOL, cond->type, cond, 0);
     match_rparen();
 
     trueAST = compound_statement();
@@ -189,8 +191,10 @@ static ASTnode *while_statement()
     match_while();
     match_lparen();
     cond = binexpr(0);
-    if (cond->op < T_EQ || cond->op > T_GE)
-        custom_error_int("Bad comparison operator", cond->op);
+    // if (cond->op < T_EQ || cond->op > T_GE)
+    //     custom_error_int("Bad comparison operator", cond->op);
+    if (cond->op < A_EQ || cond->op > A_GE)
+        cond = mkAST_left(A_TOBOOL, cond->type, cond, 0);
     match_rparen();
 
     body = compound_statement();
@@ -206,8 +210,10 @@ static ASTnode *for_statement()
     match_semi();
 
     cond = binexpr(0);
-    if (cond->op < T_EQ || cond->op > T_GE)
-        custom_error_int("Bad comparison operator", cond->op);
+    // if (cond->op < T_EQ || cond->op > T_GE)
+    //     custom_error_int("Bad comparison operator", cond->op);
+    if (cond->op < A_EQ || cond->op > A_GE)
+        cond = mkAST_left(A_TOBOOL, cond->type, cond, 0);
     match_semi();
 
     post = single_statement();
