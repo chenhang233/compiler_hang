@@ -134,6 +134,34 @@ static ASTnode *array_access(void)
     return left;
 }
 
+static ASTnode *postfix(void)
+{
+    ASTnode *n;
+    scan(&t_instance);
+    if (t_instance.token == T_LPAREN)
+        return funccall();
+    if (t_instance.token == T_LBRACKET)
+        return array_access();
+    reject_token(&t_instance);
+    int id = findglob(Text);
+    if (id == -1)
+        custom_error_int("unknown variable", id);
+    switch (t_instance.token)
+    {
+    case T_INC:
+        scan(&t_instance);
+        n = mkAST_leaf(A_POSTINC, Gsym[id].type, id);
+        break;
+    case T_DEC:
+        scan(&t_instance);
+        n = mkAST_leaf(A_POSTDEC, Gsym[id].type, id);
+        break;
+    default:
+        n = mkAST_leaf(A_IDENT, Gsym[id].type, id);
+    }
+    return n;
+}
+
 static ASTnode *primary(void)
 {
     ASTnode *n;
@@ -154,18 +182,7 @@ static ASTnode *primary(void)
         n = mkAST_leaf(A_STRLIT, P_CHARPTR, id);
         break;
     case T_IDENT:
-        // postfix...
-        scan(&t_instance);
-        if (t_instance.token == T_LPAREN)
-            return funccall();
-        if (t_instance.token == T_LBRACKET)
-            return array_access();
-        reject_token(&t_instance);
-        int id = findglob(Text);
-        if (id == -1)
-            custom_error_int("unknown variable", id);
-        n = mkAST_leaf(A_IDENT, Gsym[id].type, id);
-        break;
+        return postfix();
     case T_LPAREN:
         match_lparen();
         n = binexpr(0);

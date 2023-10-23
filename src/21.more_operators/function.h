@@ -110,7 +110,7 @@ static AST_node_type binastop(Token_type tokentype);
 static int arithop(int tokentype);
 ASTnode *funccall(void);
 ASTnode *prefix(void);
-
+static ASTnode *postfix(void);
 static int gendumplabel(void);
 void dumpAST(ASTnode *n, int label, int level);
 
