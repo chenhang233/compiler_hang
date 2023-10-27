@@ -1,5 +1,22 @@
 #include "function.h"
 
+static int localOffset;
+static int stackOffset;
+
+// Reset the position of new local variables when parsing a new function
+void cgresetlocals(void)
+{
+    localOffset = 0;
+}
+
+// Get the position of the next local variable.
+// Use the isparam flag to allocate a parameter (not yet XXX).
+int cggetlocaloffset(int type, int isparam)
+{
+    localOffset += cgprimsize(type) > 4 ? cgprimsize(type) : 4;
+    return -localOffset;
+}
+
 static int freereg[4];
 static char *reglist[4] = {"%r8", "%r9", "%r10", "%r11"};
 static char *breglist[4] = {"%r8b", "%r9b", "%r10b", "%r11b"};

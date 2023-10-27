@@ -6,6 +6,8 @@
 #pragma once
 
 #define TEXTLEN 1024
+#define NSYMBOLS 1024 // Number of symbol table entries
+
 #define NOREG -1
 #define NOLABEL 0 // Use NOLABEL when we have no label to
 
@@ -192,4 +194,4 @@ int DumpAST;    // debug ast
 Token t_instance;
 FILE *Infile;
 FILE *Outfile;
-symtable Gsym[TEXTLEN]; // global symbol table
+symtable Gsym[NSYMBOLS]; // global symbol table

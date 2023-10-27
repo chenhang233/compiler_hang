@@ -83,7 +83,7 @@ ASTnode *function_declaration(Primitive_type type)
     return mkAST_left(A_FUNCTION, type, tree, name_id);
 }
 
-void var_declaration(Primitive_type type)
+void var_declaration(Primitive_type type, int islocal)
 {
     int id;
     if (t_instance.token == T_LBRACKET)

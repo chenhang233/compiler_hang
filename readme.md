@@ -42,6 +42,7 @@ x86 GNU汇编
       2.寄存器（register），它表示某个寄存器的内容，通过在寄存器名声前加上“%”来表示。比如：%eax或%al；
       3.内存引用，它会根据计算出来的地址（通常称为有效地址）访问某个内存位置。内存引用的语法：segment:offset(base, index, scale)。
       D[segment]+offset+R[base]+R[index]*scale
+      D[]表示对应段寄存器的数据，R[]表示通用寄存器里的数据
 
 指令后缀:
       b 1字节  w 2字节  l 4字节  q 8字节

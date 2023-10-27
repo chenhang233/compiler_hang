@@ -1,6 +1,7 @@
 #include "function.h"
 
-static int global = 0;
+static int global = 0;           // Position of next free global symbol slot
+static int Locls = NSYMBOLS - 1; // Position of next free local symbol slot
 
 int findglob(char *s)
 {
@@ -10,6 +11,20 @@ int findglob(char *s)
             return i;
     }
     return -1;
+}
+
+// Determine if the symbol s is in the local symbol table.
+// Return its slot position or -1 if not found.
+int findlocl(char *s)
+{
+    int i;
+
+    for (i = Locls + 1; i < NSYMBOLS; i++)
+    {
+        if (*s == *Gsym[i].name && !strcmp(s, Gsym[i].name))
+            return (i);
+    }
+    return (-1);
 }
 
 char *my_strdup(const char *source)
@@ -25,11 +40,42 @@ char *my_strdup(const char *source)
 static int newglob()
 {
     int p;
-    if ((p = global++) == TEXTLEN)
+    if ((p = global++) == NSYMBOLS)
     {
-        custom_error_int("out of range TEXTLEN", TEXTLEN);
+        custom_error_int("out of range NSYMBOLS", NSYMBOLS);
     }
     return p;
+}
+
+// Get the position of a new local symbol slot, or die
+// if we've run out of positions.
+static int newlocl(void)
+{
+    int p;
+
+    if ((p = Locls--) <= global)
+        custom_error_int("Too many local symbols", 0);
+    return (p);
+}
+
+// Update a symbol at the given slot number in the symbol table. Set up its:
+// + type: char, int etc.
+// + structural type: var, function, array etc.
+// + size: number of elements
+// + endlabel: if this is a function
+// + posn: Position information for local symbols
+static void updatesym(int id, char *name, Primitive_type type, Structural_type stype,
+                      Storage_class class, int endlabel, int size, int posn)
+{
+    if (id < 0 || id >= NSYMBOLS)
+        custom_error_int("Invalid symbol slot number in updatesym()", 0);
+    Gsym[id].name = my_strdup(name);
+    Gsym[id].type = type;
+    Gsym[id].stype = stype;
+    Gsym[id].class = class;
+    Gsym[id].endlabel = endlabel;
+    Gsym[id].size = size;
+    Gsym[id].posn = posn;
 }
 
 int addglob(char *name, Primitive_type type, Structural_type stype,
@@ -39,10 +85,11 @@ int addglob(char *name, Primitive_type type, Structural_type stype,
     if ((id = findglob(name)) != -1)
         return id;
     id = newglob();
-    Gsym[id].name = my_strdup(name);
-    Gsym[id].type = type;
-    Gsym[id].stype = stype;
-    Gsym[id].endlabel = endlabel;
-    Gsym[id].size = size;
+    updatesym(id, name, type, stype, C_GLOBAL, endlabel, size, 0);
     return id;
+}
+
+int addlocl(char *name, Primitive_type type, Structural_type stype,
+            int endlabel, int size)
+{
 }

@@ -92,13 +92,15 @@ int cgnegate(int r);
 int cginvert(int r);
 int cglognot(int r);
 int cgboolean(int r, int op, int label);
+void cgresetlocals(void);
+int cggetlocaloffset(int type, int isparam);
 
 // stm.c
 ASTnode *function_declaration(Primitive_type type);
 ASTnode *compound_statement();
 static ASTnode *single_statement(void);
 static ASTnode *print_statement(void);
-void var_declaration(Primitive_type type);
+void var_declaration(Primitive_type type, int islocal);
 static ASTnode *assignment_statement(void);
 static ASTnode *if_statement(void);
 static ASTnode *while_statement();
@@ -126,9 +128,14 @@ void dumpAST(ASTnode *n, int label, int level);
 
 // sym.c
 int findglob(char *s);
+int findlocl(char *s);
 char *my_strdup(const char *source);
-static int newglob();
+static int newglob(void);
+static int newlocl(void);
 int addglob(char *name, Primitive_type type, Structural_type stype,
+            int endlabel, int size);
+
+int addlocl(char *name, Primitive_type type, Structural_type stype,
             int endlabel, int size);
 
 // types.c

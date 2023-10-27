@@ -12,6 +12,7 @@
         "input09": "cpp",
         "cjson.h": "c",
         "input10": "cpp",
-        "type_traits": "c"
+        "type_traits": "c",
+        "typeinfo": "c"
     }
 }
