@@ -1,7 +1,7 @@
 int a;
 int b;
 int c;
-int hang()
+int main()
 {
   a = 42;
   b = 19;

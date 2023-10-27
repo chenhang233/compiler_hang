@@ -17,6 +17,15 @@ void cgtextseg()
     }
 }
 
+void cgdataseg()
+{
+    if (currSeg != data_seg)
+    {
+        fputs("\t.data\n", Outfile);
+        currSeg = data_seg;
+    }
+}
+
 static int localOffset;
 static int stackOffset;
 
@@ -67,7 +76,6 @@ static void free_register(int reg)
 void cgpreamble()
 {
     freeall_registers();
-    fputs("\t.text\n", Outfile);
 }
 
 void cgpostamble()
@@ -79,13 +87,13 @@ void cgfuncpreamble(int id)
     char *name = Gsym[id].name;
     cgtextseg();
     stackOffset = (localOffset + 15) & ~15;
+
     fprintf(Outfile,
-            "\t.text\n"
             "\t.globl\t%s\n"
             "\t.type\t%s, @function\n"
             "%s:\n"
             "\tpushq\t%%rbp\n"
-            "\tmovq\t%%rsp, %%rbp\n",
+            "\tmovq\t%%rsp, %%rbp\n"
             "\taddq\t$%d,%%rsp\n",
             name, name, name, -stackOffset);
 }
@@ -392,6 +400,32 @@ int cgstorglob(int r, int id)
     return (r);
 }
 
+// Store a register's value into a local variable
+int cgstorlocal(int r, int id)
+{
+    switch (Gsym[id].type)
+    {
+    case P_CHAR:
+        fprintf(Outfile, "\tmovb\t%s, %d(%%rbp)\n", breglist[r],
+                Gsym[id].posn);
+        break;
+    case P_INT:
+        fprintf(Outfile, "\tmovl\t%s, %d(%%rbp)\n", dreglist[r],
+                Gsym[id].posn);
+        break;
+    case P_LONG:
+    case P_CHARPTR:
+    case P_INTPTR:
+    case P_LONGPTR:
+        fprintf(Outfile, "\tmovq\t%s, %d(%%rbp)\n", reglist[r],
+                Gsym[id].posn);
+        break;
+    default:
+        custom_error_int("Bad type in cgstorlocal:", Gsym[id].type);
+    }
+    return (r);
+}
+
 // Array of type sizes in P_XXX order.
 // 0 means no size.
 static int psize[] = {0, 0, 1, 4, 8, 8, 8, 8, 8};
@@ -410,12 +444,14 @@ int cgprimsize(Primitive_type type)
 void cgglobsym(int id)
 {
     int typesize;
+
+    if (Gsym[id].stype == S_FUNCTION)
+        return;
     // Get the size of the type
     typesize = cgprimsize(Gsym[id].type);
-
-    fprintf(Outfile, "\t.data\n"
-                     "\t.globl\t%s\n",
-            Gsym[id].name);
+    // Generate the global identity and the label
+    cgdataseg();
+    fprintf(Outfile, "\t.globl\t%s\n", Gsym[id].name);
     fprintf(Outfile, "%s:", Gsym[id].name);
 
     for (int i = 0; i < Gsym[id].size; i++)
@@ -535,7 +571,12 @@ void cgreturn(int reg, int id)
 int cgaddress(int id)
 {
     int r = alloc_register();
-    fprintf(Outfile, "\tleaq\t%s(%%rip), %s\n", Gsym[id].name, reglist[r]);
+
+    if (Gsym[id].class == C_LOCAL)
+        fprintf(Outfile, "\tleaq\t%d(%%rbp), %s\n", Gsym[id].posn,
+                reglist[r]);
+    else
+        fprintf(Outfile, "\tleaq\t%s(%%rip), %s\n", Gsym[id].name, reglist[r]);
     return (r);
 }
 

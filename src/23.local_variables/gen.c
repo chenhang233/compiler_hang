@@ -164,7 +164,10 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
         switch (n->right->op)
         {
         case A_IDENT:
-            return (cgstorglob(leftreg, n->right->v.id));
+            if (Gsym[n->right->v.id].class == C_LOCAL)
+                return cgstorlocal(leftreg, n->right->v.id);
+            else
+                return cgstorglob(leftreg, n->right->v.id);
         case A_DEREF:
             return (cgstorderef(leftreg, rightreg, n->right->type));
         default:

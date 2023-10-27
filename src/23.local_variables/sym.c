@@ -100,6 +100,7 @@ int addlocl(char *name, Primitive_type type, Structural_type stype,
 
     id = newlocl();
     posn = gengetlocaloffset(type, 0);
+    // printf("posn=%d\n", posn);
     updatesym(id, name, type, stype, C_LOCAL, endlabel, size, posn);
     return id;
 }

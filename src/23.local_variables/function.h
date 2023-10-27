@@ -72,6 +72,8 @@ int cgmul(int r1, int r2);
 int cgdiv(int r1, int r2);
 void cgprintint(int r);
 int cgstorglob(int r, int id);
+int cgstorderef(int r1, int r2, int type);
+int cgstorlocal(int r, int id);
 int cgcompare_and_set(AST_node_type ASTop, int r1, int r2);
 void cglabel(int l);
 void cgjump(int l);
@@ -84,7 +86,6 @@ int cgaddress(int id);
 int cgderef(int r, int type);
 void cgpostamble();
 int cgshlconst(int r, int val);
-int cgstorderef(int r1, int r2, int type);
 int cgand(int r1, int r2);
 int cgor(int r1, int r2);
 int cgxor(int r1, int r2);
@@ -98,6 +99,7 @@ void cgresetlocals(void);
 int cggetlocaloffset(int type, int isparam);
 void cgtextseg();
 int cgloadlocal(int id, int op);
+void cgdataseg();
 
 // stm.c
 ASTnode *function_declaration(Primitive_type type);

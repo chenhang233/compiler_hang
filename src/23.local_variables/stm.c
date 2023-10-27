@@ -42,7 +42,7 @@ void global_declarations()
         if (t_instance.token == T_LPAREN)
         {
             tree = function_declaration(type);
-            jsonify_tree(tree, "1.json");
+            jsonify_tree(tree, "dump.json");
             if (DumpAST)
             {
                 // dumpAST
