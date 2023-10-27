@@ -160,3 +160,24 @@ SS（stack segment）:
    RIP/EIP寄存器，即指令指针寄存器，有时称为程序计数器。指令指针（RIP/EIP）寄存器包含当前代码段中要执行的下一条指令的偏移量.
 
 ```
+
+##### 过程调用:
+######  1.运行时栈:
+```
+x86-64的栈向低地址方向增长，而栈指针 %rsp 指向栈顶元素。可以用 push 和 pop 相关指令将数据存入栈中或是从栈中取出数据。将栈指针减小一个适当的量可以为数据在栈上分配空间；类似的，可以通过增加栈指针来释放空间。
+```
+###### 2.参数传递:
+ ```
+   x86-64中，最多允许 6 个参数通过寄存器来传递，多出的参数需要通过栈来传递
+ ```
+参数的顺序与寄存器的关系对应:
+
+<table data-draft-node="block" data-draft-type="table" data-size="normal" data-row-style="normal"><tbody><tr><th>操作数大小（位）</th><th>参数1</th><th>参数2</th><th>参数3</th><th>参数4</th><th>参数5</th><th>参数6</th></tr><tr><td>64</td><td>%rdi</td><td>%rsi</td><td>%rdx</td><td>%rcx</td><td>%r8</td><td>%r9</td></tr><tr><td>32</td><td>%edi</td><td>%esi</td><td>%edx</td><td>%ecx</td><td>%r8d</td><td>%r9d</td></tr><tr><td>16</td><td>%di</td><td>%si</td><td>%dx</td><td>%cx</td><td>%r8w</td><td>%r9w</td></tr><tr><td>8</td><td>%dil</td><td>%sil</td><td>%dl</td><td>%cl</td><td>%r8b</td><td>%r9b</td></tr></tbody></table>
+
+```
+如果一个函数 Q 有 n （n > 6）个整数参数，如果过程 P 调用过程 Q，需要把参数 1 ~ 6复制到对应的寄存器，把参数 7 ~ n放到栈上，而参数 7 位于栈顶。通过栈传递参数时，所有的数据大小都向 8 的倍数对齐。参数到位以后，程序就可以指向 call 指令将控制转移到 Q 了
+```
+###### 3.返回值
+```
+被调用函数返回时，把返回结果放入 %rax中，供调用函数来获取
+```
