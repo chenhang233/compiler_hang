@@ -1,5 +1,22 @@
 #include "function.h"
 
+// Flag to say which section were are outputting in to
+enum
+{
+    no_seg,
+    text_seg,
+    data_seg
+} currSeg = no_seg;
+
+void cgtextseg()
+{
+    if (currSeg != text_seg)
+    {
+        fputs("\t.text\n", Outfile);
+        currSeg = text_seg;
+    }
+}
+
 static int localOffset;
 static int stackOffset;
 
@@ -60,6 +77,8 @@ void cgpostamble()
 void cgfuncpreamble(int id)
 {
     char *name = Gsym[id].name;
+    cgtextseg();
+    stackOffset = (localOffset + 15) & ~15;
     fprintf(Outfile,
             "\t.text\n"
             "\t.globl\t%s\n"
@@ -67,12 +86,14 @@ void cgfuncpreamble(int id)
             "%s:\n"
             "\tpushq\t%%rbp\n"
             "\tmovq\t%%rsp, %%rbp\n",
-            name, name, name);
+            "\taddq\t$%d,%%rsp\n",
+            name, name, name, -stackOffset);
 }
 
 void cgfuncpostamble(int id)
 {
     cglabel(Gsym[id].endlabel);
+    fprintf(Outfile, "\taddq\t$%d,%%rsp\n", stackOffset);
     fputs("\tpopq	%rbp\n"
           "\tret\n",
           Outfile);
@@ -134,6 +155,63 @@ int cgloadglob(int id, int op)
         break;
     default:
         custom_error_int("Bad type in cgloadglob:", Gsym[id].type);
+    }
+    return (r);
+}
+
+// Load a value from a local variable into a register.
+// Return the number of the register. If the
+// operation is pre- or post-increment/decrement,
+// also perform this action.
+int cgloadlocal(int id, int op)
+{
+    // Get a new register
+    int r = alloc_register();
+
+    // Print out the code to initialise it
+    switch (Gsym[id].type)
+    {
+    case P_CHAR:
+        if (op == A_PREINC)
+            fprintf(Outfile, "\tincb\t%d(%%rbp)\n", Gsym[id].posn);
+        if (op == A_PREDEC)
+            fprintf(Outfile, "\tdecb\t%d(%%rbp)\n", Gsym[id].posn);
+        fprintf(Outfile, "\tmovzbq\t%d(%%rbp), %s\n", Gsym[id].posn,
+                reglist[r]);
+        if (op == A_POSTINC)
+            fprintf(Outfile, "\tincb\t%d(%%rbp)\n", Gsym[id].posn);
+        if (op == A_POSTDEC)
+            fprintf(Outfile, "\tdecb\t%d(%%rbp)\n", Gsym[id].posn);
+        break;
+    case P_INT:
+        if (op == A_PREINC)
+            fprintf(Outfile, "\tincl\t%d(%%rbp)\n", Gsym[id].posn);
+        if (op == A_PREDEC)
+            fprintf(Outfile, "\tdecl\t%d(%%rbp)\n", Gsym[id].posn);
+        fprintf(Outfile, "\tmovslq\t%d(%%rbp), %s\n", Gsym[id].posn,
+                reglist[r]);
+        if (op == A_POSTINC)
+            fprintf(Outfile, "\tincl\t%d(%%rbp)\n", Gsym[id].posn);
+        if (op == A_POSTDEC)
+            fprintf(Outfile, "\tdecl\t%d(%%rbp)\n", Gsym[id].posn);
+        break;
+    case P_LONG:
+    case P_CHARPTR:
+    case P_INTPTR:
+    case P_LONGPTR:
+        if (op == A_PREINC)
+            fprintf(Outfile, "\tincq\t%d(%%rbp)\n", Gsym[id].posn);
+        if (op == A_PREDEC)
+            fprintf(Outfile, "\tdecq\t%d(%%rbp)\n", Gsym[id].posn);
+        fprintf(Outfile, "\tmovq\t%d(%%rbp), %s\n", Gsym[id].posn,
+                reglist[r]);
+        if (op == A_POSTINC)
+            fprintf(Outfile, "\tincq\t%d(%%rbp)\n", Gsym[id].posn);
+        if (op == A_POSTDEC)
+            fprintf(Outfile, "\tdecq\t%d(%%rbp)\n", Gsym[id].posn);
+        break;
+    default:
+        custom_error_int("Bad type in cgloadlocal:", Gsym[id].type);
     }
     return (r);
 }

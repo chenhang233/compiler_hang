@@ -55,6 +55,12 @@ test24: comp1 tests/input24.c lib/printint.c
 	cc -o out out.s lib/printint.c
 	./out
 
+test25: comp1 tests/input25.c lib/printint.c
+	./comp1 tests/input25.c
+	cc -o out out.s lib/printint.c
+	./out
+
+
 
 
 # testn: compn tests/runtestsn

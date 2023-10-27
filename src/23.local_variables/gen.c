@@ -5,6 +5,12 @@ int genlabel(void)
     static int id = 1;
     return (id++);
 }
+
+void genresetlocals(void)
+{
+    cgresetlocals();
+}
+
 int gengetlocaloffset(int type, int isparam)
 {
     return (cggetlocaloffset(type, isparam));
@@ -143,7 +149,14 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
         // Load our value if we are an rvalue
         // or we are being dereferenced
         if (n->rvalue || parentASTop == A_DEREF)
-            return (cgloadglob(n->v.id, n->op));
+            if (Gsym[n->v.id].class == C_LOCAL)
+            {
+                return (cgloadlocal(n->v.id, n->op));
+            }
+            else
+            {
+                return (cgloadglob(n->v.id, n->op));
+            }
         else
             return (NOREG);
     case A_ASSIGN:

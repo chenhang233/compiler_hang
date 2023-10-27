@@ -118,7 +118,7 @@ static ASTnode *array_access(void)
 {
     ASTnode *left, *right;
     int id;
-    if ((id = findglob(Text)) == -1 || Gsym[id].stype != S_ARRAY)
+    if ((id = findsymbol(Text)) == -1 || Gsym[id].stype != S_ARRAY)
         custom_error_chars("Undeclared array", Text);
     left = mkAST_leaf(A_ADDR, Gsym[id].type, id);
     match_lbracket();
@@ -143,7 +143,7 @@ static ASTnode *postfix(void)
     if (t_instance.token == T_LBRACKET)
         return array_access();
 
-    int id = findglob(Text);
+    int id = findsymbol(Text);
     if (id == -1)
         custom_error_int("unknown variable", id);
     switch (t_instance.token)
@@ -260,7 +260,7 @@ ASTnode *funccall(void)
 {
     ASTnode *tree;
     int id;
-    if ((id = findglob(Text)) == -1)
+    if ((id = findsymbol(Text)) == -1)
         custom_error_chars("undefined variable", Text);
 
     match_lparen();

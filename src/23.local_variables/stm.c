@@ -91,16 +91,29 @@ void var_declaration(Primitive_type type, int islocal)
         match_lbracket();
         if (t_instance.token == T_INTLIT)
         {
-            id = addglob(Text, pointer_to(type), S_ARRAY, 0, t_instance.intvalue);
-            genglobsym(id);
+
+            if (islocal)
+            {
+                addlocl(Text, pointer_to(type), S_ARRAY, 0, t_instance.intvalue);
+            }
+            else
+            {
+                addglob(Text, pointer_to(type), S_ARRAY, 0, t_instance.intvalue);
+            }
         }
         scan(&t_instance);
         match_rbracket();
     }
     else
     {
-        id = addglob(Text, type, S_VARIABLE, 0, 1);
-        genglobsym(id);
+        if (islocal)
+        {
+            addlocl(Text, type, S_VARIABLE, 0, 1);
+        }
+        else
+        {
+            addglob(Text, type, S_VARIABLE, 0, 1);
+        }
     }
     match_semi();
 }

@@ -51,6 +51,7 @@ void genpostamble();
 int genlabel(void);
 int genglobstr(char *strvalue);
 int gengetlocaloffset(int type, int isparam);
+void genresetlocals(void);
 
 // cg.c
 void freeall_registers(void);
@@ -95,6 +96,8 @@ int cglognot(int r);
 int cgboolean(int r, int op, int label);
 void cgresetlocals(void);
 int cggetlocaloffset(int type, int isparam);
+void cgtextseg();
+int cgloadlocal(int id, int op);
 
 // stm.c
 ASTnode *function_declaration(Primitive_type type);
@@ -138,6 +141,7 @@ int addglob(char *name, Primitive_type type, Structural_type stype,
 
 int addlocl(char *name, Primitive_type type, Structural_type stype,
             int endlabel, int size);
+int findsymbol(char *s);
 
 // types.c
 int type_compatible(Primitive_type *left, Primitive_type *right, int onlyright);
