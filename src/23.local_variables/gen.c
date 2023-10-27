@@ -5,6 +5,10 @@ int genlabel(void)
     static int id = 1;
     return (id++);
 }
+int gengetlocaloffset(int type, int isparam)
+{
+    return (cggetlocaloffset(type, isparam));
+}
 
 int genIf(ASTnode *n)
 {

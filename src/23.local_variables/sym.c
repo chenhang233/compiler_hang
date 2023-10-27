@@ -92,4 +92,13 @@ int addglob(char *name, Primitive_type type, Structural_type stype,
 int addlocl(char *name, Primitive_type type, Structural_type stype,
             int endlabel, int size)
 {
+    int slot, posn;
+    // If this is already in the symbol table, return the existing slot
+    if ((slot = findlocl(name)) != -1)
+        return (slot);
+
+    slot = newlocl();
+    posn = gengetlocaloffset(type, 0);
+    updatesym(slot, name, type, stype, C_LOCAL, endlabel, size, posn);
+    return (slot);
 }

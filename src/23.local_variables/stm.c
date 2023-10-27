@@ -53,7 +53,7 @@ void global_declarations()
         }
         else
         {
-            var_declaration(type);
+            var_declaration(type, 0);
         }
         if (t_instance.token == T_EOF)
             break;
@@ -149,7 +149,7 @@ static ASTnode *single_statement(void)
     case T_LONG:
         type = parse_type();
         match_ident();
-        var_declaration(type);
+        var_declaration(type, 1);
         return NULL;
     case T_IF:
         return if_statement();
