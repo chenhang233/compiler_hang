@@ -156,7 +156,8 @@ typedef struct Token
 typedef enum storage_class
 {
     C_GLOBAL = 1, // Globally visible symbol
-    C_LOCAL       // Locally visible symbol
+    C_LOCAL,      // Locally visible symbol
+    C_PARAM       // Locally visible function parameter
 } Storage_class;
 
 typedef struct symtable

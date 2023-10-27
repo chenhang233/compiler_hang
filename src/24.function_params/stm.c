@@ -60,6 +60,11 @@ void global_declarations()
     }
 }
 
+static int param_declaration(void)
+{
+    //
+}
+
 ASTnode *function_declaration(Primitive_type type)
 {
     ASTnode *tree, *final_stm;
