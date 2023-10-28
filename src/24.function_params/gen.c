@@ -11,10 +11,10 @@ void genresetlocals(void)
     cgresetlocals();
 }
 
-int gengetlocaloffset(int type, int isparam)
-{
-    return (cggetlocaloffset(type, isparam));
-}
+// int gengetlocaloffset(int type, int isparam)
+// {
+//     return (cggetlocaloffset(type, isparam));
+// }
 
 int genIf(ASTnode *n)
 {

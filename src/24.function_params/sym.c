@@ -89,7 +89,7 @@ int addglob(char *name, Primitive_type type, Structural_type stype,
     if ((id = findglob(name)) != -1)
         return id;
     id = newglob();
-    updatesym(id, name, type, stype, C_Globals, endlabel, size, 0);
+    updatesym(id, name, type, stype, C_GLOBAL, endlabel, size, 0);
     genglobsym(id);
     return id;
 }
@@ -97,17 +97,24 @@ int addglob(char *name, Primitive_type type, Structural_type stype,
 int addlocl(char *name, Primitive_type type, Structural_type stype,
             int isparam, int size)
 {
-    int id, posn;
+    int localslot, globalslot;
     // If this is already in the symbol table, return the existing slot
-    if ((id = findlocl(name)) != -1)
-        return id;
+    if ((localslot = findlocl(name)) != -1)
+        return -1;
 
-    id = newlocl();
-    //--------------------------------
-    // posn = gengetlocaloffset(type, 0);
-    // printf("posn=%d\n", posn);
-    updatesym(id, name, type, stype, C_LOCAL, 0, size, 0);
-    return id;
+    localslot = newlocl();
+    if (isparam)
+    {
+        updatesym(localslot, name, type, stype, C_PARAM, 0, size, 0);
+        globalslot = newglob();
+        updatesym(globalslot, name, type, stype, C_PARAM, 0, size, 0);
+    }
+    else
+    {
+        updatesym(localslot, name, type, stype, C_LOCAL, 0, size, 0);
+    }
+
+    return localslot;
 }
 
 // Determine if the symbol s is in the symbol table.

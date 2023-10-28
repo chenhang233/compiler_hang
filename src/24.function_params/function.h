@@ -51,7 +51,7 @@ int genprimsize(int type);
 void genpostamble();
 int genlabel(void);
 int genglobstr(char *strvalue);
-int gengetlocaloffset(int type, int isparam);
+// int gengetlocaloffset(int type, int isparam);
 void genresetlocals(void);
 
 // cg.c

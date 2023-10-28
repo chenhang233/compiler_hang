@@ -156,6 +156,9 @@ int scan(Token *t)
         scanstr(Text);
         t->token = T_STRLIT;
         break;
+    case ',':
+        t->token = T_COMMA;
+        break;
     default:
         if (isdigit(c))
         {

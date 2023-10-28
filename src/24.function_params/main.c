@@ -6,6 +6,8 @@ void init()
     Line = 1;
     cache = 0;
     DumpAST = 0;
+    Globals = 0;
+    Locls = NSYMBOLS - 1;
 }
 
 int main(int argc, char const *argv[])
