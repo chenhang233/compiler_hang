@@ -23,6 +23,7 @@ void match_void();
 void match_return();
 void match_lbracket();
 void match_rbracket();
+void match_comma();
 void jsonify_tree(ASTnode *root, const char *filename);
 
 // scan.c
@@ -106,7 +107,7 @@ ASTnode *function_declaration(Primitive_type type);
 ASTnode *compound_statement();
 static ASTnode *single_statement(void);
 static ASTnode *print_statement(void);
-void var_declaration(Primitive_type type, int islocal);
+void var_declaration(Primitive_type type, int islocal, int isparam);
 static ASTnode *assignment_statement(void);
 static ASTnode *if_statement(void);
 static ASTnode *while_statement();
@@ -143,7 +144,7 @@ int addglob(char *name, Primitive_type type, Structural_type stype,
             int endlabel, int size);
 
 int addlocl(char *name, Primitive_type type, Structural_type stype,
-            int endlabel, int size);
+            int isparam, int size);
 int findsymbol(char *s);
 
 // types.c

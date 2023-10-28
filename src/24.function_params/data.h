@@ -64,7 +64,7 @@ typedef enum Token_type
     T_RPAREN,   // )
     T_LBRACKET, // [
     T_RBRACKET, // ]
-
+    T_COMMA     // ,
 } Token_type;
 
 typedef enum Structural_type

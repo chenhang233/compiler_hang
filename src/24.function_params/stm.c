@@ -53,7 +53,7 @@ void global_declarations()
         }
         else
         {
-            var_declaration(type, 0);
+            var_declaration(type, 0, 0);
         }
         if (t_instance.token == T_EOF)
             break;
@@ -62,18 +62,40 @@ void global_declarations()
 
 static int param_declaration(void)
 {
-    //
+    int count = 0;
+    Primitive_type t_type;
+    while (t_instance.token != T_RPAREN)
+    {
+        t_type = parse_type();
+        match_ident();
+        var_declaration(t_type, 1, 1);
+        count++;
+        switch (t_instance.token)
+        {
+        case T_COMMA:
+            match_comma();
+            break;
+        case T_RPAREN:
+            break;
+        default:
+            custom_error_int("nexpected token in parameter list", t_instance.token);
+        }
+    }
+
+    return count;
 }
 
 ASTnode *function_declaration(Primitive_type type)
 {
     ASTnode *tree, *final_stm;
-    int name_id, label_id;
+    int name_id, label_id, p_len;
     label_id = genlabel();
     name_id = addglob(Text, type, S_FUNCTION, label_id, 0);
     Functionid = name_id;
 
     match_lparen();
+    p_len = param_declaration();
+    Gsym[name_id].nelems = p_len;
     match_rparen();
 
     tree = compound_statement();
@@ -88,7 +110,7 @@ ASTnode *function_declaration(Primitive_type type)
     return mkAST_left(A_FUNCTION, type, tree, name_id);
 }
 
-void var_declaration(Primitive_type type, int islocal)
+void var_declaration(Primitive_type type, int islocal, int isparam)
 {
     int id;
     if (t_instance.token == T_LBRACKET)
@@ -168,7 +190,7 @@ static ASTnode *single_statement(void)
     case T_LONG:
         type = parse_type();
         match_ident();
-        var_declaration(type, 1);
+        var_declaration(type, 1, 0);
         return NULL;
     case T_IF:
         return if_statement();

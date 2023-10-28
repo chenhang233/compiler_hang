@@ -91,7 +91,7 @@ int addglob(char *name, Primitive_type type, Structural_type stype,
 }
 
 int addlocl(char *name, Primitive_type type, Structural_type stype,
-            int endlabel, int size)
+            int isparam, int size)
 {
     int id, posn;
     // If this is already in the symbol table, return the existing slot
@@ -99,9 +99,10 @@ int addlocl(char *name, Primitive_type type, Structural_type stype,
         return id;
 
     id = newlocl();
-    posn = gengetlocaloffset(type, 0);
+    //--------------------------------
+    // posn = gengetlocaloffset(type, 0);
     // printf("posn=%d\n", posn);
-    updatesym(id, name, type, stype, C_LOCAL, endlabel, size, posn);
+    updatesym(id, name, type, stype, C_LOCAL, 0, size, 0);
     return id;
 }
 

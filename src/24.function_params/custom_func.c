@@ -112,6 +112,12 @@ void match_rbracket()
 {
     match(T_RBRACKET, "]");
 }
+
+void match_comma()
+{
+    match(T_COMMA, ",");
+}
+
 static char *AST_node_type_keys[] = {
     "A_ASSIGN",
     "A_LOGOR",
