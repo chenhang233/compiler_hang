@@ -36,17 +36,24 @@ void cgresetlocals(void)
 }
 
 // Get the position of the next local variable.
-// Use the isparam flag to allocate a parameter (not yet XXX).
-int cggetlocaloffset(int type, int isparam)
+int newlocaloffset(int type)
 {
     localOffset += cgprimsize(type) > 4 ? cgprimsize(type) : 4;
     return -localOffset;
 }
 
-static int freereg[4];
-static char *reglist[4] = {"%r8", "%r9", "%r10", "%r11"};
-static char *breglist[4] = {"%r8b", "%r9b", "%r10b", "%r11b"};
-static char *dreglist[4] = {"%r8d", "%r9d", "%r10d", "%r11d"};
+#define NUMFREEREGS 4
+#define FIRSTPARAMREG 9 // Position of first parameter register
+static int freereg[NUMFREEREGS];
+static char *reglist[] =
+    {"%r10", "%r11", "%r12", "%r13", "%r9", "%r8", "%rcx", "%rdx",
+     "%rsi", "%rdi"};
+static char *breglist[] =
+    {"%r10b", "%r11b", "%r12b", "%r13b", "%r9b", "%r8b", "%cl",
+     "%dl", "%sil", "%dil"};
+static char *dreglist[] =
+    {"%r10d", "%r11d", "%r12d", "%r13d", "%r9d", "%r8d", "%ecx",
+     "%edx", "%esi", "%edi"};
 
 void freeall_registers(void)
 {
@@ -55,7 +62,7 @@ void freeall_registers(void)
 
 static int alloc_register(void)
 {
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < NUMFREEREGS; i++)
     {
         if (freereg[i])
         {
@@ -84,18 +91,47 @@ void cgpostamble()
 
 void cgfuncpreamble(int id)
 {
+    int i;
     char *name = Gsym[id].name;
+    int paramOffset = 16;
+    int paramReg = FIRSTPARAMREG;
     cgtextseg();
-    stackOffset = (localOffset + 15) & ~15;
-
+    localOffset = 0;
     fprintf(Outfile,
             "\t.globl\t%s\n"
             "\t.type\t%s, @function\n"
             "%s:\n"
             "\tpushq\t%%rbp\n"
-            "\tmovq\t%%rsp, %%rbp\n"
-            "\taddq\t$%d,%%rsp\n",
-            name, name, name, -stackOffset);
+            "\tmovq\t%%rsp, %%rbp\n",
+            name, name, name);
+    // Copy any in-register parameters to the stack
+    // Stop after no more than six parameter registers
+    for (i = NSYMBOLS - 1; i > Locls; i--)
+    {
+        if (Gsym[i].class != C_PARAM)
+            break;
+        if (i < NSYMBOLS - 6)
+            break;
+        Gsym[i].posn = newlocaloffset(Gsym[i].type);
+        cgstorlocal(paramReg--, i);
+    }
+    // For the remainder, if they are a parameter then they are
+    // already on the stack. If only a local, make a stack position.  for (; i > Locls; i--)
+    {
+        if (Gsym[i].class == C_PARAM)
+        {
+            Gsym[i].posn = paramOffset;
+            paramOffset += 8;
+        }
+        else
+        {
+            Gsym[i].posn = newlocaloffset(Gsym[i].type);
+        }
+    }
+    // Align the stack pointer to be a multiple of 16
+    // less than its previous value
+    stackOffset = (localOffset + 15) & ~15;
+    fprintf(Outfile, "\taddq\t$%d,%%rsp\n", -stackOffset);
 }
 
 void cgfuncpostamble(int id)

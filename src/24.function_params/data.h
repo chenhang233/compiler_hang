@@ -197,3 +197,6 @@ Token t_instance;
 FILE *Infile;
 FILE *Outfile;
 symtable Gsym[NSYMBOLS]; // global symbol table
+
+int Globals = 0;          // Position of next free Globals symbol slot
+int Locls = NSYMBOLS - 1; // Position of next free local symbol slot

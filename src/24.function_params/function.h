@@ -97,7 +97,7 @@ int cginvert(int r);
 int cglognot(int r);
 int cgboolean(int r, int op, int label);
 void cgresetlocals(void);
-int cggetlocaloffset(int type, int isparam);
+int newlocaloffset(int type);
 void cgtextseg();
 int cgloadlocal(int id, int op);
 void cgdataseg();
@@ -140,6 +140,7 @@ int findlocl(char *s);
 char *my_strdup(const char *source);
 static int newglob(void);
 static int newlocl(void);
+void freeloclsyms(void);
 int addglob(char *name, Primitive_type type, Structural_type stype,
             int endlabel, int size);
 

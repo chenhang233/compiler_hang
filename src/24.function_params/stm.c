@@ -50,6 +50,7 @@ void global_declarations()
                 fprintf(stdout, "\n\n");
             }
             genAST(tree, NOLABEL, 0);
+            freeloclsyms();
         }
         else
         {

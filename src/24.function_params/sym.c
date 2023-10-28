@@ -1,11 +1,8 @@
 #include "function.h"
 
-static int global = 0;           // Position of next free global symbol slot
-static int Locls = NSYMBOLS - 1; // Position of next free local symbol slot
-
 int findglob(char *s)
 {
-    for (int i = 0; i < global; i++)
+    for (int i = 0; i < Globals; i++)
     {
         if (*Gsym[i].name == *s && !strcmp(Gsym[i].name, s))
             return i;
@@ -40,7 +37,7 @@ char *my_strdup(const char *source)
 static int newglob()
 {
     int p;
-    if ((p = global++) == NSYMBOLS)
+    if ((p = Globals++) == NSYMBOLS)
     {
         custom_error_int("out of range NSYMBOLS", NSYMBOLS);
     }
@@ -53,9 +50,16 @@ static int newlocl(void)
 {
     int p;
 
-    if ((p = Locls--) <= global)
+    if ((p = Locls--) <= Globals)
         custom_error_int("Too many local symbols", 0);
     return (p);
+}
+
+// Clear all the entries in the
+// local symbol table
+void freeloclsyms(void)
+{
+    Locls = NSYMBOLS - 1;
 }
 
 // Update a symbol at the given slot number in the symbol table. Set up its:
@@ -85,7 +89,7 @@ int addglob(char *name, Primitive_type type, Structural_type stype,
     if ((id = findglob(name)) != -1)
         return id;
     id = newglob();
-    updatesym(id, name, type, stype, C_GLOBAL, endlabel, size, 0);
+    updatesym(id, name, type, stype, C_Globals, endlabel, size, 0);
     genglobsym(id);
     return id;
 }
