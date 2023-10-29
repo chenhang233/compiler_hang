@@ -82,7 +82,7 @@ int cgcompare_and_jump(AST_node_type ASTop, int r1, int r2, int label);
 int cgwiden(int r, int oldtype, int newtype);
 int cgprimsize(Primitive_type type);
 void cgreturn(int reg, int id);
-int cgcall(int r, int id);
+int cgcall(int id, int numargs);
 int cgaddress(int id);
 int cgderef(int r, int type);
 void cgpostamble();
@@ -101,6 +101,7 @@ int newlocaloffset(int type);
 void cgtextseg();
 int cgloadlocal(int id, int op);
 void cgdataseg();
+void cgcopyarg(int r, int argposn);
 
 // stm.c
 ASTnode *function_declaration(Primitive_type type);
@@ -133,7 +134,8 @@ ASTnode *prefix(void);
 static ASTnode *postfix(void);
 static int gendumplabel(void);
 void dumpAST(ASTnode *n, int label, int level);
-static struct ASTnode *expression_list(void);
+static ASTnode *expression_list(void);
+static int gen_funccall(ASTnode *n);
 
 // sym.c
 int findglob(char *s);

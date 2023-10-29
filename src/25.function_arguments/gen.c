@@ -77,6 +77,15 @@ int genWhile(ASTnode *n)
     return (NOREG);
 }
 
+// Generate the code to copy the arguments of a
+// function call to its parameters, then call the
+// function itself. Return the register that holds
+// the function's return value.
+static int gen_funccall(ASTnode *n)
+{
+    ASTnode *glue_tree;
+}
+
 int genAST(ASTnode *n, int label, AST_node_type parentASTop)
 {
     int leftreg, rightreg;
@@ -95,12 +104,7 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
         genfreeregs();
         return (NOREG);
     case A_FUNCTION:
-        // Generate the function's preamble before the code
-        // in the child sub-tree
-        cgfuncpreamble(n->v.id);
-        genAST(n->left, NOLABEL, n->op);
-        cgfuncpostamble(n->v.id);
-        return (NOREG);
+        return gen_funccall(n);
     }
 
     if (n->left)

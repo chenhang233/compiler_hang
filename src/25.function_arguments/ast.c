@@ -67,7 +67,7 @@ ASTnode *binexpr(int ptp)
     left = prefix();
     // printf("v=%d %d\n", left->v.intvalue, left->op);
     Token_type type = t_instance.token;
-    if (type == T_SEMI || type == T_RPAREN || type == T_RBRACKET)
+    if (type == T_SEMI || type == T_RPAREN || type == T_RBRACKET || type == T_COMMA)
     {
         left->rvalue = 1;
         return left;
@@ -104,7 +104,7 @@ ASTnode *binexpr(int ptp)
         }
         left = mkAST_node(binastop(type), left->type, left, NULL, right, 0);
         type = t_instance.token;
-        if (type == T_SEMI || type == T_RPAREN || type == T_RBRACKET)
+        if (type == T_SEMI || type == T_RPAREN || type == T_RBRACKET || type == T_COMMA)
         {
             left->rvalue = 1;
             return left;
@@ -256,8 +256,28 @@ ASTnode *prefix(void)
     return tree;
 }
 
-static struct ASTnode *expression_list(void)
+static ASTnode *expression_list(void)
 {
+    ASTnode *child = NULL;
+    ASTnode *tree = NULL;
+    int expr_count = 0;
+    while (t_instance.token != T_RPAREN)
+    {
+        expr_count++;
+        child = binexpr(0);
+        tree = mkAST_node(A_GLUE, P_NONE, tree, NULL, child, expr_count);
+        switch (t_instance.token)
+        {
+        case T_COMMA:
+            match_comma();
+            break;
+        case T_RPAREN:
+            break;
+        default:
+            custom_error_char("Unexpected token in expression list", t_instance.token);
+        }
+    }
+    return tree;
 }
 
 ASTnode *funccall(void)
@@ -268,7 +288,7 @@ ASTnode *funccall(void)
         custom_error_chars("undefined variable", Text);
 
     match_lparen();
-    tree = binexpr(0);
+    tree = expression_list();
     tree = mkAST_left(A_FUNCCALL, Gsym[id].type, tree, id);
     match_rparen();
 

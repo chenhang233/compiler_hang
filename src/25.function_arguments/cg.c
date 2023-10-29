@@ -392,16 +392,18 @@ int cglognot(int r)
     return (r);
 }
 
-// Call a function with one argument from the given register
+// Call a function with the given symbol id
+// Pop off any arguments pushed on the stack
 // Return the register with the result
-int cgcall(int r, int id)
+int cgcall(int id, int numargs)
 {
     // Get a new register
     int outr = alloc_register();
-    fprintf(Outfile, "\tmovq\t%s, %%rdi\n", reglist[r]);
     fprintf(Outfile, "\tcall\t%s\n", Gsym[id].name);
+    if (numargs > 6)
+        fprintf(Outfile, "\taddq\t$%d, %%rsp\n", 8 * (numargs - 6));
+    // and copy the return value into our register
     fprintf(Outfile, "\tmovq\t%%rax, %s\n", reglist[outr]);
-    free_register(r);
     return (outr);
 }
 
@@ -656,4 +658,21 @@ int cgstorderef(int r1, int r2, int type)
         custom_error_int("Can't cgstoderef on type:", type);
     }
     return (r1);
+}
+
+// Given a register with an argument value,
+// copy this argument into the argposn'th
+// parameter in preparation for a future function
+// call. Note that argposn is 1, 2, 3, 4, ..., never zero.
+void cgcopyarg(int r, int argposn)
+{
+    if (argposn > 6)
+    {
+        fprintf(Outfile, "\tpushq\t%s\n", reglist[r]);
+    }
+    else
+    {
+        fprintf(Outfile, "\tmovq\t%s, %s\n", reglist[r],
+                reglist[FIRSTPARAMREG - argposn + 1]);
+    }
 }
