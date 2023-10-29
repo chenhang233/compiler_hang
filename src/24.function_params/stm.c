@@ -55,6 +55,7 @@ void global_declarations()
         else
         {
             var_declaration(type, 0, 0);
+            match_semi();
         }
         if (t_instance.token == T_EOF)
             break;
@@ -137,14 +138,14 @@ void var_declaration(Primitive_type type, int islocal, int isparam)
     {
         if (islocal)
         {
-            addlocl(Text, type, S_VARIABLE, 0, 1);
+            if (addlocl(Text, type, S_VARIABLE, isparam, 1) == -1)
+                custom_error_chars("Duplicate local variable declaration", Text);
         }
         else
         {
             addglob(Text, type, S_VARIABLE, 0, 1);
         }
     }
-    match_semi();
 }
 
 ASTnode *compound_statement()
@@ -192,6 +193,7 @@ static ASTnode *single_statement(void)
         type = parse_type();
         match_ident();
         var_declaration(type, 1, 0);
+        match_semi();
         return NULL;
     case T_IF:
         return if_statement();

@@ -1,172 +1,154 @@
 {
 	"AST_node_type":	"A_FUNCTION",
 	"Primitive_type":	"P_INT",
-	"v_id":	5,
-	"rvalue":	0,
+	"v_id":	20,
+	"rvalue":	-92469320,
 	"left":	{
 		"AST_node_type":	"A_GLUE",
 		"Primitive_type":	"P_NONE",
 		"v_id":	0,
-		"rvalue":	0,
+		"rvalue":	-92469320,
 		"left":	{
 			"AST_node_type":	"A_GLUE",
 			"Primitive_type":	"P_NONE",
 			"v_id":	0,
-			"rvalue":	0,
+			"rvalue":	-92469256,
 			"left":	{
 				"AST_node_type":	"A_GLUE",
 				"Primitive_type":	"P_NONE",
 				"v_id":	0,
-				"rvalue":	0,
+				"rvalue":	-92469320,
 				"left":	{
 					"AST_node_type":	"A_GLUE",
 					"Primitive_type":	"P_NONE",
 					"v_id":	0,
-					"rvalue":	0,
+					"rvalue":	-92469320,
 					"left":	{
 						"AST_node_type":	"A_GLUE",
 						"Primitive_type":	"P_NONE",
 						"v_id":	0,
-						"rvalue":	0,
+						"rvalue":	-92469240,
 						"left":	{
 							"AST_node_type":	"A_GLUE",
 							"Primitive_type":	"P_NONE",
 							"v_id":	0,
-							"rvalue":	0,
+							"rvalue":	-92469320,
 							"left":	{
 								"AST_node_type":	"A_GLUE",
 								"Primitive_type":	"P_NONE",
 								"v_id":	0,
-								"rvalue":	0,
+								"rvalue":	-92469320,
 								"left":	{
 									"AST_node_type":	"A_GLUE",
 									"Primitive_type":	"P_NONE",
 									"v_id":	0,
-									"rvalue":	0,
+									"rvalue":	-92469320,
 									"left":	{
 										"AST_node_type":	"A_GLUE",
 										"Primitive_type":	"P_NONE",
 										"v_id":	0,
-										"rvalue":	0,
+										"rvalue":	-92469320,
 										"left":	{
 											"AST_node_type":	"A_GLUE",
 											"Primitive_type":	"P_NONE",
 											"v_id":	0,
-											"rvalue":	0,
+											"rvalue":	-92469320,
 											"left":	{
-												"AST_node_type":	"A_GLUE",
-												"Primitive_type":	"P_NONE",
-												"v_id":	0,
-												"rvalue":	0,
-												"left":	{
-													"AST_node_type":	"A_GLUE",
-													"Primitive_type":	"P_NONE",
-													"v_id":	0,
-													"rvalue":	0,
-													"left":	{
-														"AST_node_type":	"A_ASSIGN",
-														"Primitive_type":	"P_INT",
-														"v_id":	0,
-														"rvalue":	1,
-														"left":	{
-															"AST_node_type":	"A_WIDEN",
-															"Primitive_type":	"P_INT",
-															"v_id":	0,
-															"rvalue":	0,
-															"left":	{
-																"AST_node_type":	"A_INTLIT",
-																"Primitive_type":	"P_CHAR",
-																"v_id":	10,
-																"rvalue":	1
-															}
-														},
-														"right":	{
-															"AST_node_type":	"A_IDENT",
-															"Primitive_type":	"P_INT",
-															"v_id":	1021,
-															"rvalue":	0
-														}
-													},
-													"right":	{
-														"AST_node_type":	"A_ASSIGN",
-														"Primitive_type":	"P_INT",
-														"v_id":	0,
-														"rvalue":	1,
-														"left":	{
-															"AST_node_type":	"A_WIDEN",
-															"Primitive_type":	"P_INT",
-															"v_id":	0,
-															"rvalue":	0,
-															"left":	{
-																"AST_node_type":	"A_INTLIT",
-																"Primitive_type":	"P_CHAR",
-																"v_id":	20,
-																"rvalue":	1
-															}
-														},
-														"right":	{
-															"AST_node_type":	"A_IDENT",
-															"Primitive_type":	"P_INT",
-															"v_id":	1022,
-															"rvalue":	0
-														}
-													}
-												},
-												"right":	{
-													"AST_node_type":	"A_ASSIGN",
-													"Primitive_type":	"P_CHAR",
-													"v_id":	0,
-													"rvalue":	1,
-													"left":	{
-														"AST_node_type":	"A_INTLIT",
-														"Primitive_type":	"P_CHAR",
-														"v_id":	30,
-														"rvalue":	1
-													},
-													"right":	{
-														"AST_node_type":	"A_IDENT",
-														"Primitive_type":	"P_CHAR",
-														"v_id":	1023,
-														"rvalue":	0
-													}
-												}
-											},
-											"right":	{
-												"AST_node_type":	"A_FUNCCALL",
-												"Primitive_type":	"P_CHAR",
+												"AST_node_type":	"A_ASSIGN",
+												"Primitive_type":	"P_INT",
 												"v_id":	0,
 												"rvalue":	1,
 												"left":	{
+													"AST_node_type":	"A_WIDEN",
+													"Primitive_type":	"P_INT",
+													"v_id":	0,
+													"rvalue":	37852256,
+													"left":	{
+														"AST_node_type":	"A_INTLIT",
+														"Primitive_type":	"P_CHAR",
+														"v_id":	1,
+														"rvalue":	1
+													}
+												},
+												"right":	{
 													"AST_node_type":	"A_IDENT",
 													"Primitive_type":	"P_INT",
-													"v_id":	1021,
-													"rvalue":	1
+													"v_id":	1023,
+													"rvalue":	-92469272
+												}
+											},
+											"right":	{
+												"AST_node_type":	"A_ASSIGN",
+												"Primitive_type":	"P_INT",
+												"v_id":	0,
+												"rvalue":	1,
+												"left":	{
+													"AST_node_type":	"A_WIDEN",
+													"Primitive_type":	"P_INT",
+													"v_id":	0,
+													"rvalue":	-92469240,
+													"left":	{
+														"AST_node_type":	"A_INTLIT",
+														"Primitive_type":	"P_CHAR",
+														"v_id":	2,
+														"rvalue":	1
+													}
+												},
+												"right":	{
+													"AST_node_type":	"A_IDENT",
+													"Primitive_type":	"P_INT",
+													"v_id":	1022,
+													"rvalue":	37848736
 												}
 											}
 										},
 										"right":	{
-											"AST_node_type":	"A_FUNCCALL",
-											"Primitive_type":	"P_CHAR",
+											"AST_node_type":	"A_ASSIGN",
+											"Primitive_type":	"P_INT",
 											"v_id":	0,
 											"rvalue":	1,
 											"left":	{
+												"AST_node_type":	"A_WIDEN",
+												"Primitive_type":	"P_INT",
+												"v_id":	0,
+												"rvalue":	-92469096,
+												"left":	{
+													"AST_node_type":	"A_INTLIT",
+													"Primitive_type":	"P_CHAR",
+													"v_id":	3,
+													"rvalue":	1
+												}
+											},
+											"right":	{
 												"AST_node_type":	"A_IDENT",
 												"Primitive_type":	"P_INT",
-												"v_id":	1022,
-												"rvalue":	1
+												"v_id":	1021,
+												"rvalue":	-92469208
 											}
 										}
 									},
 									"right":	{
-										"AST_node_type":	"A_FUNCCALL",
-										"Primitive_type":	"P_CHAR",
+										"AST_node_type":	"A_ASSIGN",
+										"Primitive_type":	"P_INT",
 										"v_id":	0,
 										"rvalue":	1,
 										"left":	{
+											"AST_node_type":	"A_WIDEN",
+											"Primitive_type":	"P_INT",
+											"v_id":	0,
+											"rvalue":	-92469320,
+											"left":	{
+												"AST_node_type":	"A_INTLIT",
+												"Primitive_type":	"P_CHAR",
+												"v_id":	4,
+												"rvalue":	1
+											}
+										},
+										"right":	{
 											"AST_node_type":	"A_IDENT",
-											"Primitive_type":	"P_CHAR",
-											"v_id":	1023,
-											"rvalue":	1
+											"Primitive_type":	"P_INT",
+											"v_id":	1020,
+											"rvalue":	-92468808
 										}
 									}
 								},
@@ -179,7 +161,7 @@
 										"AST_node_type":	"A_WIDEN",
 										"Primitive_type":	"P_INT",
 										"v_id":	0,
-										"rvalue":	0,
+										"rvalue":	-92469256,
 										"left":	{
 											"AST_node_type":	"A_INTLIT",
 											"Primitive_type":	"P_CHAR",
@@ -190,58 +172,34 @@
 									"right":	{
 										"AST_node_type":	"A_IDENT",
 										"Primitive_type":	"P_INT",
-										"v_id":	2,
-										"rvalue":	0
+										"v_id":	1019,
+										"rvalue":	-92469320
 									}
 								}
 							},
 							"right":	{
-								"AST_node_type":	"A_ASSIGN",
-								"Primitive_type":	"P_INT",
+								"AST_node_type":	"A_FUNCCALL",
+								"Primitive_type":	"P_CHAR",
 								"v_id":	0,
 								"rvalue":	1,
 								"left":	{
-									"AST_node_type":	"A_WIDEN",
-									"Primitive_type":	"P_INT",
-									"v_id":	0,
-									"rvalue":	0,
-									"left":	{
-										"AST_node_type":	"A_INTLIT",
-										"Primitive_type":	"P_CHAR",
-										"v_id":	15,
-										"rvalue":	1
-									}
-								},
-								"right":	{
 									"AST_node_type":	"A_IDENT",
 									"Primitive_type":	"P_INT",
-									"v_id":	3,
-									"rvalue":	0
+									"v_id":	1023,
+									"rvalue":	1
 								}
 							}
 						},
 						"right":	{
-							"AST_node_type":	"A_ASSIGN",
-							"Primitive_type":	"P_INT",
+							"AST_node_type":	"A_FUNCCALL",
+							"Primitive_type":	"P_CHAR",
 							"v_id":	0,
 							"rvalue":	1,
 							"left":	{
-								"AST_node_type":	"A_WIDEN",
-								"Primitive_type":	"P_INT",
-								"v_id":	0,
-								"rvalue":	0,
-								"left":	{
-									"AST_node_type":	"A_INTLIT",
-									"Primitive_type":	"P_CHAR",
-									"v_id":	25,
-									"rvalue":	1
-								}
-							},
-							"right":	{
 								"AST_node_type":	"A_IDENT",
 								"Primitive_type":	"P_INT",
-								"v_id":	4,
-								"rvalue":	0
+								"v_id":	1022,
+								"rvalue":	1
 							}
 						}
 					},
@@ -253,7 +211,7 @@
 						"left":	{
 							"AST_node_type":	"A_IDENT",
 							"Primitive_type":	"P_INT",
-							"v_id":	2,
+							"v_id":	1021,
 							"rvalue":	1
 						}
 					}
@@ -266,7 +224,7 @@
 					"left":	{
 						"AST_node_type":	"A_IDENT",
 						"Primitive_type":	"P_INT",
-						"v_id":	3,
+						"v_id":	1020,
 						"rvalue":	1
 					}
 				}
@@ -279,7 +237,7 @@
 				"left":	{
 					"AST_node_type":	"A_IDENT",
 					"Primitive_type":	"P_INT",
-					"v_id":	4,
+					"v_id":	1019,
 					"rvalue":	1
 				}
 			}
@@ -288,12 +246,12 @@
 			"AST_node_type":	"A_RETURN",
 			"Primitive_type":	"P_INT",
 			"v_id":	0,
-			"rvalue":	0,
+			"rvalue":	-92469320,
 			"left":	{
 				"AST_node_type":	"A_WIDEN",
 				"Primitive_type":	"P_INT",
 				"v_id":	0,
-				"rvalue":	0,
+				"rvalue":	-92469320,
 				"left":	{
 					"AST_node_type":	"A_INTLIT",
 					"Primitive_type":	"P_CHAR",
