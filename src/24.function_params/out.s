@@ -11,35 +11,35 @@ param8:
 	movl	%r8d, -20(%rbp)
 	movl	%r9d, -24(%rbp)
 	addq	$-32,%rsp
-	movslq	a(%rip), %r10
+	movslq	-4(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
-	movslq	b(%rip), %r10
+	movslq	-8(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
-	movslq	c(%rip), %r10
+	movslq	-12(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
-	movslq	d(%rip), %r10
+	movslq	-16(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
-	movslq	e(%rip), %r10
+	movslq	-20(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
-	movslq	f(%rip), %r10
+	movslq	-24(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
-	movslq	g(%rip), %r10
+	movslq	16(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
-	movslq	h(%rip), %r10
+	movslq	24(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
@@ -61,23 +61,23 @@ param5:
 	movl	%ecx, -16(%rbp)
 	movl	%r8d, -20(%rbp)
 	addq	$-32,%rsp
-	movslq	a(%rip), %r10
+	movslq	-4(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
-	movslq	b(%rip), %r10
+	movslq	-8(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
-	movslq	c(%rip), %r10
+	movslq	-12(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
-	movslq	d(%rip), %r10
+	movslq	-16(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
-	movslq	e(%rip), %r10
+	movslq	-20(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
@@ -95,21 +95,21 @@ param2:
 	movq	%rsp, %rbp
 	movl	%edi, -4(%rbp)
 	movl	%esi, -8(%rbp)
-	addq	$-16,%rsp
+	addq	$-32,%rsp
 	movq	$3, %r10
 	movslq	-12(%rbp), %r11
 	movl	%r10d, -12(%rbp)
 	movq	$4, %r10
-	movslq	0(%rbp), %r11
-	movl	%r10d, 0(%rbp)
+	movslq	-16(%rbp), %r11
+	movl	%r10d, -16(%rbp)
 	movq	$5, %r10
-	movslq	0(%rbp), %r11
-	movl	%r10d, 0(%rbp)
-	movslq	a(%rip), %r10
+	movslq	-20(%rbp), %r11
+	movl	%r10d, -20(%rbp)
+	movslq	-4(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
-	movslq	b(%rip), %r10
+	movslq	-8(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
@@ -117,11 +117,11 @@ param2:
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
-	movslq	0(%rbp), %r10
+	movslq	-16(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
-	movslq	0(%rbp), %r10
+	movslq	-20(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
@@ -129,7 +129,7 @@ param2:
 	movl	%r10d, %eax
 	jmp	L3
 L3:
-	addq	$16,%rsp
+	addq	$32,%rsp
 	popq	%rbp
 	ret
 	.globl	param0
@@ -137,39 +137,39 @@ L3:
 param0:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	addq	$-16,%rsp
+	addq	$-32,%rsp
 	movq	$1, %r10
 	movslq	-4(%rbp), %r11
 	movl	%r10d, -4(%rbp)
 	movq	$2, %r10
-	movslq	0(%rbp), %r11
-	movl	%r10d, 0(%rbp)
+	movslq	-8(%rbp), %r11
+	movl	%r10d, -8(%rbp)
 	movq	$3, %r10
-	movslq	0(%rbp), %r11
-	movl	%r10d, 0(%rbp)
+	movslq	-12(%rbp), %r11
+	movl	%r10d, -12(%rbp)
 	movq	$4, %r10
-	movslq	0(%rbp), %r11
-	movl	%r10d, 0(%rbp)
+	movslq	-16(%rbp), %r11
+	movl	%r10d, -16(%rbp)
 	movq	$5, %r10
-	movslq	0(%rbp), %r11
-	movl	%r10d, 0(%rbp)
+	movslq	-20(%rbp), %r11
+	movl	%r10d, -20(%rbp)
 	movslq	-4(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
-	movslq	0(%rbp), %r10
+	movslq	-8(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
-	movslq	0(%rbp), %r10
+	movslq	-12(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
-	movslq	0(%rbp), %r10
+	movslq	-16(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
-	movslq	0(%rbp), %r10
+	movslq	-20(%rbp), %r10
 	movq	%r10, %rdi
 	call	printint
 	movq	%rax, %r11
@@ -177,6 +177,6 @@ param0:
 	movl	%r10d, %eax
 	jmp	L4
 L4:
-	addq	$16,%rsp
+	addq	$32,%rsp
 	popq	%rbp
 	ret

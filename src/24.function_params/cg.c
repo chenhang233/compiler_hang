@@ -117,6 +117,7 @@ void cgfuncpreamble(int id)
     }
     // For the remainder, if they are a parameter then they are
     // already on the stack. If only a local, make a stack position.  for (; i > Locls; i--)
+    for (; i > Locls; i--)
     {
         if (Gsym[i].class == C_PARAM)
         {

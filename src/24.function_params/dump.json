@@ -2,57 +2,57 @@
 	"AST_node_type":	"A_FUNCTION",
 	"Primitive_type":	"P_INT",
 	"v_id":	20,
-	"rvalue":	-92469320,
+	"rvalue":	1031837624,
 	"left":	{
 		"AST_node_type":	"A_GLUE",
 		"Primitive_type":	"P_NONE",
 		"v_id":	0,
-		"rvalue":	-92469320,
+		"rvalue":	1031837624,
 		"left":	{
 			"AST_node_type":	"A_GLUE",
 			"Primitive_type":	"P_NONE",
 			"v_id":	0,
-			"rvalue":	-92469256,
+			"rvalue":	1031837688,
 			"left":	{
 				"AST_node_type":	"A_GLUE",
 				"Primitive_type":	"P_NONE",
 				"v_id":	0,
-				"rvalue":	-92469320,
+				"rvalue":	1031837624,
 				"left":	{
 					"AST_node_type":	"A_GLUE",
 					"Primitive_type":	"P_NONE",
 					"v_id":	0,
-					"rvalue":	-92469320,
+					"rvalue":	1031837624,
 					"left":	{
 						"AST_node_type":	"A_GLUE",
 						"Primitive_type":	"P_NONE",
 						"v_id":	0,
-						"rvalue":	-92469240,
+						"rvalue":	1031837704,
 						"left":	{
 							"AST_node_type":	"A_GLUE",
 							"Primitive_type":	"P_NONE",
 							"v_id":	0,
-							"rvalue":	-92469320,
+							"rvalue":	1031837624,
 							"left":	{
 								"AST_node_type":	"A_GLUE",
 								"Primitive_type":	"P_NONE",
 								"v_id":	0,
-								"rvalue":	-92469320,
+								"rvalue":	1031837624,
 								"left":	{
 									"AST_node_type":	"A_GLUE",
 									"Primitive_type":	"P_NONE",
 									"v_id":	0,
-									"rvalue":	-92469320,
+									"rvalue":	1031837624,
 									"left":	{
 										"AST_node_type":	"A_GLUE",
 										"Primitive_type":	"P_NONE",
 										"v_id":	0,
-										"rvalue":	-92469320,
+										"rvalue":	1031837624,
 										"left":	{
 											"AST_node_type":	"A_GLUE",
 											"Primitive_type":	"P_NONE",
 											"v_id":	0,
-											"rvalue":	-92469320,
+											"rvalue":	1031837624,
 											"left":	{
 												"AST_node_type":	"A_ASSIGN",
 												"Primitive_type":	"P_INT",
@@ -62,7 +62,7 @@
 													"AST_node_type":	"A_WIDEN",
 													"Primitive_type":	"P_INT",
 													"v_id":	0,
-													"rvalue":	37852256,
+													"rvalue":	10302560,
 													"left":	{
 														"AST_node_type":	"A_INTLIT",
 														"Primitive_type":	"P_CHAR",
@@ -74,7 +74,7 @@
 													"AST_node_type":	"A_IDENT",
 													"Primitive_type":	"P_INT",
 													"v_id":	1023,
-													"rvalue":	-92469272
+													"rvalue":	1031837672
 												}
 											},
 											"right":	{
@@ -86,7 +86,7 @@
 													"AST_node_type":	"A_WIDEN",
 													"Primitive_type":	"P_INT",
 													"v_id":	0,
-													"rvalue":	-92469240,
+													"rvalue":	1031837704,
 													"left":	{
 														"AST_node_type":	"A_INTLIT",
 														"Primitive_type":	"P_CHAR",
@@ -98,7 +98,7 @@
 													"AST_node_type":	"A_IDENT",
 													"Primitive_type":	"P_INT",
 													"v_id":	1022,
-													"rvalue":	37848736
+													"rvalue":	10299040
 												}
 											}
 										},
@@ -111,7 +111,7 @@
 												"AST_node_type":	"A_WIDEN",
 												"Primitive_type":	"P_INT",
 												"v_id":	0,
-												"rvalue":	-92469096,
+												"rvalue":	1031837848,
 												"left":	{
 													"AST_node_type":	"A_INTLIT",
 													"Primitive_type":	"P_CHAR",
@@ -123,7 +123,7 @@
 												"AST_node_type":	"A_IDENT",
 												"Primitive_type":	"P_INT",
 												"v_id":	1021,
-												"rvalue":	-92469208
+												"rvalue":	1031837736
 											}
 										}
 									},
@@ -136,7 +136,7 @@
 											"AST_node_type":	"A_WIDEN",
 											"Primitive_type":	"P_INT",
 											"v_id":	0,
-											"rvalue":	-92469320,
+											"rvalue":	1031837624,
 											"left":	{
 												"AST_node_type":	"A_INTLIT",
 												"Primitive_type":	"P_CHAR",
@@ -148,7 +148,7 @@
 											"AST_node_type":	"A_IDENT",
 											"Primitive_type":	"P_INT",
 											"v_id":	1020,
-											"rvalue":	-92468808
+											"rvalue":	1031838136
 										}
 									}
 								},
@@ -161,7 +161,7 @@
 										"AST_node_type":	"A_WIDEN",
 										"Primitive_type":	"P_INT",
 										"v_id":	0,
-										"rvalue":	-92469256,
+										"rvalue":	1031837688,
 										"left":	{
 											"AST_node_type":	"A_INTLIT",
 											"Primitive_type":	"P_CHAR",
@@ -173,7 +173,7 @@
 										"AST_node_type":	"A_IDENT",
 										"Primitive_type":	"P_INT",
 										"v_id":	1019,
-										"rvalue":	-92469320
+										"rvalue":	1031837624
 									}
 								}
 							},
@@ -246,12 +246,12 @@
 			"AST_node_type":	"A_RETURN",
 			"Primitive_type":	"P_INT",
 			"v_id":	0,
-			"rvalue":	-92469320,
+			"rvalue":	1031837624,
 			"left":	{
 				"AST_node_type":	"A_WIDEN",
 				"Primitive_type":	"P_INT",
 				"v_id":	0,
-				"rvalue":	-92469320,
+				"rvalue":	1031837624,
 				"left":	{
 					"AST_node_type":	"A_INTLIT",
 					"Primitive_type":	"P_CHAR",
