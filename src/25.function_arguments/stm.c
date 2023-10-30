@@ -49,7 +49,7 @@ void global_declarations()
                 dumpAST(tree, NOLABEL, 0);
                 fprintf(stdout, "\n\n");
             }
-            genAST(tree, NOLABEL, 0);
+            // genAST(tree, NOLABEL, 0);
             freeloclsyms();
         }
         else
@@ -97,6 +97,7 @@ ASTnode *function_declaration(Primitive_type type)
 
     match_lparen();
     p_len = param_declaration();
+    printf("p_len=%d name_id=%d\n", p_len, name_id);
     Gsym[name_id].nelems = p_len;
     match_rparen();
 

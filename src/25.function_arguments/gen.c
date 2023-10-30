@@ -70,10 +70,11 @@ static int gen_funccall(ASTnode *n)
         cgcopyarg(reg, glue_tree->v.size);
         if (arg_num == 0)
             arg_num = glue_tree->v.size;
+        genfreeregs();
         glue_tree = glue_tree->left;
     }
 
-    return cgcall(reg, arg_num);
+    return cgcall(n->v.id, arg_num);
 }
 
 int genAST(ASTnode *n, int label, AST_node_type parentASTop)

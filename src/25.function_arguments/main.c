@@ -39,7 +39,6 @@ int main(int argc, char const *argv[])
 
     scan(&t_instance);
     genpreamble();
-    // printf("t=%d\n", t_instance.token);
     global_declarations();
 
     genpostamble();

@@ -4,6 +4,8 @@ int findglob(char *s)
 {
     for (int i = 0; i < Globals; i++)
     {
+        if (Gsym[i].class == C_PARAM)
+            continue;
         if (*Gsym[i].name == *s && !strcmp(Gsym[i].name, s))
             return i;
     }
@@ -37,9 +39,10 @@ char *my_strdup(const char *source)
 static int newglob()
 {
     int p;
-    if ((p = Globals++) == NSYMBOLS)
+
+    if ((p = Globals++) >= Locls)
     {
-        custom_error_int("out of range NSYMBOLS", NSYMBOLS);
+        custom_error_int("Too many global symbols", Globals);
     }
     return p;
 }
