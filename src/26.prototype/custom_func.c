@@ -212,3 +212,16 @@ void jsonify_tree(ASTnode *root, const char *filename)
     free(json_str);
     fclose(file);
 }
+
+void Gsym_dump(char *name)
+{
+    if (!(Gsym_dump_file = fopen(name, "w")))
+        custom_error_int("open Gsym_dump_file", 0);
+    for (int i = 0; i < NSYMBOLS; i++)
+    {
+        fprintf(Gsym_dump_file,
+                "\tname=%s\t \tPrimitive_type=%s\t  \
+         \tStorage_class=%s\t \tendlabel=%d\t",
+                Gsym[i].name);
+    }
+}

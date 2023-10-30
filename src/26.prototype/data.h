@@ -199,4 +199,5 @@ int Locls;      // Position of next free local symbol slot
 Token t_instance;
 FILE *Infile;
 FILE *Outfile;
+FILE *Gsym_dump_file;
 symtable Gsym[NSYMBOLS]; // global symbol table
