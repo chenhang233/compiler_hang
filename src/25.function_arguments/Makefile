@@ -59,6 +59,11 @@ test25: comp1 tests/input25.c lib/printint.c
 	./comp1 tests/input25.c
 	cc -o out out.s lib/printint.c
 	./out
+
+test26: comp1 tests/input26.c lib/printint.c
+	./comp1 tests/input26.c
+	cc -o out out.s lib/printint.c
+	./out
 	
 
 test28: comp1 

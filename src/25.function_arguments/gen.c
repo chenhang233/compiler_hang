@@ -80,22 +80,26 @@ static int gen_funccall(ASTnode *n)
 int genAST(ASTnode *n, int label, AST_node_type parentASTop)
 {
     int leftreg, rightreg;
+    // printf("n=%p\n", n);
     switch (n->op)
     {
     case A_IF:
         return genIf(n);
     case A_WHILE:
         return (genWhile(n));
+    case A_FUNCCALL:
+        return (gen_funccall(n));
     case A_GLUE:
-        // Do each child statement, and free the
-        // registers after each child
         genAST(n->left, NOLABEL, n->op);
         genfreeregs();
         genAST(n->right, NOLABEL, n->op);
         genfreeregs();
         return (NOREG);
     case A_FUNCTION:
-        return gen_funccall(n);
+        cgfuncpreamble(n->v.id);
+        genAST(n->left, NOLABEL, n->op);
+        cgfuncpostamble(n->v.id);
+        return (NOREG);
     }
 
     if (n->left)
@@ -157,10 +161,10 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
         switch (n->right->op)
         {
         case A_IDENT:
-            if (Gsym[n->right->v.id].class == C_LOCAL)
-                return cgstorlocal(leftreg, n->right->v.id);
-            else
+            if (Gsym[n->right->v.id].class == C_GLOBAL)
                 return cgstorglob(leftreg, n->right->v.id);
+            else
+                return cgstorlocal(leftreg, n->right->v.id);
         case A_DEREF:
             return (cgstorderef(leftreg, rightreg, n->right->type));
         default:
@@ -172,8 +176,6 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
     case A_RETURN:
         cgreturn(leftreg, Functionid);
         return (NOREG);
-    case A_FUNCCALL:
-        return (cgcall(leftreg, n->v.id));
     case A_ADDR:
         return (cgaddress(n->v.id));
     case A_DEREF:
