@@ -143,7 +143,8 @@ typedef struct ASTnode
         int intvalue; // For A_INTLIT, the integer value
         int id;       // For A_IDENT, the symbol slot number
         int size;     // For A_SCALE, the size to scale by
-    } v;              // For A_FUNCTION, the symbol slot number
+        // For funccall, arg posn
+    } v; // For A_FUNCTION, the symbol slot number
 } ASTnode;
 
 typedef struct Token

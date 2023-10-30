@@ -20,26 +20,16 @@ int genIf(ASTnode *n)
 {
     int Lfalse, Lend;
 
-    // Generate two labels: one for the
-    // false compound statement, and one
-    // for the end of the overall IF statement.
-    // When there is no ELSE clause, Lfalse _is_
-    // the ending label!
     Lfalse = genlabel();
     if (n->right)
         Lend = genlabel();
 
-    // Generate the condition code followed
-    // by a jump to the false label.
     genAST(n->left, Lfalse, n->op);
     genfreeregs();
 
-    // Generate the true compound statement
     genAST(n->mid, NOLABEL, n->op);
     genfreeregs();
 
-    // If there is an optional ELSE clause,
-    // generate the jump to skip to the end
     if (n->right)
     {
         genAST(n->right, NOLABEL, n->op);
@@ -47,7 +37,6 @@ int genIf(ASTnode *n)
         cglabel(Lend);
     }
 
-    // Now the false label
     cglabel(Lfalse);
 }
 
@@ -55,35 +44,36 @@ int genWhile(ASTnode *n)
 {
     int Lstart, Lend;
 
-    // Generate the start and end labels
-    // and output the start label
     Lstart = genlabel();
     Lend = genlabel();
     cglabel(Lstart);
 
-    // Generate the condition code followed
-    // by a jump to the end label.
     genAST(n->left, Lend, n->op);
     genfreeregs();
 
-    // Generate the compound statement for the body
     genAST(n->right, NOLABEL, n->op);
     genfreeregs();
 
-    // Finally output the jump back to the condition,
-    // and the end label
     cgjump(Lstart);
     cglabel(Lend);
     return (NOREG);
 }
 
-// Generate the code to copy the arguments of a
-// function call to its parameters, then call the
-// function itself. Return the register that holds
-// the function's return value.
 static int gen_funccall(ASTnode *n)
 {
-    ASTnode *glue_tree;
+    ASTnode *glue_tree = n->left;
+    int arg_num = 0;
+    int reg;
+    while (glue_tree)
+    {
+        reg = genAST(glue_tree->right, NOLABEL, glue_tree->op);
+        cgcopyarg(reg, glue_tree->v.size);
+        if (arg_num == 0)
+            arg_num = glue_tree->v.size;
+        glue_tree = glue_tree->left;
+    }
+
+    return cgcall(reg, arg_num);
 }
 
 int genAST(ASTnode *n, int label, AST_node_type parentASTop)
@@ -138,9 +128,7 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
     case A_GT:
     case A_LE:
     case A_GE:
-        // If the parent AST node is an A_IF or A_WHILE, generate
-        // a compare followed by a jump. Otherwise, compare registers
-        // and set one to 1 or 0 based on the comparison.
+
         if (parentASTop == A_IF || parentASTop == A_WHILE)
             return (cgcompare_and_jump(n->op, leftreg, rightreg, label));
         else
@@ -206,24 +194,16 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
         case 8:
             return (cgshlconst(leftreg, 3));
         default:
-            // Load a register with the size and
-            // multiply the leftreg by this size
             rightreg = cgloadint(n->v.size, P_INT);
             return (cgmul(leftreg, rightreg));
         }
     case A_POSTINC:
-        // Load the variable's value into a register,
-        // then increment it
         return (cgloadglob(n->v.id, n->op));
     case A_POSTDEC:
-        // Load the variable's value into a register,
-        // then decrement it
         return (cgloadglob(n->v.id, n->op));
     case A_PREINC:
-        // Load and increment the variable's value into a register
         return (cgloadglob(n->left->v.id, n->op));
     case A_PREDEC:
-        // Load and decrement the variable's value into a register
         return (cgloadglob(n->left->v.id, n->op));
     case A_NEGATE: // -digit
         return (cgnegate(leftreg));
@@ -232,9 +212,7 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
     case A_LOGNOT:
         return (cglognot(leftreg));
     case A_TOBOOL:
-        // If the parent AST node is an A_IF or A_WHILE, generate
-        // a compare followed by a jump. Otherwise, set the register
-        // to 0 or 1 based on it's zeroeness or non-zeroeness
+
         return (cgboolean(leftreg, parentASTop, label));
     default:
         custom_error_int("Unknown AST operator", n->op);
