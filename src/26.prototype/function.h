@@ -25,6 +25,7 @@ void match_lbracket();
 void match_rbracket();
 void match_comma();
 void jsonify_tree(ASTnode *root, const char *filename);
+void Gsym_dump(char *name);
 
 // scan.c
 int next();
@@ -108,7 +109,7 @@ ASTnode *function_declaration(Primitive_type type);
 ASTnode *compound_statement();
 static ASTnode *single_statement(void);
 static ASTnode *print_statement(void);
-void var_declaration(Primitive_type type, int islocal, int isparam);
+void var_declaration(Primitive_type type, Storage_class class);
 static ASTnode *assignment_statement(void);
 static ASTnode *if_statement(void);
 static ASTnode *while_statement();
@@ -116,7 +117,7 @@ static ASTnode *for_statement();
 static ASTnode *return_statement(void);
 Primitive_type parse_type();
 void global_declarations();
-static int param_declaration(void);
+static int param_declaration(int id);
 
 // ast.c
 ASTnode *mkAST_node(AST_node_type op, Primitive_type type, ASTnode *left, ASTnode *mid, ASTnode *right, int intv);
@@ -148,8 +149,9 @@ int addglob(char *name, Primitive_type type, Structural_type stype,
             int endlabel, int size);
 
 int addlocl(char *name, Primitive_type type, Structural_type stype,
-            int isparam, int size);
+            Storage_class isparam, int size);
 int findsymbol(char *s);
+void copyfuncparams(int slot);
 
 // types.c
 int type_compatible(Primitive_type *left, Primitive_type *right, int onlyright);

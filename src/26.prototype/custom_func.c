@@ -219,9 +219,18 @@ void Gsym_dump(char *name)
         custom_error_int("open Gsym_dump_file", 0);
     for (int i = 0; i < NSYMBOLS; i++)
     {
+        if (Gsym[i].name == NULL)
+        {
+            fprintf(Gsym_dump_file, "\tindex=%d\t\tNULL\t\n", i);
+            continue;
+        }
         fprintf(Gsym_dump_file,
-                "\tname=%s\t \tPrimitive_type=%s\t  \
-         \tStorage_class=%s\t \tendlabel=%d\t",
-                Gsym[i].name);
+                "\tindex=%d\t\tname=%s\t\
+            \tPrimitive_type=%d\t\tStorage_class=%d\t\
+            \tendlabel = % d\t\tsize = % d\t\tposn = % d\t\n ",
+                i,
+                Gsym[i].name, Gsym[i].stype,
+                Gsym[i].class, Gsym[i].endlabel,
+                Gsym[i].size, Gsym[i].posn);
     }
 }

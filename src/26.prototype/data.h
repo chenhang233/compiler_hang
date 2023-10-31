@@ -143,8 +143,8 @@ typedef struct ASTnode
         int intvalue; // For A_INTLIT, the integer value
         int id;       // For A_IDENT, the symbol slot number
         int size;     // For A_SCALE, the size to scale by
-        // For funccall, arg posn
-    } v; // For A_FUNCTION, the symbol slot number
+        // For A_FUNCCALL, the symbol slot number
+    } v;
 } ASTnode;
 
 typedef struct Token
@@ -185,7 +185,7 @@ typedef struct symtable
         from the stack base pointer
      */
     int posn;
-#define nelems posn // For functions, # of params
+#define nelems posn // For functions, # of params number
 } symtable;
 
 int Line;

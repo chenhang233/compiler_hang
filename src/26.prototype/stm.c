@@ -49,29 +49,44 @@ void global_declarations()
                 dumpAST(tree, NOLABEL, 0);
                 fprintf(stdout, "\n\n");
             }
-            genAST(tree, NOLABEL, 0);
+            // genAST(tree, NOLABEL, 0);
             freeloclsyms();
         }
         else
         {
-            var_declaration(type, C_GLOBAL, 0);
+            var_declaration(type, C_GLOBAL);
             match_semi();
         }
         if (t_instance.token == T_EOF)
             break;
     }
+    Gsym_dump("gsym_demp.txt");
 }
 
-static int param_declaration(void)
+static int param_declaration(int id)
 {
-    int count = 0;
     Primitive_type t_type;
+    int param_id;
+    int prototype_count, param_count = 0;
+
+    param_id = id + 1;
+    if (param_id)
+        prototype_count = Gsym[id].nelems;
+
     while (t_instance.token != T_RPAREN)
     {
         t_type = parse_type();
         match_ident();
-        var_declaration(t_type, 1, 1);
-        count++;
+        if (param_id)
+        {
+            if (t_type != Gsym[id].type)
+                custom_error_int("type doesn't match prototype for parameter", param_count);
+            param_count++;
+        }
+        else
+        {
+            var_declaration(t_type, C_PARAM);
+        }
         switch (t_instance.token)
         {
         case T_COMMA:
@@ -84,23 +99,45 @@ static int param_declaration(void)
         }
     }
 
-    return count;
+    if (param_id && param_count != prototype_count)
+    {
+        custom_error_chars("Parameter count mismatch for function", Gsym[id].name);
+    }
+
+    return param_count;
 }
 
 ASTnode *function_declaration(Primitive_type type)
 {
     ASTnode *tree, *final_stm;
+    int id;
     int name_id, label_id, p_len;
-    label_id = genlabel();
-    name_id = addglob(Text, type, S_FUNCTION, label_id, 0);
-    Functionid = name_id;
+
+    if ((id = findglob(Text)) != -1)
+        if (Gsym[id].stype != S_FUNCTION)
+            id = -1;
+    if (id == -1)
+    {
+        label_id = genlabel();
+        name_id = addglob(Text, type, S_FUNCTION, label_id, 0);
+    }
 
     match_lparen();
-    p_len = param_declaration();
-    // printf("p_len=%d name_id=%d\n", p_len, name_id);
-    Gsym[name_id].nelems = p_len;
+    p_len = param_declaration(id);
     match_rparen();
-
+    if (id == -1)
+        Gsym[name_id].nelems = p_len;
+    if (t_instance.token == T_SEMI)
+    {
+        match_semi();
+        return NULL;
+    }
+    if (id == -1)
+    {
+        id = name_id;
+        copyfuncparams(id);
+    }
+    Functionid = id;
     tree = compound_statement();
     if (type != P_VOID)
     {
@@ -110,10 +147,10 @@ ASTnode *function_declaration(Primitive_type type)
         if (!final_stm || final_stm->op != A_RETURN)
             custom_error_int("No return for function with non-void type", 0);
     }
-    return mkAST_left(A_FUNCTION, type, tree, name_id);
+    return mkAST_left(A_FUNCTION, type, tree, id);
 }
 
-void var_declaration(Primitive_type type, int islocal, int isparam)
+void var_declaration(Primitive_type type, Storage_class class)
 {
     int id;
     if (t_instance.token == T_LBRACKET)
@@ -122,7 +159,7 @@ void var_declaration(Primitive_type type, int islocal, int isparam)
         if (t_instance.token == T_INTLIT)
         {
 
-            if (islocal)
+            if (class == C_LOCAL)
             {
                 // addlocl(Text, pointer_to(type), S_ARRAY, 0, t_instance.intvalue);
                 custom_error_int("For now, declaration of local arrays is not implemented", 0);
@@ -137,9 +174,9 @@ void var_declaration(Primitive_type type, int islocal, int isparam)
     }
     else
     {
-        if (islocal)
+        if (class == C_LOCAL)
         {
-            if (addlocl(Text, type, S_VARIABLE, isparam, 1) == -1)
+            if (addlocl(Text, type, S_VARIABLE, class, 1) == -1)
                 custom_error_chars("Duplicate local variable declaration", Text);
         }
         else
@@ -193,7 +230,7 @@ static ASTnode *single_statement(void)
     case T_LONG:
         type = parse_type();
         match_ident();
-        var_declaration(type, 1, 0);
+        var_declaration(type, C_LOCAL);
         match_semi();
         return NULL;
     case T_IF:

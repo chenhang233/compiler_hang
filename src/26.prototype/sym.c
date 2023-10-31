@@ -98,24 +98,15 @@ int addglob(char *name, Primitive_type type, Structural_type stype,
 }
 
 int addlocl(char *name, Primitive_type type, Structural_type stype,
-            int isparam, int size)
+            Storage_class class, int size)
 {
-    int localslot, globalslot;
+    int localslot;
     // If this is already in the symbol table, return the existing slot
     if ((localslot = findlocl(name)) != -1)
         return -1;
 
     localslot = newlocl();
-    if (isparam)
-    {
-        updatesym(localslot, name, type, stype, C_PARAM, 0, size, 0);
-        globalslot = newglob();
-        updatesym(globalslot, name, type, stype, C_PARAM, 0, size, 0);
-    }
-    else
-    {
-        updatesym(localslot, name, type, stype, C_LOCAL, 0, size, 0);
-    }
+    updatesym(localslot, name, type, stype, class, 0, size, 0);
 
     return localslot;
 }
@@ -130,4 +121,13 @@ int findsymbol(char *s)
     if (slot == -1)
         slot = findglob(s);
     return (slot);
+}
+// From prototype to local parameters
+void copyfuncparams(int slot)
+{
+    int i, id = slot + 1;
+    for (i = 0; i < Gsym[slot].nelems; i++, id++)
+    {
+        addlocl(Gsym[i].name, Gsym[i].type, Gsym[i].stype, Gsym[i].class, Gsym[i].size);
+    }
 }
