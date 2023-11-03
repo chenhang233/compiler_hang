@@ -301,7 +301,7 @@ static int gendumplabel(void)
     return (id++);
 }
 
-void dumpAST(ASTnode *n, int label, int level)
+void dumpAST(struct ASTnode *n, int label, int level)
 {
     int Lfalse, Lstart, Lend;
 
@@ -334,9 +334,11 @@ void dumpAST(ASTnode *n, int label, int level)
         return;
     }
 
+    // Reset level to -2 for A_GLUE
     if (n->op == A_GLUE)
         level = -2;
 
+    // General AST node handling
     if (n->left)
         dumpAST(n->left, NOLABEL, level + 2);
     if (n->right)
@@ -385,6 +387,9 @@ void dumpAST(ASTnode *n, int label, int level)
     case A_INTLIT:
         fprintf(stdout, "A_INTLIT %d\n", n->v.intvalue);
         return;
+    case A_STRLIT:
+        fprintf(stdout, "A_STRLIT rval label L%d\n", n->v.id);
+        return;
     case A_IDENT:
         if (n->rvalue)
             fprintf(stdout, "A_IDENT rval %s\n", Gsym[n->v.id].name);
@@ -414,6 +419,21 @@ void dumpAST(ASTnode *n, int label, int level)
         return;
     case A_SCALE:
         fprintf(stdout, "A_SCALE %d\n", n->v.size);
+        return;
+    case A_PREINC:
+        fprintf(stdout, "A_PREINC %s\n", Gsym[n->v.id].name);
+        return;
+    case A_PREDEC:
+        fprintf(stdout, "A_PREDEC %s\n", Gsym[n->v.id].name);
+        return;
+    case A_POSTINC:
+        fprintf(stdout, "A_POSTINC\n");
+        return;
+    case A_POSTDEC:
+        fprintf(stdout, "A_POSTDEC\n");
+        return;
+    case A_NEGATE:
+        fprintf(stdout, "A_NEGATE\n");
         return;
     default:
         custom_error_int("Unknown dumpAST operator", n->op);

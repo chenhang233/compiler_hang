@@ -34,8 +34,8 @@ int main(int argc, char const *argv[])
     if (!(Outfile = fopen("out.s", "w")))
         custom_error_chars("open Outfile", (char *)argv[i]);
 
-    addglob("printint", P_CHAR, S_FUNCTION, 0, 0);
-    addglob("printchar", P_VOID, S_FUNCTION, 0, 0);
+    addglob("printint", P_CHAR, S_FUNCTION, C_GLOBAL, 0, 0);
+    addglob("printchar", P_VOID, S_FUNCTION, C_GLOBAL, 0, 0);
 
     scan(&t_instance);
     genpreamble();

@@ -1,21 +1,21 @@
 	index=0		name=printint	            	Primitive_type=1		Storage_class=1	            	endlabel =  0		size =  0		posn =  0	
  	index=1		name=printchar	            	Primitive_type=1		Storage_class=1	            	endlabel =  0		size =  0		posn =  0	
- 	index=2		name=open	            	Primitive_type=1		Storage_class=1	            	endlabel =  1		size =  0		posn =  2	
- 	index=3		name=pathname	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
- 	index=4		name=flags	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
- 	index=5		name=read	            	Primitive_type=1		Storage_class=1	            	endlabel =  2		size =  0		posn =  3	
- 	index=6		name=fd	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
- 	index=7		name=buf	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
- 	index=8		name=count	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
- 	index=9		name=write	            	Primitive_type=1		Storage_class=1	            	endlabel =  3		size =  0		posn =  3	
- 	index=10		name=fd	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
- 	index=11		name=buf	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
- 	index=12		name=count	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
- 	index=13		name=close	            	Primitive_type=1		Storage_class=1	            	endlabel =  4		size =  0		posn =  1	
- 	index=14		name=fd	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
- 	index=15		name=buf	            	Primitive_type=0		Storage_class=1	            	endlabel =  0		size =  1		posn =  0	
- 	index=16		name=main	            	Primitive_type=1		Storage_class=1	            	endlabel =  5		size =  0		posn =  0	
- 	index=17		NULL	
+ 	index=2		name=param8	            	Primitive_type=1		Storage_class=1	            	endlabel =  1		size =  0		posn =  8	
+ 	index=3		name=a	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
+ 	index=4		name=b	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
+ 	index=5		name=c	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
+ 	index=6		name=d	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
+ 	index=7		name=e	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
+ 	index=8		name=f	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
+ 	index=9		name=g	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
+ 	index=10		name=h	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
+ 	index=11		name=fred	            	Primitive_type=1		Storage_class=1	            	endlabel =  2		size =  0		posn =  3	
+ 	index=12		name=a	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
+ 	index=13		name=b	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
+ 	index=14		name=c	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  0	
+ 	index=15		name=main	            	Primitive_type=1		Storage_class=1	            	endlabel =  3		size =  0		posn =  0	
+ 	index=16		NULL	
+	index=17		NULL	
 	index=18		NULL	
 	index=19		NULL	
 	index=20		NULL	
@@ -1014,12 +1014,12 @@
 	index=1013		NULL	
 	index=1014		NULL	
 	index=1015		NULL	
-	index=1016		NULL	
-	index=1017		NULL	
-	index=1018		NULL	
-	index=1019		NULL	
-	index=1020		NULL	
-	index=1021		NULL	
-	index=1022		name=cnt	            	Primitive_type=0		Storage_class=2	            	endlabel =  0		size =  1		posn = -8	
- 	index=1023		name=zin	            	Primitive_type=0		Storage_class=2	            	endlabel =  0		size =  1		posn = -4	
+	index=1016		name=h	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  24	
+ 	index=1017		name=g	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn =  16	
+ 	index=1018		name=f	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn = -24	
+ 	index=1019		name=e	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn = -20	
+ 	index=1020		name=d	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn = -16	
+ 	index=1021		name=c	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn = -12	
+ 	index=1022		name=b	            	Primitive_type=0		Storage_class=3	            	endlabel =  0		size =  1		posn = -8	
+ 	index=1023		name=x	            	Primitive_type=0		Storage_class=2	            	endlabel =  0		size =  1		posn = -4	
  

@@ -4,7 +4,7 @@ SRCN= cgn.c decl.c expr.c gen.c main.c misc.c scan.c stmt.c sym.c \
  tree.c types.c
 
 comp1: $(SRCS) $(HSRCS)
-	cc -std=c99 -o comp1 -g -Wall $(SRCS)
+	cc -std=c99 -o comp1 -g  $(SRCS)
 
 compn: $(SRCN)
 	cc -o compn -g $(SRCN)

@@ -17,7 +17,7 @@ int findglob(char *s)
 int findlocl(char *s)
 {
     int i;
-
+    // printf("Locls=%d\n", Locls);
     for (i = Locls + 1; i < NSYMBOLS; i++)
     {
         if (*s == *Gsym[i].name && !strcmp(s, Gsym[i].name))
@@ -86,14 +86,15 @@ static void updatesym(int id, char *name, Primitive_type type, Structural_type s
 }
 
 int addglob(char *name, Primitive_type type, Structural_type stype,
-            int endlabel, int size)
+            Storage_class class, int endlabel, int size)
 {
     int id;
     if ((id = findglob(name)) != -1)
         return id;
     id = newglob();
-    updatesym(id, name, type, stype, C_GLOBAL, endlabel, size, 0);
-    genglobsym(id);
+    updatesym(id, name, type, stype, class, endlabel, size, 0);
+    if (class == C_GLOBAL)
+        genglobsym(id);
     return id;
 }
 
@@ -104,7 +105,6 @@ int addlocl(char *name, Primitive_type type, Structural_type stype,
     // If this is already in the symbol table, return the existing slot
     if ((localslot = findlocl(name)) != -1)
         return -1;
-
     localslot = newlocl();
     updatesym(localslot, name, type, stype, class, 0, size, 0);
 
@@ -128,6 +128,13 @@ void copyfuncparams(int slot)
     int i, id = slot + 1;
     for (i = 0; i < Gsym[slot].nelems; i++, id++)
     {
-        addlocl(Gsym[i].name, Gsym[i].type, Gsym[i].stype, Gsym[i].class, Gsym[i].size);
+        if (Gsym[id].name == NULL)
+        {
+            custom_error_int("From prototype to local parameters", id);
+            Gsym_dump("gsym_demp.txt");
+        }
+        // printf("Gsym[id].name=%s\n", Gsym[id].name);
+        addlocl(Gsym[id].name, Gsym[id].type, Gsym[id].stype, Gsym[id].class, Gsym[id].size);
+        // printf("r=%d\n", r);
     }
 }

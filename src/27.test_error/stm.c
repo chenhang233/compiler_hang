@@ -42,7 +42,10 @@ void global_declarations()
         if (t_instance.token == T_LPAREN)
         {
             tree = function_declaration(type);
+            if (!tree)
+                continue;
             jsonify_tree(tree, "dump.json");
+
             if (DumpAST)
             {
                 // dumpAST
@@ -50,6 +53,7 @@ void global_declarations()
                 fprintf(stdout, "\n\n");
             }
             genAST(tree, NOLABEL, 0);
+            // Free up local space
             freeloclsyms();
         }
         else
@@ -70,6 +74,7 @@ static int param_declaration(int id)
     int prototype_count, param_count = 0;
 
     param_id = id + 1;
+    // printf("param_id=%d\n", param_id);
     if (param_id)
         prototype_count = Gsym[id].nelems;
 
@@ -81,12 +86,12 @@ static int param_declaration(int id)
         {
             if (t_type != Gsym[id].type)
                 custom_error_int("type doesn't match prototype for parameter", param_count);
-            param_count++;
         }
         else
         {
             var_declaration(t_type, C_PARAM);
         }
+        param_count++;
         switch (t_instance.token)
         {
         case T_COMMA:
@@ -98,7 +103,7 @@ static int param_declaration(int id)
             custom_error_int("nexpected token in parameter list", t_instance.token);
         }
     }
-
+    // printf("param_count=%d\n", param_count);
     if (param_id && param_count != prototype_count)
     {
         custom_error_chars("Parameter count mismatch for function", Gsym[id].name);
@@ -119,12 +124,13 @@ ASTnode *function_declaration(Primitive_type type)
     if (id == -1)
     {
         label_id = genlabel();
-        name_id = addglob(Text, type, S_FUNCTION, label_id, 0);
+        name_id = addglob(Text, type, S_FUNCTION, C_GLOBAL, label_id, 0);
     }
 
     match_lparen();
     p_len = param_declaration(id);
     match_rparen();
+    // printf("p_len=%d id=%d name_id=%d\n", p_len, id, name_id);
     if (id == -1)
         Gsym[name_id].nelems = p_len;
     if (t_instance.token == T_SEMI)
@@ -133,10 +139,8 @@ ASTnode *function_declaration(Primitive_type type)
         return NULL;
     }
     if (id == -1)
-    {
         id = name_id;
-        copyfuncparams(id);
-    }
+    copyfuncparams(id);
     Functionid = id;
     tree = compound_statement();
     if (type != P_VOID)
@@ -165,7 +169,7 @@ void var_declaration(Primitive_type type, Storage_class class)
             }
             else
             {
-                addglob(Text, pointer_to(type), S_ARRAY, 0, t_instance.intvalue);
+                addglob(Text, pointer_to(type), S_ARRAY, C_GLOBAL, 0, t_instance.intvalue);
             }
         }
         scan(&t_instance);
@@ -180,7 +184,7 @@ void var_declaration(Primitive_type type, Storage_class class)
         }
         else
         {
-            addglob(Text, type, S_VARIABLE, 0, 1);
+            addglob(Text, type, S_VARIABLE, class, 0, 1);
         }
     }
 }

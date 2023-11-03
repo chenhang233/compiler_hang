@@ -146,10 +146,10 @@ static int newglob(void);
 static int newlocl(void);
 void freeloclsyms(void);
 int addglob(char *name, Primitive_type type, Structural_type stype,
-            int endlabel, int size);
+            Storage_class class, int endlabel, int size);
 
 int addlocl(char *name, Primitive_type type, Structural_type stype,
-            Storage_class isparam, int size);
+            Storage_class class, int size);
 int findsymbol(char *s);
 void copyfuncparams(int slot);
 
