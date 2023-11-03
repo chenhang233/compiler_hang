@@ -49,7 +49,7 @@ void global_declarations()
                 dumpAST(tree, NOLABEL, 0);
                 fprintf(stdout, "\n\n");
             }
-            // genAST(tree, NOLABEL, 0);
+            genAST(tree, NOLABEL, 0);
             freeloclsyms();
         }
         else
@@ -152,7 +152,6 @@ ASTnode *function_declaration(Primitive_type type)
 
 void var_declaration(Primitive_type type, Storage_class class)
 {
-    int id;
     if (t_instance.token == T_LBRACKET)
     {
         match_lbracket();

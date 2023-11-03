@@ -38,6 +38,7 @@ int genIf(ASTnode *n)
     }
 
     cglabel(Lfalse);
+    return (NOREG);
 }
 
 int genWhile(ASTnode *n)
