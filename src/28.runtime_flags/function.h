@@ -152,6 +152,7 @@ int addlocl(char *name, Primitive_type type, Structural_type stype,
             Storage_class class, int size);
 int findsymbol(char *s);
 void copyfuncparams(int slot);
+void clear_symtable(void);
 
 // types.c
 int type_compatible(Primitive_type *left, Primitive_type *right, int onlyright);

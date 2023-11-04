@@ -29,7 +29,7 @@ int findlocl(char *s)
 char *my_strdup(const char *source)
 {
     if (source == NULL)
-        custom_error_int("NULL source", 18);
+        return NULL;
     int len = strlen(source) + 1;
     char *dest = malloc(len * sizeof(char));
     strcpy(dest, source);
@@ -137,4 +137,10 @@ void copyfuncparams(int slot)
         addlocl(Gsym[id].name, Gsym[id].type, Gsym[id].stype, Gsym[id].class, Gsym[id].size);
         // printf("r=%d\n", r);
     }
+}
+
+void clear_symtable(void)
+{
+    Globals = 0;
+    Locls = NSYMBOLS - 1;
 }

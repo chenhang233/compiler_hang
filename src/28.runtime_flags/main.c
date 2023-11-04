@@ -2,21 +2,86 @@
 #include "data.h"
 #include <unistd.h>
 
-// copy file . suffix
-char *alter_suffix(char *str, char suffix) {}
-// -s
-static char *do_compile(char *filename) {}
-// -c
-char *do_assemble(char *filename) {}
-// -o
-void do_link(char *outfilename, char *objlist[]) {}
-
-void init()
+// copy file alter .xx suffix
+char *alter_suffix(char *str, char suffix)
 {
+    char *outfilename = my_strdup(str);
+    char *p;
+    if (!outfilename)
+        return NULL;
+    if ((p = strchr(str, '.')) == NULL)
+        return NULL;
+    p++;
+    if (*p == '\0')
+        return NULL;
+    *p++ = suffix;
+    *p = '\0';
+    return outfilename;
+}
+// -s
+static char *do_compile(char *filename)
+{
+    char *sfile = alter_suffix(filename, 's');
+    if (sfile == NULL)
+        custom_error_chars("Error: %s has no suffix, try .c on the end\n", filename);
+
+    if (!(Infile = fopen(filename, "r")))
+        custom_error_chars("open infile", filename);
+    if (!(Outfile = fopen(sfile, "w")))
+        custom_error_chars("open Outfile", sfile);
+
     Line = 1;
     cache = 0;
-    Globals = 0;
-    Locls = NSYMBOLS - 1;
+    clear_symtable();
+    if (O_verbose)
+        printf("compiling %s\n", filename);
+
+    scan(&t_instance);
+    genpreamble();
+    global_declarations();
+    genpostamble();
+    fclose(Outfile);
+}
+// -c
+char *do_assemble(char *filename)
+{
+    int cmd[TEXTLEN], err;
+    char *ofile = alter_suffix(filename, 'o');
+    if (ofile == NULL)
+        custom_error_chars("Error: %s has no suffix, try .s on the end\n", ofile);
+    snprintf(cmd, TEXTLEN, "%s %s %s", ASCMD, ofile, filename);
+    if (O_verbose)
+        printf("assembling %s\n", cmd);
+    err = system(cmd);
+    if (err)
+        custom_error_chars("Assembly of %s failed\n", filename);
+    return ofile;
+}
+// -o
+void do_link(char *outfilename, char *objlist[])
+{
+    int cmd[TEXTLEN], cnt, err;
+    int size = TEXTLEN;
+    int *p = cmd;
+    cnt = snprintf(cmd, size, "%s %s ", LDCMD, outfilename);
+    size -= cnt;
+    p += cnt;
+    while (*objlist)
+    {
+        cnt = snprintf(cmd, size, "%s ", *objlist);
+        size -= cnt;
+        p += cnt;
+        objlist++;
+    }
+    if (O_verbose)
+        printf("linking %s\n", cmd);
+    err = system(cmd);
+    if (err)
+    {
+
+        fprintf(stderr, "");
+        custom_error_chars("Linking failed", "");
+    }
 }
 
 // Print out a usage if started incorrectly
@@ -34,7 +99,6 @@ static void usage(char *prog)
 #define MAXOBJ 100 // max sourcefile
 int main(int argc, char const *argv[])
 {
-
     int outfilename = AOUT;
     char *asmfile, *objfile;
     char *objlist[MAXOBJ]; // List of.obj files
@@ -75,11 +139,6 @@ int main(int argc, char const *argv[])
     if (i >= argc)
         custom_error_chars("May not have input infile", (char *)argv[0]);
 
-    // if (!(Infile = fopen(argv[i], "r")))
-    //     custom_error_chars("open infile", (char *)argv[i]);
-    // if (!(Outfile = fopen("out.s", "w")))
-    //     custom_error_chars("open Outfile", (char *)argv[i]);
-
     while (i < argc)
     {
         asmfile = do_compile(argv[i]);
@@ -103,13 +162,4 @@ int main(int argc, char const *argv[])
             unlink(objlist[i]);
 
     return 0;
-    // addglob("printint", P_CHAR, S_FUNCTION, C_GLOBAL, 0, 0);
-    // addglob("printchar", P_VOID, S_FUNCTION, C_GLOBAL, 0, 0);
-
-    // scan(&t_instance);
-    // genpreamble();
-    // global_declarations();
-
-    // genpostamble();
-    // fclose(Outfile);
 }
