@@ -148,13 +148,9 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
         // or we are being dereferenced
         if (n->rvalue || parentASTop == A_DEREF)
             if (Gsym[n->v.id].class == C_GLOBAL)
-            {
                 return (cgloadglob(n->v.id, n->op));
-            }
             else
-            {
                 return (cgloadlocal(n->v.id, n->op));
-            }
         else
             return (NOREG);
     case A_ASSIGN:
@@ -202,13 +198,16 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
             return (cgmul(leftreg, rightreg));
         }
     case A_POSTINC:
-        return (cgloadglob(n->v.id, n->op));
     case A_POSTDEC:
-        return (cgloadglob(n->v.id, n->op));
+        if (Gsym[n->v.id].class == C_GLOBAL)
+            return (cgloadglob(n->v.id, n->op));
+        else
+            return (cgloadlocal(n->v.id, n->op));
     case A_PREINC:
-        return (cgloadglob(n->left->v.id, n->op));
-    case A_PREDEC:
-        return (cgloadglob(n->left->v.id, n->op));
+        if (Gsym[n->v.id].class == C_GLOBAL)
+            return (cgloadglob(n->left->v.id, n->op));
+        else
+            return (cgloadlocal(n->left->v.id, n->op));
     case A_NEGATE: // -digit
         return (cgnegate(leftreg));
     case A_INVERT:
