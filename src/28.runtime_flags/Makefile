@@ -6,7 +6,7 @@ SRCN= cgn.c decl.c expr.c gen.c main.c misc.c scan.c stmt.c sym.c \
 
 
 cwj: $(SRCS) $(HSRCS)
-	cc -std=c99 -o cwj -g -Wall $(SRCS)
+	cc -std=c99 -o cwj -g  $(SRCS)
 
 
 

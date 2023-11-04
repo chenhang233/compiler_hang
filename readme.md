@@ -181,3 +181,8 @@ x86-64的栈向低地址方向增长，而栈指针 %rsp 指向栈顶元素。�
 ```
 被调用函数返回时，把返回结果放入 %rax中，供调用函数来获取
 ```
+```
+   PLT（Procedure Linkage Table）
+   @PLT" 是一个符号修饰符，指示编译器将函数名解析为 PLT 表中对应的地址，而不是直接解析为代码段的地址。这是因为在 ELF（Executable and Linkable Format）格式的程序中，函数调用可以通过 PLT 表进行间接调用，以支持动态链接和共享库的加载
+   call printf@PLT 调用名为 "printf" 的函数，其地址在 PLT 表中获取
+```

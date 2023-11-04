@@ -46,7 +46,7 @@ void global_declarations()
                 continue;
             jsonify_tree(tree, "dump.json");
 
-            if (DumpAST)
+            if (O_dumpAST)
             {
                 // dumpAST
                 dumpAST(tree, NOLABEL, 0);

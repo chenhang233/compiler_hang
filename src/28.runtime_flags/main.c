@@ -9,7 +9,7 @@ char *alter_suffix(char *str, char suffix)
     char *p;
     if (!outfilename)
         return NULL;
-    if ((p = strchr(str, '.')) == NULL)
+    if ((p = strchr(outfilename, '.')) == NULL)
         return NULL;
     p++;
     if (*p == '\0')
@@ -41,11 +41,12 @@ static char *do_compile(char *filename)
     global_declarations();
     genpostamble();
     fclose(Outfile);
+    return sfile;
 }
 // -c
 char *do_assemble(char *filename)
 {
-    int cmd[TEXTLEN], err;
+    char cmd[TEXTLEN], err;
     char *ofile = alter_suffix(filename, 'o');
     if (ofile == NULL)
         custom_error_chars("Error: %s has no suffix, try .s on the end\n", ofile);
@@ -60,15 +61,15 @@ char *do_assemble(char *filename)
 // -o
 void do_link(char *outfilename, char *objlist[])
 {
-    int cmd[TEXTLEN], cnt, err;
+    char cmd[TEXTLEN], cnt, err;
     int size = TEXTLEN;
-    int *p = cmd;
-    cnt = snprintf(cmd, size, "%s %s ", LDCMD, outfilename);
+    char *p = cmd;
+    cnt = snprintf(p, size, "%s %s ", LDCMD, outfilename);
     size -= cnt;
     p += cnt;
     while (*objlist)
     {
-        cnt = snprintf(cmd, size, "%s ", *objlist);
+        cnt = snprintf(p, size, "%s ", *objlist);
         size -= cnt;
         p += cnt;
         objlist++;
@@ -97,9 +98,9 @@ static void usage(char *prog)
 }
 
 #define MAXOBJ 100 // max sourcefile
-int main(int argc, char const *argv[])
+int main(int argc, char *argv[])
 {
-    int outfilename = AOUT;
+    char *outfilename = AOUT;
     char *asmfile, *objfile;
     char *objlist[MAXOBJ]; // List of.obj files
     int objcnt = 0;
