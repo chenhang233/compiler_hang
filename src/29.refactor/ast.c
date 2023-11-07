@@ -179,7 +179,7 @@ static ASTnode *primary(void)
         break;
     case T_STRLIT:
         id = genglobstr(Text);
-        n = mkAST_leaf(A_STRLIT, P_CHARPTR, id);
+        n = mkAST_leaf(A_STRLIT, pointer_to(P_CHAR), id);
         break;
     case T_IDENT:
         return postfix();
