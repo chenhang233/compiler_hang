@@ -67,25 +67,24 @@ void global_declarations()
     Gsym_dump("gsym_demp.txt");
 }
 
-static int param_declaration(int id)
+static int param_declaration(symtable *funcsym)
 {
     Primitive_type t_type;
-    int param_id;
-    int prototype_count, param_count = 0;
+    int param_count = 0;
+    symtable *protoptr = NULL;
 
-    param_id = id + 1;
-    // printf("param_id=%d\n", param_id);
-    if (param_id)
-        prototype_count = Gsym[id].nelems;
+    if (funcsym)
+        protoptr = funcsym->member;
 
     while (t_instance.token != T_RPAREN)
     {
         t_type = parse_type();
         match_ident();
-        if (param_id)
+        if (protoptr)
         {
-            if (t_type != Gsym[id].type)
+            if (t_type != protoptr->type)
                 custom_error_int("type doesn't match prototype for parameter", param_count);
+            protoptr = protoptr->next;
         }
         else
         {
@@ -103,10 +102,9 @@ static int param_declaration(int id)
             custom_error_int("nexpected token in parameter list", t_instance.token);
         }
     }
-    // printf("param_count=%d\n", param_count);
-    if (param_id && param_count != prototype_count)
+    if (funcsym && funcsym->nelems != param_count)
     {
-        custom_error_chars("Parameter count mismatch for function", Gsym[id].name);
+        custom_error_chars("Parameter count mismatch for function", funcsym->name);
     }
 
     return param_count;
@@ -154,7 +152,7 @@ ASTnode *function_declaration(Primitive_type type)
     return mkAST_left(A_FUNCTION, type, tree, id);
 }
 
-void var_declaration(Primitive_type type, Storage_class class)
+symtable *var_declaration(Primitive_type type, Storage_class class)
 {
     if (t_instance.token == T_LBRACKET)
     {
@@ -313,7 +311,7 @@ static ASTnode *for_statement()
 static ASTnode *return_statement(void)
 {
     ASTnode *tree;
-    Primitive_type need_type = Gsym[Functionid].type;
+    Primitive_type need_type = Functionid->type;
     if (need_type == P_VOID)
         custom_error_int("can not return from a void function", 1);
     match_return();

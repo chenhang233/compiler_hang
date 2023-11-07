@@ -109,7 +109,7 @@ ASTnode *function_declaration(Primitive_type type);
 ASTnode *compound_statement();
 static ASTnode *single_statement(void);
 static ASTnode *print_statement(void);
-void var_declaration(Primitive_type type, Storage_class class);
+symtable *var_declaration(Primitive_type type, Storage_class class);
 static ASTnode *assignment_statement(void);
 static ASTnode *if_statement(void);
 static ASTnode *while_statement();
@@ -117,7 +117,7 @@ static ASTnode *for_statement();
 static ASTnode *return_statement(void);
 Primitive_type parse_type();
 void global_declarations();
-static int param_declaration(int id);
+static int param_declaration(symtable *funcsym);
 
 // ast.c
 ASTnode *mkAST_node(AST_node_type op, Primitive_type type, ASTnode *left, ASTnode *mid, ASTnode *right, int intv);
@@ -151,7 +151,9 @@ symtable *addlocl(char *name, Primitive_type type, Structural_type stype,
 symtable *addparm(char *name, Primitive_type type, Structural_type stype,
                   Storage_class class, int size);
 symtable *findglob(char *name);
+symtable *findcomposite(char *s);
 symtable *findlocl(char *name);
+symtable *findsymbol(char *s);
 void clear_symtable(void);
 void freeloclsyms(void);
 

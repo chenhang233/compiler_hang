@@ -14,7 +14,7 @@ void appendsym(symtable **head, symtable **tail,
                symtable *node)
 {
     if (head == NULL || tail == NULL || node == NULL)
-        custom_error_chars("Either head, tail or node is NULL in appendsym");
+        custom_error_int("Either head, tail or node is NULL in appendsym", 0);
     if (*tail)
     {
         (*tail)->next = node;
@@ -84,36 +84,55 @@ symtable *findglob(char *name)
 // Return its slot position or -1 if not found.
 symtable *findlocl(char *s)
 {
-    int i;
-    // printf("Locls=%d\n", Locls);
-    for (i = Locls + 1; i < NSYMBOLS; i++)
+    symtable *node;
+    if (Functionid)
     {
-        if (*s == *Gsym[i].name && !strcmp(s, Gsym[i].name))
-            return (i);
+        node = findsyminlist(s, Functionid->member);
+        if (node)
+            return node;
     }
-    return (-1);
+    return findsyminlist(s, Loclhead);
 }
 
-// Determine if the symbol s is in the symbol table.
-// Return its slot position or -1 if not found.
-int findsymbol(char *s)
+// Find a composite type.
+// Return a pointer to the found node or NULL if not found.
+symtable *findcomposite(char *s)
 {
-    int slot;
+    return (findsyminlist(s, Comphead));
+}
+symtable *findglob(char *s)
+{
+    return (findsyminlist(s, Globhead));
+}
 
-    slot = findlocl(s);
-    if (slot == -1)
-        slot = findglob(s);
-    return (slot);
+symtable *findsymbol(char *s)
+{
+    struct symtable *node;
+
+    if (Functionid)
+    {
+        node = findsyminlist(s, Functionid->member);
+        if (node)
+            return (node);
+    }
+    node = findsyminlist(s, Loclhead);
+    if (node)
+        return (node);
+    return (findsyminlist(s, Globhead));
 }
 
 void clear_symtable(void)
 {
-    Globals = 0;
-    Locls = NSYMBOLS - 1;
+    Globhead = Globtail = NULL;
+    Loclhead = Locltail = NULL;
+    Parmhead = Parmtail = NULL;
+    Comphead = Comptail = NULL;
 }
 
 // Clear all the entries in the local symbol table
 void freeloclsyms(void)
 {
-    Locls = NSYMBOLS - 1;
+    Loclhead = Locltail = NULL;
+    Parmhead = Parmtail = NULL;
+    Functionid = NULL;
 }
