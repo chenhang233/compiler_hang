@@ -1,31 +1,5 @@
 #include "function.h"
 
-int findglob(char *s)
-{
-    for (int i = 0; i < Globals; i++)
-    {
-        if (Gsym[i].class == C_PARAM)
-            continue;
-        if (*Gsym[i].name == *s && !strcmp(Gsym[i].name, s))
-            return i;
-    }
-    return -1;
-}
-
-// Determine if the symbol s is in the local symbol table.
-// Return its slot position or -1 if not found.
-int findlocl(char *s)
-{
-    int i;
-    // printf("Locls=%d\n", Locls);
-    for (i = Locls + 1; i < NSYMBOLS; i++)
-    {
-        if (*s == *Gsym[i].name && !strcmp(s, Gsym[i].name))
-            return (i);
-    }
-    return (-1);
-}
-
 char *my_strdup(const char *source)
 {
     if (source == NULL)
@@ -36,79 +10,88 @@ char *my_strdup(const char *source)
     return dest;
 }
 
-static int newglob()
+void appendsym(symtable **head, symtable **tail,
+               symtable *node)
 {
-    int p;
-
-    if ((p = Globals++) >= Locls)
+    if (head == NULL || tail == NULL || node == NULL)
+        custom_error_chars("Either head, tail or node is NULL in appendsym");
+    if (*tail)
     {
-        custom_error_int("Too many global symbols", Globals);
+        (*tail)->next = node;
+        *tail = node;
     }
-    return p;
+    else
+        *head = *tail = node;
 }
 
-// Get the position of a new local symbol slot, or die
-// if we've run out of positions.
-static int newlocl(void)
+symtable *newsym(char *name, Primitive_type type, Structural_type stype,
+                 Storage_class class, int size, int posn)
 {
-    int p;
-
-    if ((p = Locls--) <= Globals)
-        custom_error_int("Too many local symbols", 0);
-    return (p);
-}
-
-// Clear all the entries in the
-// local symbol table
-void freeloclsyms(void)
-{
-    Locls = NSYMBOLS - 1;
-}
-
-// Update a symbol at the given slot number in the symbol table. Set up its:
-// + type: char, int etc.
-// + structural type: var, function, array etc.
-// + size: number of elements
-// + endlabel: if this is a function
-// + posn: Position information for local symbols
-static void updatesym(int id, char *name, Primitive_type type, Structural_type stype,
-                      Storage_class class, int endlabel, int size, int posn)
-{
-    if (id < 0 || id >= NSYMBOLS)
-        custom_error_int("Invalid symbol slot number in updatesym()", 0);
-    Gsym[id].name = my_strdup(name);
-    Gsym[id].type = type;
-    Gsym[id].stype = stype;
-    Gsym[id].class = class;
-    Gsym[id].endlabel = endlabel;
-    Gsym[id].size = size;
-    Gsym[id].posn = posn;
-}
-
-int addglob(char *name, Primitive_type type, Structural_type stype,
-            Storage_class class, int endlabel, int size)
-{
-    int id;
-    if ((id = findglob(name)) != -1)
-        return id;
-    id = newglob();
-    updatesym(id, name, type, stype, class, endlabel, size, 0);
+    symtable *node = malloc(sizeof(symtable));
+    if (node == NULL)
+        custom_error_chars("Unable to malloc a symbol table node in newsym", "newsym()");
+    node->name = my_strdup(name);
+    node->type = type;
+    node->stype = stype;
+    node->class = class;
+    node->size = size;
+    node->posn = posn;
+    node->next = NULL;
+    node->member = NULL;
     if (class == C_GLOBAL)
-        genglobsym(id);
-    return id;
+        genglobsym(node);
+    return node;
 }
 
-int addlocl(char *name, Primitive_type type, Structural_type stype,
-            Storage_class class, int size)
+symtable *addglob(char *name, Primitive_type type, Structural_type stype,
+                  Storage_class class, int size)
 {
-    int localslot;
-    // If this is already in the symbol table, return the existing slot
-    if ((localslot = findlocl(name)) != -1)
-        return -1;
-    localslot = newlocl();
-    updatesym(localslot, name, type, stype, class, 0, size, 0);
+    symtable *sym = newsym(name, type, stype, class, size, 0);
+    appendsym(&Globhead, &Globtail, sym);
+    return sym;
+}
 
-    return localslot;
+symtable *addlocl(char *name, Primitive_type type, Structural_type stype,
+                  Storage_class class, int size)
+{
+    struct symtable *sym = newsym(name, type, stype, class, size, 0);
+    appendsym(&Loclhead, &Locltail, sym);
+    return (sym);
+}
+
+symtable *addparm(char *name, Primitive_type type, Structural_type stype,
+                  Storage_class class, int size)
+{
+    struct symtable *sym = newsym(name, type, stype, class, size, 0);
+    appendsym(&Parmhead, &Parmtail, sym);
+    return (sym);
+}
+
+static struct symtable *findsyminlist(char *s, struct symtable *list)
+{
+    for (; list != NULL; list = list->next)
+        if ((list->name != NULL) && !strcmp(s, list->name))
+            return (list);
+    return (NULL);
+}
+
+symtable *findglob(char *name)
+{
+    return (findsyminlist(name, Globhead));
+}
+
+// Determine if the symbol s is in the local symbol table.
+// Return its slot position or -1 if not found.
+symtable *findlocl(char *s)
+{
+    int i;
+    // printf("Locls=%d\n", Locls);
+    for (i = Locls + 1; i < NSYMBOLS; i++)
+    {
+        if (*s == *Gsym[i].name && !strcmp(s, Gsym[i].name))
+            return (i);
+    }
+    return (-1);
 }
 
 // Determine if the symbol s is in the symbol table.
@@ -122,25 +105,15 @@ int findsymbol(char *s)
         slot = findglob(s);
     return (slot);
 }
-// From prototype to local parameters
-void copyfuncparams(int slot)
-{
-    int i, id = slot + 1;
-    for (i = 0; i < Gsym[slot].nelems; i++, id++)
-    {
-        if (Gsym[id].name == NULL)
-        {
-            custom_error_int("From prototype to local parameters", id);
-            Gsym_dump("gsym_demp.txt");
-        }
-        // printf("Gsym[id].name=%s\n", Gsym[id].name);
-        addlocl(Gsym[id].name, Gsym[id].type, Gsym[id].stype, Gsym[id].class, Gsym[id].size);
-        // printf("r=%d\n", r);
-    }
-}
 
 void clear_symtable(void)
 {
     Globals = 0;
+    Locls = NSYMBOLS - 1;
+}
+
+// Clear all the entries in the local symbol table
+void freeloclsyms(void)
+{
     Locls = NSYMBOLS - 1;
 }

@@ -139,20 +139,21 @@ static ASTnode *expression_list(void);
 static int gen_funccall(ASTnode *n);
 
 // sym.c
-int findglob(char *s);
-int findlocl(char *s);
+void appendsym(symtable **head, symtable **tail, symtable *node);
+symtable *newsym(char *name, Primitive_type type, Structural_type stype,
+                 Storage_class class, int size, int posn);
 char *my_strdup(const char *source);
-static int newglob(void);
-static int newlocl(void);
-void freeloclsyms(void);
-int addglob(char *name, Primitive_type type, Structural_type stype,
-            Storage_class class, int endlabel, int size);
+symtable *addglob(char *name, Primitive_type type, Structural_type stype,
+                  Storage_class class, int size);
 
-int addlocl(char *name, Primitive_type type, Structural_type stype,
-            Storage_class class, int size);
-int findsymbol(char *s);
-void copyfuncparams(int slot);
+symtable *addlocl(char *name, Primitive_type type, Structural_type stype,
+                  Storage_class class, int size);
+symtable *addparm(char *name, Primitive_type type, Structural_type stype,
+                  Storage_class class, int size);
+symtable *findglob(char *name);
+symtable *findlocl(char *name);
 void clear_symtable(void);
+void freeloclsyms(void);
 
 // types.c
 int type_compatible(Primitive_type *left, Primitive_type *right, int onlyright);

@@ -174,27 +174,24 @@ typedef struct symtable
     Structural_type stype;
     // Storage class for the symbol
     Storage_class class;
-    // For S_FUNCTIONs, the end label
-    int endlabel;
-    /*
-     Number of elements in the symbol
-     For S_ARRAY: Array length
-     */
-    int size;
-    /*
-        For locals,the negative offset
-        from the stack base pointer
-     */
-    int posn;
-#define nelems posn // For functions, # of params number
+    union
+    {
+        int size;     // Number of elements in the symbol
+        int endlabel; // For functions, the end label
+    };
+    union
+    {
+        int nelems; // For functions, # of params
+        int posn;   // For locals, the negative offset
+                    // from the stack base pointer
+    };
+    symtable *next;   // Next symbol in one list
+    symtable *member; // First member of a function, struct,union or enum
 } symtable;
 
 int Line;
 int cache;
 char Text[TEXTLEN];
-int Functionid; // Symbol id of the current function
-int Globals;    // Position of next free Globals symbol slot
-int Locls;      // Position of next free local symbol slot
 // -------------------------------------------------------------
 int O_dumpAST;  // -T If true, dump the AST trees
 int O_keepasm;  // -S If true, keep any assembly files
@@ -207,3 +204,9 @@ FILE *Infile;
 FILE *Outfile;
 FILE *Gsym_dump_file;
 symtable Gsym[NSYMBOLS]; // global symbol table
+
+symtable *Functionid;          // Symbol ptr of the current function
+symtable *Globhead, *Globtail; // Global variables and functions
+symtable *Loclhead, *Locltail; // Local variables
+symtable *Parmhead, *Parmtail; // Local parameters
+symtable *Comphead, *Comptail; // Composite types

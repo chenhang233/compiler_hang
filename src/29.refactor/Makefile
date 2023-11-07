@@ -1,30 +1,18 @@
 HSRCS= function.h data.h 
 SRCS= ast.c cg.c custom_func.c gen.c main.c scan.c stm.c sym.c \
  types.c ../cjson/cjson.c
-SRCN= cgn.c decl.c expr.c gen.c main.c misc.c scan.c stmt.c sym.c \
- tree.c types.c
+# SRCN= cgn.c decl.c expr.c gen.c main.c misc.c scan.c stmt.c sym.c \
+#  tree.c types.c
 
-ARMSRCS= cg_arm.c decl.c expr.c gen.c main.c misc.c scan.c stmt.c sym.c \
- tree.c types.c
 
 cwj: $(SRCS) $(HSRCS)
-	cc -o cwj -g -Wall $(SRCS)
-
-compn: $(SRCN) $(HSRCS)
-	cc -D__NASM__ -o compn -g -Wall $(SRCN)
-
-cwjarm: $(ARMSRCS) $(HSRCS)
-	cc -o cwjarm -g -Wall $(ARMSRCS)
-	cp cwjarm cwj
-
-clean:
-	rm -f cwj cwjarm compn *.o *.s out
+	cc -std=c99 -o cwj -g  $(SRCS)
 
 test: cwj tests/runtests
 	(cd tests; chmod +x runtests; ./runtests)
 
-armtest: cwjarm tests/runtests
-	(cd tests; chmod +x runtests; ./runtests)
-
-testn: compn tests/runtestsn
-	(cd tests; chmod +x runtestsn; ./runtestsn)
+# test10n: compn tests/input10
+# 	./compn tests/input10
+# 	nasm -f elf64 out.s
+# 	cc -no-pie -o out out.o
+# 	./out
