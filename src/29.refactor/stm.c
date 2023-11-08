@@ -113,33 +113,37 @@ static int param_declaration(symtable *funcsym)
 ASTnode *function_declaration(Primitive_type type)
 {
     ASTnode *tree, *final_stm;
-    int id;
-    int name_id, label_id, p_len;
+    symtable *oldfuncsym, *newfuncsym = NULL;
+    int endlabel, paramcnt;
 
-    if ((id = findglob(Text)) != -1)
-        if (Gsym[id].stype != S_FUNCTION)
-            id = -1;
-    if (id == -1)
+    if ((oldfuncsym = findglob(Text)) != NULL)
+        if (oldfuncsym->stype != S_FUNCTION)
+            oldfuncsym = NULL;
+    if (oldfuncsym == NULL)
     {
-        label_id = genlabel();
-        name_id = addglob(Text, type, S_FUNCTION, C_GLOBAL, label_id, 0);
+        endlabel = genlabel();
+        newfuncsym = addglob(Text, type, S_FUNCTION, C_GLOBAL, endlabel);
     }
 
     match_lparen();
-    p_len = param_declaration(id);
+    paramcnt = param_declaration(oldfuncsym);
     match_rparen();
-    // printf("p_len=%d id=%d name_id=%d\n", p_len, id, name_id);
-    if (id == -1)
-        Gsym[name_id].nelems = p_len;
+    if (newfuncsym)
+    {
+        newfuncsym->nelems = paramcnt;
+        newfuncsym->member = Parmhead;
+        oldfuncsym = newfuncsym;
+    }
+    // Clear out the parameter list
+    Parmhead = Parmtail = NULL;
     if (t_instance.token == T_SEMI)
     {
         match_semi();
         return NULL;
     }
-    if (id == -1)
-        id = name_id;
-    copyfuncparams(id);
-    Functionid = id;
+    // This is not just a prototype.
+    // Set the Functionid global to the function's symbol pointer
+    Functionid = oldfuncsym;
     tree = compound_statement();
     if (type != P_VOID)
     {
@@ -149,25 +153,36 @@ ASTnode *function_declaration(Primitive_type type)
         if (!final_stm || final_stm->op != A_RETURN)
             custom_error_int("No return for function with non-void type", 0);
     }
-    return mkAST_left(A_FUNCTION, type, tree, id);
+    return mkAST_left(A_FUNCTION, type, tree, oldfuncsym, endlabel);
 }
 
 symtable *var_declaration(Primitive_type type, Storage_class class)
 {
+    symtable *sym = NULL;
+    switch (class)
+    {
+    case C_GLOBAL:
+        if (findglob(Text) != NULL)
+            custom_error_chars("Duplicate global variable declaration", Text);
+    case C_LOCAL:
+    case C_PARAM:
+        if (findlocl(Text) != NULL)
+            custom_error_chars("Duplicate local variable declaration", Text);
+    }
     if (t_instance.token == T_LBRACKET)
     {
         match_lbracket();
         if (t_instance.token == T_INTLIT)
         {
-
-            if (class == C_LOCAL)
+            switch (class)
             {
-                // addlocl(Text, pointer_to(type), S_ARRAY, 0, t_instance.intvalue);
-                custom_error_int("For now, declaration of local arrays is not implemented", 0);
-            }
-            else
-            {
-                addglob(Text, pointer_to(type), S_ARRAY, C_GLOBAL, 0, t_instance.intvalue);
+            case C_GLOBAL:
+                sym =
+                    addglob(Text, pointer_to(type), S_ARRAY, class, t_instance.intvalue);
+                break;
+            case C_LOCAL:
+            case C_PARAM:
+                custom_error_int("For now, declaration of local arrays is not implemented", class);
             }
         }
         scan(&t_instance);
@@ -175,16 +190,20 @@ symtable *var_declaration(Primitive_type type, Storage_class class)
     }
     else
     {
-        if (class == C_LOCAL)
+        switch (class)
         {
-            if (addlocl(Text, type, S_VARIABLE, class, 1) == -1)
-                custom_error_chars("Duplicate local variable declaration", Text);
-        }
-        else
-        {
-            addglob(Text, type, S_VARIABLE, class, 0, 1);
+        case C_GLOBAL:
+            sym = addglob(Text, type, S_VARIABLE, class, 1);
+            break;
+        case C_LOCAL:
+            sym = addlocl(Text, type, S_VARIABLE, class, 1);
+            break;
+        case C_PARAM:
+            sym = addparm(Text, type, S_VARIABLE, class, 1);
+            break;
         }
     }
+    return sym;
 }
 
 ASTnode *compound_statement()
@@ -209,7 +228,7 @@ ASTnode *compound_statement()
             }
             else
             {
-                left = mkAST_node(A_GLUE, P_NONE, left, NULL, tree, 0);
+                left = mkAST_node(A_GLUE, P_NONE, left, NULL, tree, NULL, 0);
             }
         }
 
@@ -257,7 +276,7 @@ static ASTnode *if_statement(void)
     // if (cond->op < T_EQ || cond->op > T_GE)
     //     custom_error_int("Bad comparison operator", cond->op);
     if (cond->op < A_EQ || cond->op > A_GE)
-        cond = mkAST_left(A_TOBOOL, cond->type, cond, 0);
+        cond = mkAST_left(A_TOBOOL, cond->type, cond, NULL, 0);
     match_rparen();
 
     trueAST = compound_statement();
@@ -266,7 +285,7 @@ static ASTnode *if_statement(void)
         scan(&t_instance);
         falseAST = compound_statement();
     }
-    return mkAST_node(A_IF, P_NONE, cond, trueAST, falseAST, 0);
+    return mkAST_node(A_IF, P_NONE, cond, trueAST, falseAST, NULL, 0);
 };
 static ASTnode *while_statement()
 {
@@ -277,11 +296,11 @@ static ASTnode *while_statement()
     // if (cond->op < T_EQ || cond->op > T_GE)
     //     custom_error_int("Bad comparison operator", cond->op);
     if (cond->op < A_EQ || cond->op > A_GE)
-        cond = mkAST_left(A_TOBOOL, cond->type, cond, 0);
+        cond = mkAST_left(A_TOBOOL, cond->type, cond, NULL, 0);
     match_rparen();
 
     body = compound_statement();
-    return mkAST_node(A_WHILE, P_NONE, cond, NULL, body, 0);
+    return mkAST_node(A_WHILE, P_NONE, cond, NULL, body, NULL, 0);
 };
 static ASTnode *for_statement()
 {
@@ -296,16 +315,16 @@ static ASTnode *for_statement()
     // if (cond->op < T_EQ || cond->op > T_GE)
     //     custom_error_int("Bad comparison operator", cond->op);
     if (cond->op < A_EQ || cond->op > A_GE)
-        cond = mkAST_left(A_TOBOOL, cond->type, cond, 0);
+        cond = mkAST_left(A_TOBOOL, cond->type, cond, NULL, 0);
     match_semi();
 
     post = single_statement();
     match_rparen();
 
     body = compound_statement();
-    left = mkAST_node(A_GLUE, P_NONE, body, NULL, post, 0);
-    left = mkAST_node(A_WHILE, P_NONE, cond, NULL, left, 0);
-    left = mkAST_node(A_GLUE, P_NONE, prev, NULL, left, 0);
+    left = mkAST_node(A_GLUE, P_NONE, body, NULL, post, NULL, 0);
+    left = mkAST_node(A_WHILE, P_NONE, cond, NULL, left, NULL, 0);
+    left = mkAST_node(A_GLUE, P_NONE, prev, NULL, left, NULL, 0);
     return left;
 };
 static ASTnode *return_statement(void)
@@ -321,7 +340,7 @@ static ASTnode *return_statement(void)
     tree = modify_type(tree, need_type, 0);
     if (!tree)
         custom_error_int("Incompatible type to return", 0);
-    tree = mkAST_left(A_RETURN, tree->type, tree, 0);
+    tree = mkAST_left(A_RETURN, tree->type, tree, NULL, 0);
     match_rparen();
     return tree;
 };

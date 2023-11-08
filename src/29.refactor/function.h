@@ -120,9 +120,12 @@ void global_declarations();
 static int param_declaration(symtable *funcsym);
 
 // ast.c
-ASTnode *mkAST_node(AST_node_type op, Primitive_type type, ASTnode *left, ASTnode *mid, ASTnode *right, int intv);
-ASTnode *mkAST_leaf(AST_node_type op, Primitive_type type, int id);
-ASTnode *mkAST_left(AST_node_type op, Primitive_type type, ASTnode *left, int v);
+ASTnode *mkAST_node(AST_node_type op, Primitive_type type, ASTnode *left, ASTnode *mid, ASTnode *right,
+                    symtable *sym, int intv);
+ASTnode *mkAST_leaf(AST_node_type op, Primitive_type type,
+                    symtable *sym, int id);
+ASTnode *mkAST_left(AST_node_type op, Primitive_type type, ASTnode *left,
+                    symtable *sym, int v);
 ASTnode *binexpr(int ptp);
 static ASTnode *primary(void);
 static ASTnode *array_access(void);

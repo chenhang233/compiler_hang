@@ -139,6 +139,7 @@ typedef struct ASTnode
     struct ASTnode *left; // Left, middle and right child trees
     struct ASTnode *mid;
     struct ASTnode *right;
+    symtable *sym; // a global symbol pointer A_FUNCTION A_ADDR
     union
     {
         int intvalue; // For A_INTLIT, the integer value

@@ -1,7 +1,8 @@
 #include "function.h"
 
 ASTnode *mkAST_node(AST_node_type op, Primitive_type type,
-                    ASTnode *left, ASTnode *mid, ASTnode *right, int intv)
+                    ASTnode *left, ASTnode *mid, ASTnode *right,
+                    symtable *sym, int intv)
 {
     ASTnode *n = malloc(sizeof(ASTnode));
     if (!n)
@@ -11,18 +12,18 @@ ASTnode *mkAST_node(AST_node_type op, Primitive_type type,
     n->left = left;
     n->right = right;
     n->mid = mid;
+    n->sym = sym;
     n->v.intvalue = intv;
     return n;
 };
-ASTnode *mkAST_leaf(AST_node_type op, Primitive_type type, int id)
+ASTnode *mkAST_leaf(AST_node_type op, Primitive_type type, symtable *sym, int id)
 {
-    return mkAST_node(op, type, NULL, NULL, NULL, id);
+    return mkAST_node(op, type, NULL, NULL, NULL, sym, id);
 };
 ASTnode *mkAST_left(AST_node_type op, Primitive_type type, ASTnode *left,
-                    int v)
+                    symtable *sym, int v)
 {
-    return mkAST_node(op, type, left, NULL, NULL, v);
-    ;
+    return mkAST_node(op, type, left, NULL, NULL, sym, v);
 };
 
 static int OpPrec[] = {
@@ -102,7 +103,7 @@ ASTnode *binexpr(int ptp)
             if (r_temp)
                 right = r_temp;
         }
-        left = mkAST_node(binastop(type), left->type, left, NULL, right, 0);
+        left = mkAST_node(binastop(type), left->type, left, NULL, right, NULL, 0);
         type = t_instance.token;
         if (type == T_SEMI || type == T_RPAREN || type == T_RBRACKET || type == T_COMMA)
         {
@@ -117,10 +118,10 @@ ASTnode *binexpr(int ptp)
 static ASTnode *array_access(void)
 {
     ASTnode *left, *right;
-    int id;
-    if ((id = findsymbol(Text)) == -1 || Gsym[id].stype != S_ARRAY)
+    symtable *aryptr;
+    if ((aryptr = findsymbol(Text)) == -1 || aryptr->stype != S_ARRAY)
         custom_error_chars("Undeclared array", Text);
-    left = mkAST_leaf(A_ADDR, Gsym[id].type, id);
+    left = mkAST_leaf(A_ADDR, aryptr->type, aryptr, 0);
     match_lbracket();
     right = binexpr(0);
     match_rbracket();
@@ -129,23 +130,24 @@ static ASTnode *array_access(void)
 
     right = modify_type(right, left->type, A_ADD);
 
-    left = mkAST_node(A_ADD, Gsym[id].type, left, NULL, right, 0);
-    left = mkAST_left(A_DEREF, value_at(left->type), left, 0);
+    left = mkAST_node(A_ADD, aryptr->type, left, NULL, right, NULL, 0);
+    left = mkAST_left(A_DEREF, value_at(left->type), left, NULL, 0);
     return left;
 }
 
 static ASTnode *postfix(void)
 {
     ASTnode *n;
+    symtable *varptr;
     scan(&t_instance);
     if (t_instance.token == T_LPAREN)
         return funccall();
     if (t_instance.token == T_LBRACKET)
         return array_access();
 
-    int id = findsymbol(Text);
-    if (id == -1)
-        custom_error_int("unknown variable", id);
+    varptr = findsymbol(Text);
+    if (varptr == NULL || varptr->stype != S_VARIABLE)
+        custom_error_chars("unknown variable", Text);
     switch (t_instance.token)
     {
     case T_INC:
