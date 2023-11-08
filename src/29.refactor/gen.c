@@ -97,9 +97,9 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
         genfreeregs();
         return (NOREG);
     case A_FUNCTION:
-        cgfuncpreamble(n->v.id);
+        cgfuncpreamble(n->sym);
         genAST(n->left, NOLABEL, n->op);
-        cgfuncpostamble(n->v.id);
+        cgfuncpostamble(n->sym);
         return (NOREG);
     }
 

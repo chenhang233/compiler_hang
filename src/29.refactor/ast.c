@@ -148,18 +148,19 @@ static ASTnode *postfix(void)
     varptr = findsymbol(Text);
     if (varptr == NULL || varptr->stype != S_VARIABLE)
         custom_error_chars("unknown variable", Text);
+
     switch (t_instance.token)
     {
     case T_INC:
         scan(&t_instance);
-        n = mkAST_leaf(A_POSTINC, Gsym[id].type, id);
+        n = mkAST_leaf(A_POSTINC, varptr->type, varptr, 0);
         break;
     case T_DEC:
         scan(&t_instance);
-        n = mkAST_leaf(A_POSTDEC, Gsym[id].type, id);
+        n = mkAST_leaf(A_POSTDEC, varptr->type, varptr, 0);
         break;
     default:
-        n = mkAST_leaf(A_IDENT, Gsym[id].type, id);
+        n = mkAST_leaf(A_IDENT, varptr->type, varptr, 0);
     }
     return n;
 }
@@ -175,13 +176,13 @@ static ASTnode *primary(void)
     case T_INTLIT:
         v = t_instance.intvalue;
         if (v >= 0 && v < 256)
-            n = mkAST_leaf(A_INTLIT, P_CHAR, v);
+            n = mkAST_leaf(A_INTLIT, P_CHAR, NULL, v);
         else
-            n = mkAST_leaf(A_INTLIT, P_INT, v);
+            n = mkAST_leaf(A_INTLIT, P_INT, NULL, v);
         break;
     case T_STRLIT:
         id = genglobstr(Text);
-        n = mkAST_leaf(A_STRLIT, pointer_to(P_CHAR), id);
+        n = mkAST_leaf(A_STRLIT, pointer_to(P_CHAR), NULL, id);
         break;
     case T_IDENT:
         return postfix();
@@ -217,40 +218,40 @@ ASTnode *prefix(void)
         tree = prefix();
         if (tree->op != A_IDENT && tree->op != A_DEREF)
             custom_error_int("Get an address that is not an A_IDENT", tree->op);
-        tree = mkAST_left(A_DEREF, value_at(tree->type), tree, 0);
+        tree = mkAST_left(A_DEREF, value_at(tree->type), tree, NULL, 0);
         break;
     case T_MINUS:
         scan(&t_instance);
         tree = prefix();
         tree->rvalue = 1;
         tree = modify_type(tree, P_INT, 0);
-        tree = mkAST_left(A_NEGATE, tree->type, tree, 0);
+        tree = mkAST_left(A_NEGATE, tree->type, tree, NULL, 0);
         break;
     case T_INVERT:
         scan(&t_instance);
         tree = prefix();
         tree->rvalue = 1;
-        tree = mkAST_left(A_INVERT, tree->type, tree, 0);
+        tree = mkAST_left(A_INVERT, tree->type, tree, NULL, 0);
         break;
     case T_LOGNOT:
         scan(&t_instance);
         tree = prefix();
         tree->rvalue = 1;
-        tree = mkAST_left(A_LOGNOT, tree->type, tree, 0);
+        tree = mkAST_left(A_LOGNOT, tree->type, tree, NULL, 0);
         break;
     case T_INC:
         scan(&t_instance);
         tree = prefix();
         if (tree->op != A_IDENT)
             custom_error_int("operator must be followed by an identifier", tree->op);
-        tree = mkAST_left(A_PREINC, tree->type, tree, 0);
+        tree = mkAST_left(A_PREINC, tree->type, tree, NULL, 0);
         break;
     case T_DEC:
         scan(&t_instance);
         tree = prefix();
         if (tree->op != A_IDENT)
             custom_error_int("operator must be followed by an identifier", tree->op);
-        tree = mkAST_left(A_PREDEC, tree->type, tree, 0);
+        tree = mkAST_left(A_PREDEC, tree->type, tree, NULL, 0);
         break;
     default:
         tree = primary();
@@ -265,9 +266,9 @@ static ASTnode *expression_list(void)
     int expr_count = 0;
     while (t_instance.token != T_RPAREN)
     {
-        expr_count++;
         child = binexpr(0);
-        tree = mkAST_node(A_GLUE, P_NONE, tree, NULL, child, expr_count);
+        expr_count++;
+        tree = mkAST_node(A_GLUE, P_NONE, tree, NULL, child, NULL, expr_count);
         switch (t_instance.token)
         {
         case T_COMMA:
@@ -285,13 +286,13 @@ static ASTnode *expression_list(void)
 ASTnode *funccall(void)
 {
     ASTnode *tree;
-    int id;
-    if ((id = findsymbol(Text)) == -1)
-        custom_error_chars("undefined variable", Text);
+    symtable *funcptr;
+    if ((funcptr = findsymbol(Text)) == NULL || funcptr->stype != S_FUNCTION)
+        custom_error_chars("undefined function", Text);
 
     match_lparen();
     tree = expression_list();
-    tree = mkAST_left(A_FUNCCALL, Gsym[id].type, tree, id);
+    tree = mkAST_left(A_FUNCCALL, funcptr->type, tree, funcptr, 0);
     match_rparen();
 
     return tree;

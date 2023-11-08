@@ -89,10 +89,12 @@ void cgpostamble()
 {
 }
 
-void cgfuncpreamble(int id)
+void cgfuncpreamble(symtable *sym)
 {
+    char *name = sym->name;
+    symtable *parm, *locvar;
     int i;
-    char *name = Gsym[id].name;
+    int cnt;
     int paramOffset = 16;
     int paramReg = FIRSTPARAMREG;
     cgtextseg();
@@ -106,28 +108,24 @@ void cgfuncpreamble(int id)
             name, name, name);
     // Copy any in-register parameters to the stack
     // Stop after no more than six parameter registers
-    for (i = NSYMBOLS - 1; i > Locls; i--)
+    for (parm = sym->member, cnt = 1; parm != NULL; parm = parm->next, cnt++)
     {
-        if (Gsym[i].class != C_PARAM)
-            break;
-        if (i < NSYMBOLS - 6)
-            break;
-        Gsym[i].posn = newlocaloffset(Gsym[i].type);
-        cgstorlocal(paramReg--, i);
-    }
-    // For the remainder, if they are a parameter then they are
-    // already on the stack. If only a local, make a stack position.  for (; i > Locls; i--)
-    for (; i > Locls; i--)
-    {
-        if (Gsym[i].class == C_PARAM)
+        if (cnt > 6)
         {
-            Gsym[i].posn = paramOffset;
+            parm->posn = paramOffset;
             paramOffset += 8;
         }
         else
         {
-            Gsym[i].posn = newlocaloffset(Gsym[i].type);
+            parm->posn = newlocaloffset(parm->type);
+            cgstorlocal(paramReg--, parm);
         }
+    }
+    // For the remainder, if they are a parameter then they are
+    // already on the stack. If only a local, make a stack position.  for (; i > Locls; i--)
+    for (locvar = Loclhead; locvar != NULL; locvar = locvar->next)
+    {
+        locvar->posn = newlocaloffset(locvar->type);
     }
     // Align the stack pointer to be a multiple of 16
     // less than its previous value
@@ -135,9 +133,9 @@ void cgfuncpreamble(int id)
     fprintf(Outfile, "\taddq\t$%d,%%rsp\n", -stackOffset);
 }
 
-void cgfuncpostamble(int id)
+void cgfuncpostamble(symtable *sym)
 {
-    cglabel(Gsym[id].endlabel);
+    cglabel(sym->endlabel);
     fprintf(Outfile, "\taddq\t$%d,%%rsp\n", stackOffset);
     fputs("\tpopq	%rbp\n"
           "\tret\n",
