@@ -38,21 +38,24 @@ void global_declarations()
     while (1)
     {
         type = parse_type();
+        printf("type=%d\n", type);
         match_ident();
+        printf("Text=%s\n", Text);
         if (t_instance.token == T_LPAREN)
         {
             tree = function_declaration(type);
             if (!tree)
                 continue;
-            jsonify_tree(tree, "dump.json");
 
             if (O_dumpAST)
             {
+                jsonify_tree(tree, "dump.json");
                 // dumpAST
                 dumpAST(tree, NOLABEL, 0);
                 fprintf(stdout, "\n\n");
             }
             genAST(tree, NOLABEL, 0);
+            printf("? --\n");
             // Free up local space
             freeloclsyms();
         }
@@ -61,6 +64,7 @@ void global_declarations()
             var_declaration(type, C_GLOBAL);
             match_semi();
         }
+        printf("end t_instance.token=%d\n", t_instance.token);
         if (t_instance.token == T_EOF)
             break;
     }
@@ -115,7 +119,6 @@ ASTnode *function_declaration(Primitive_type type)
     ASTnode *tree, *final_stm;
     symtable *oldfuncsym, *newfuncsym = NULL;
     int endlabel, paramcnt;
-
     if ((oldfuncsym = findglob(Text)) != NULL)
         if (oldfuncsym->stype != S_FUNCTION)
             oldfuncsym = NULL;

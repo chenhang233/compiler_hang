@@ -75,13 +75,13 @@ static int gen_funccall(ASTnode *n)
         glue_tree = glue_tree->left;
     }
 
-    return cgcall(n->v.id, arg_num);
+    return cgcall(n->sym, arg_num);
 }
 
 int genAST(ASTnode *n, int label, AST_node_type parentASTop)
 {
     int leftreg, rightreg;
-    // printf("n=%p\n", n);
+    // printf("n=%d\n", n->op);
     switch (n->op)
     {
     case A_IF:
@@ -142,15 +142,15 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
     case A_INTLIT:
         return (cgloadint(n->v.intvalue, n->type));
     case A_STRLIT:
-        return (cgloadglobstr(n->v.id));
+        return (cgloadglobstr(n->v.intvalue));
     case A_IDENT:
         // Load our value if we are an rvalue
         // or we are being dereferenced
         if (n->rvalue || parentASTop == A_DEREF)
-            if (Gsym[n->v.id].class == C_GLOBAL)
-                return (cgloadglob(n->v.id, n->op));
+            if (n->sym->class == C_GLOBAL)
+                return (cgloadglob(n->sym, n->op));
             else
-                return (cgloadlocal(n->v.id, n->op));
+                return (cgloadlocal(n->sym, n->op));
         else
             return (NOREG);
     case A_ASSIGN:
@@ -158,10 +158,10 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
         switch (n->right->op)
         {
         case A_IDENT:
-            if (Gsym[n->right->v.id].class == C_GLOBAL)
-                return cgstorglob(leftreg, n->right->v.id);
+            if (n->right->sym->class == C_GLOBAL)
+                return cgstorglob(leftreg, n->right->sym);
             else
-                return cgstorlocal(leftreg, n->right->v.id);
+                return cgstorlocal(leftreg, n->right->sym);
         case A_DEREF:
             return (cgstorderef(leftreg, rightreg, n->right->type));
         default:
@@ -174,7 +174,7 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
         cgreturn(leftreg, Functionid);
         return (NOREG);
     case A_ADDR:
-        return (cgaddress(n->v.id));
+        return (cgaddress(n->sym));
     case A_DEREF:
         // If we are an rvalue, dereference to get the value we point at,
         // otherwise leave it for A_ASSIGN to store through the pointer
@@ -199,15 +199,16 @@ int genAST(ASTnode *n, int label, AST_node_type parentASTop)
         }
     case A_POSTINC:
     case A_POSTDEC:
-        if (Gsym[n->v.id].class == C_GLOBAL)
-            return (cgloadglob(n->v.id, n->op));
+        if (n->sym->class == C_GLOBAL)
+            return (cgloadglob(n->sym, n->op));
         else
-            return (cgloadlocal(n->v.id, n->op));
+            return (cgloadlocal(n->sym, n->op));
     case A_PREINC:
-        if (Gsym[n->v.id].class == C_GLOBAL)
-            return (cgloadglob(n->left->v.id, n->op));
+    case A_PREDEC:
+        if (n->left->sym->class == C_GLOBAL)
+            return (cgloadglob(n->left->sym, n->op));
         else
-            return (cgloadlocal(n->left->v.id, n->op));
+            return (cgloadlocal(n->left->sym, n->op));
     case A_NEGATE: // -digit
         return (cgnegate(leftreg));
     case A_INVERT:
@@ -239,9 +240,9 @@ void genprintint(int reg)
 {
     cgprintint(reg);
 }
-void genglobsym(int id)
+void genglobsym(symtable *sym)
 {
-    cgglobsym(id);
+    cgglobsym(sym);
 }
 int genprimsize(int type)
 {

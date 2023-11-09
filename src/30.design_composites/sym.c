@@ -75,11 +75,6 @@ static struct symtable *findsyminlist(char *s, struct symtable *list)
     return (NULL);
 }
 
-symtable *findglob(char *name)
-{
-    return (findsyminlist(name, Globhead));
-}
-
 // Determine if the symbol s is in the local symbol table.
 // Return its slot position or -1 if not found.
 symtable *findlocl(char *s)

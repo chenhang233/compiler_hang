@@ -16,6 +16,8 @@
 #define NOREG -1
 #define NOLABEL 0 // Use NOLABEL when we have no label to
 
+typedef struct symtable symtable;
+
 typedef enum Token_type
 {
     T_EOF, //  eof
