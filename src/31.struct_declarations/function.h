@@ -143,20 +143,22 @@ static int gen_funccall(ASTnode *n);
 
 // sym.c
 void appendsym(symtable **head, symtable **tail, symtable *node);
-symtable *newsym(char *name, Primitive_type type, Structural_type stype,
-                 Storage_class class, int size, int posn);
+symtable *newsym(char *name, Primitive_type type, symtable *ctype,
+                 Structural_type stype, Storage_class class, int size, int posn);
 char *my_strdup(const char *source);
-symtable *addglob(char *name, Primitive_type type, Structural_type stype,
-                  Storage_class class, int size);
+symtable *addglob(char *name, Primitive_type type, symtable *ctype,
+                  Structural_type stype, Storage_class class, int size);
 
-symtable *addlocl(char *name, Primitive_type type, Structural_type stype,
-                  Storage_class class, int size);
-symtable *addparm(char *name, Primitive_type type, Structural_type stype,
-                  Storage_class class, int size);
+symtable *addlocl(char *name, Primitive_type type, symtable *ctype,
+                  Structural_type stype, Storage_class class, int size);
+symtable *addparm(char *name, Primitive_type type, symtable *ctype,
+                  Structural_type stype, Storage_class class, int size);
 symtable *findglob(char *name);
-symtable *findcomposite(char *s);
+// symtable *findcomposite(char *s);
 symtable *findlocl(char *name);
 symtable *findsymbol(char *s);
+symtable *findmember(char *s);
+symtable *findstruct(char *s);
 void clear_symtable(void);
 void freeloclsyms(void);
 

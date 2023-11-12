@@ -24,7 +24,7 @@ void appendsym(symtable **head, symtable **tail,
         *head = *tail = node;
 }
 
-symtable *newsym(char *name, Primitive_type type, Structural_type stype,
+symtable *newsym(char *name, Primitive_type type, symtable *ctype, Structural_type stype,
                  Storage_class class, int size, int posn)
 {
     symtable *node = malloc(sizeof(symtable));
@@ -32,6 +32,7 @@ symtable *newsym(char *name, Primitive_type type, Structural_type stype,
         custom_error_chars("Unable to malloc a symbol table node in newsym", "newsym()");
     node->name = my_strdup(name);
     node->type = type;
+    node->ctype = ctype;
     node->stype = stype;
     node->class = class;
     node->size = size;
@@ -43,27 +44,36 @@ symtable *newsym(char *name, Primitive_type type, Structural_type stype,
     return node;
 }
 
-symtable *addglob(char *name, Primitive_type type, Structural_type stype,
-                  Storage_class class, int size)
+symtable *addglob(char *name, Primitive_type type, symtable *ctype,
+                  Structural_type stype, Storage_class class, int size)
 {
-    symtable *sym = newsym(name, type, stype, class, size, 0);
+    symtable *sym = newsym(name, type, ctype, stype, class, size, 0);
     appendsym(&Globhead, &Globtail, sym);
     return sym;
 }
 
-symtable *addlocl(char *name, Primitive_type type, Structural_type stype,
+symtable *addlocl(char *name, Primitive_type type, symtable *ctype, Structural_type stype,
                   Storage_class class, int size)
 {
-    struct symtable *sym = newsym(name, type, stype, class, size, 0);
+    struct symtable *sym = newsym(name, type, ctype, stype, class, size, 0);
     appendsym(&Loclhead, &Locltail, sym);
     return (sym);
 }
 
-symtable *addparm(char *name, Primitive_type type, Structural_type stype,
+symtable *addparm(char *name, Primitive_type type, symtable *ctype, Structural_type stype,
                   Storage_class class, int size)
 {
-    struct symtable *sym = newsym(name, type, stype, class, size, 0);
+    struct symtable *sym = newsym(name, type, ctype, stype, class, size, 0);
     appendsym(&Parmhead, &Parmtail, sym);
+    return (sym);
+}
+
+// Add a symbol to the temporary member list
+struct symtable *addmemb(char *name, Primitive_type type, struct symtable *ctype,
+                         int stype, int size)
+{
+    struct symtable *sym = newsym(name, type, ctype, stype, C_MEMBER, size, 0);
+    appendsym(&Membhead, &Membtail, sym);
     return (sym);
 }
 
@@ -89,12 +99,6 @@ symtable *findlocl(char *s)
     return findsyminlist(s, Loclhead);
 }
 
-// Find a composite type.
-// Return a pointer to the found node or NULL if not found.
-symtable *findcomposite(char *s)
-{
-    return (findsyminlist(s, Comphead));
-}
 symtable *findglob(char *s)
 {
     return (findsyminlist(s, Globhead));
@@ -102,7 +106,7 @@ symtable *findglob(char *s)
 
 symtable *findsymbol(char *s)
 {
-    struct symtable *node;
+    symtable *node;
 
     if (Functionid)
     {
@@ -116,12 +120,27 @@ symtable *findsymbol(char *s)
     return (findsyminlist(s, Globhead));
 }
 
+// Find a member in the member list
+// Return a pointer to the found node or NULL if not found.
+symtable *findmember(char *s)
+{
+    return (findsyminlist(s, Membhead));
+}
+
+// Find a struct in the struct list
+// Return a pointer to the found node or NULL if not found.
+symtable *findstruct(char *s)
+{
+    return (findsyminlist(s, Structhead));
+}
+
 void clear_symtable(void)
 {
     Globhead = Globtail = NULL;
     Loclhead = Locltail = NULL;
     Parmhead = Parmtail = NULL;
-    Comphead = Comptail = NULL;
+    Membhead = Membtail = NULL;
+    Structhead = Structtail = NULL;
 }
 
 // Clear all the entries in the local symbol table

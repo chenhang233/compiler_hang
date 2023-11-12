@@ -164,7 +164,9 @@ typedef enum storage_class
 {
     C_GLOBAL = 1, // Globally visible symbol
     C_LOCAL,      // Locally visible symbol
-    C_PARAM       // Locally visible function parameter
+    C_PARAM,      // Locally visible function parameter
+    C_STRUCT,     // A struct
+    C_MEMBER      // Member of a struct or union
 } Storage_class;
 
 typedef struct symtable
@@ -175,6 +177,7 @@ typedef struct symtable
         For S_FUNCTIONs:  return value type
     */
     Primitive_type type;
+    struct symtable *ctype; // If struct/union, ptr to that type
     // Structural type for the symbol
     Structural_type stype;
     // Storage class for the symbol
@@ -215,4 +218,6 @@ symtable *Globhead, *Globtail; // Global variables and functions
 symtable *Loclhead, *Locltail; // Local variables
 symtable *Parmhead, *Parmtail; // Local parameters
 // symtable *Comphead, *Comptail; // Composite types
+symtable *Structhead, *Structtail; // List of struct types
+symtable *Membhead, *Membtail;     // Temp list of struct/union members
 symtable *Structhead, *Structtail; // List of struct types
