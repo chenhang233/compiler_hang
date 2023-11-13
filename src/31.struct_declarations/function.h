@@ -117,7 +117,7 @@ static ASTnode *for_statement();
 static ASTnode *return_statement(void);
 Primitive_type parse_type(symtable **ctype);
 void global_declarations();
-static int param_declaration(symtable *funcsym);
+// static int param_declaration(symtable *funcsym);
 
 // ast.c
 ASTnode *mkAST_node(AST_node_type op, Primitive_type type, ASTnode *left, ASTnode *mid, ASTnode *right,

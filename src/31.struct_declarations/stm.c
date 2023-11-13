@@ -76,7 +76,7 @@ void global_declarations()
         }
         else
         {
-            var_declaration(type, C_GLOBAL);
+            var_declaration(type, ctype, C_GLOBAL);
             match_semi();
         }
         // printf("end t_instance.token=%d\n", t_instance.token);
@@ -84,18 +84,20 @@ void global_declarations()
     Gsym_dump("gsym_demp.txt");
 }
 
-static int param_declaration(symtable *funcsym)
+static int var_declaration_list(symtable *funcsym, Storage_class class,
+                                Token_type separate_token, Token_type end_token)
 {
     Primitive_type t_type;
     int param_count = 0;
+    symtable *ctype;
     symtable *protoptr = NULL;
 
     if (funcsym)
         protoptr = funcsym->member;
 
-    while (t_instance.token != T_RPAREN)
+    while (t_instance.token != end_token)
     {
-        t_type = parse_type();
+        t_type = parse_type(&ctype);
         match_ident();
         if (protoptr)
         {
@@ -105,19 +107,13 @@ static int param_declaration(symtable *funcsym)
         }
         else
         {
-            var_declaration(t_type, C_PARAM);
+            var_declaration(t_type, ctype, class);
         }
         param_count++;
-        switch (t_instance.token)
-        {
-        case T_COMMA:
-            match_comma();
-            break;
-        case T_RPAREN:
-            break;
-        default:
-            custom_error_int("nexpected token in parameter list", t_instance.token);
-        }
+        if ((t_instance.token != separate_token) && (t_instance.token != end_token))
+            custom_error_int("Unexpected token in parameter list", t_instance.token);
+        if (t_instance.token == separate_token)
+            scan(&t_instance);
     }
     if (funcsym && funcsym->nelems != param_count)
     {
@@ -138,11 +134,11 @@ ASTnode *function_declaration(Primitive_type type)
     if (oldfuncsym == NULL)
     {
         endlabel = genlabel();
-        newfuncsym = addglob(Text, type, S_FUNCTION, C_GLOBAL, endlabel);
+        newfuncsym = addglob(Text, type, NULL, S_FUNCTION, C_GLOBAL, endlabel);
     }
 
     match_lparen();
-    paramcnt = param_declaration(oldfuncsym);
+    paramcnt = var_declaration_list(oldfuncsym, C_PARAM, T_COMMA, T_RPAREN);
     match_rparen();
     if (newfuncsym)
     {
@@ -184,6 +180,9 @@ symtable *var_declaration(Primitive_type type, symtable *ctype, Storage_class cl
     case C_PARAM:
         if (findlocl(Text) != NULL)
             custom_error_chars("Duplicate local variable declaration", Text);
+    case C_MEMBER:
+        if (findmember(Text) != NULL)
+            custom_error_chars("Duplicate struct/union member declaration", Text);
     }
     if (t_instance.token == T_LBRACKET)
     {
@@ -198,6 +197,7 @@ symtable *var_declaration(Primitive_type type, symtable *ctype, Storage_class cl
                 break;
             case C_LOCAL:
             case C_PARAM:
+            case C_MEMBER:
                 custom_error_int("For now, declaration of local arrays is not implemented", class);
             }
         }
@@ -209,13 +209,13 @@ symtable *var_declaration(Primitive_type type, symtable *ctype, Storage_class cl
         switch (class)
         {
         case C_GLOBAL:
-            sym = addglob(Text, type, S_VARIABLE, class, 1);
+            sym = addglob(Text, type, ctype, S_VARIABLE, class, 1);
             break;
         case C_LOCAL:
-            sym = addlocl(Text, type, S_VARIABLE, class, 1);
+            sym = addlocl(Text, type, ctype, S_VARIABLE, class, 1);
             break;
         case C_PARAM:
-            sym = addparm(Text, type, S_VARIABLE, class, 1);
+            sym = addparm(Text, type, ctype, S_VARIABLE, class, 1);
             break;
         }
     }
