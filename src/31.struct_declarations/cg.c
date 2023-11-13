@@ -474,6 +474,25 @@ int cgprimsize(Primitive_type type)
     return (0); // Keep -Wall happy
 }
 
+int cgalign(Primitive_type type, int offset, int direction)
+{
+    int alignment;
+    switch (type)
+    {
+    case P_CHAR:
+        return (offset);
+    case P_INT:
+    case P_LONG:
+        break;
+    default:
+        custom_error_int("Bad type in calc_aligned_offset:", type);
+    }
+
+    alignment = 4;
+    offset = (offset + direction * (alignment - 1)) & ~(alignment - 1);
+    return (offset);
+}
+
 // Generate a global symbol but not functions
 void cgglobsym(symtable *node)
 {

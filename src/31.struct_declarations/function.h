@@ -53,6 +53,7 @@ void genpostamble();
 int genlabel(void);
 int genglobstr(char *strvalue);
 // int gengetlocaloffset(int type, int isparam);
+int genalign(int type, int offset, int direction);
 void genresetlocals(void);
 
 // cg.c
@@ -103,6 +104,7 @@ void cgtextseg();
 int cgloadlocal(symtable *sym, int op);
 void cgdataseg();
 void cgcopyarg(int r, int argposn);
+int cgalign(Primitive_type type, int offset, int direction);
 
 // stm.c
 ASTnode *function_declaration(Primitive_type type);
@@ -166,6 +168,7 @@ void freeloclsyms(void);
 int type_compatible(Primitive_type *left, Primitive_type *right, int onlyright);
 Primitive_type pointer_to(Primitive_type type);
 Primitive_type value_at(Primitive_type type);
+int typesize(int type, struct symtable *ctype);
 ASTnode *modify_type(ASTnode *tree, Primitive_type rtype, AST_node_type op);
 int inttype(Primitive_type type);
 int ptrtype(Primitive_type type);

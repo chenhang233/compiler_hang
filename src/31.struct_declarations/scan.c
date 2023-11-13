@@ -279,6 +279,10 @@ int scankey(char *s)
         if (!strcmp(s, "void"))
             return (T_VOID);
         break;
+    case 's':
+        if (!strcmp(s, "struct"))
+            return (T_STRUCT);
+        break;
     }
     return (0);
 }

@@ -255,3 +255,8 @@ int genglobstr(char *strvalue)
     cgglobstr(l, strvalue);
     return l;
 }
+
+int genalign(int type, int offset, int direction)
+{
+    return (cgalign(type, offset, direction));
+}

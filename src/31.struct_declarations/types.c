@@ -24,6 +24,13 @@ Primitive_type value_at(Primitive_type type)
     return (type - 1);
 }
 
+int typesize(Primitive_type type, struct symtable *ctype)
+{
+    if (type == P_STRUCT)
+        return ctype->size;
+    return genprimsize(type);
+}
+
 ASTnode *modify_type(ASTnode *tree, Primitive_type rtype, AST_node_type op)
 {
     int ltype;
@@ -34,8 +41,8 @@ ASTnode *modify_type(ASTnode *tree, Primitive_type rtype, AST_node_type op)
     {
         if (ltype == rtype)
             return tree;
-        lsize = genprimsize(ltype);
-        rsize = genprimsize(rtype);
+        lsize = typesize(ltype, NULL);
+        rsize = typesize(rtype, NULL);
         if (lsize > rsize)
             return NULL;
         if (rsize > lsize)

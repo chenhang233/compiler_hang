@@ -1,6 +1,20 @@
 #include "function.h"
 
-static struct symtable *struct_declaration(void) {}
+static struct symtable *struct_declaration(void)
+{
+    symtable *ctype = NULL;
+    scan(&t_instance);
+    if (t_instance.token == T_IDENT)
+    {
+        ctype = findstruct(Text);
+        scan(&t_instance);
+    }
+    if (t_instance.token != T_LBRACE)
+    {
+        if (ctype == NULL)
+            custom_error_chars("unknown struct type", Text);
+    }
+}
 
 Primitive_type parse_type(symtable **ctype)
 {
@@ -50,7 +64,7 @@ void global_declarations()
         if (t_instance.token == T_EOF)
             break;
         type = parse_type(&ctype);
-        if (t_instance.token == T_STRUCT || t_instance.token == T_SEMI)
+        if (type == P_STRUCT || t_instance.token == T_SEMI)
         {
             scan(&t_instance);
             continue;
@@ -193,7 +207,7 @@ symtable *var_declaration(Primitive_type type, symtable *ctype, Storage_class cl
             {
             case C_GLOBAL:
                 sym =
-                    addglob(Text, pointer_to(type), S_ARRAY, class, t_instance.intvalue);
+                    addglob(Text, pointer_to(type), ctype, S_ARRAY, class, t_instance.intvalue);
                 break;
             case C_LOCAL:
             case C_PARAM:
@@ -259,14 +273,15 @@ ASTnode *compound_statement()
 static ASTnode *single_statement(void)
 {
     Primitive_type type;
+    symtable *ctype;
     switch (t_instance.token)
     {
     case T_CHAR:
     case T_INT:
     case T_LONG:
-        type = parse_type();
+        type = parse_type(&ctype);
         match_ident();
-        var_declaration(type, C_LOCAL);
+        var_declaration(type, ctype, C_LOCAL);
         match_semi();
         return NULL;
     case T_IF:
