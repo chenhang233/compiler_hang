@@ -1,32 +1,41 @@
 #include "function.h"
 
-Primitive_type parse_type()
+static struct symtable *struct_declaration(void) {}
+
+Primitive_type parse_type(symtable **ctype)
 {
     Primitive_type type;
     switch (t_instance.token)
     {
     case T_VOID:
         type = P_VOID;
+        scan(&t_instance);
         break;
     case T_CHAR:
         type = P_CHAR;
+        scan(&t_instance);
         break;
     case T_INT:
         type = P_INT;
+        scan(&t_instance);
         break;
     case T_LONG:
         type = P_LONG;
+        scan(&t_instance);
+        break;
+    case T_STRUCT:
+        type = P_STRUCT;
+        *ctype = struct_declaration();
         break;
     default:
         custom_error_int("Illegal type, token", t_instance.token);
     }
     while (1)
     {
-        scan(&t_instance);
-        // printf("26--token=%d\n", t_instance.token);
         if (t_instance.token != T_STAR)
             break;
         type = pointer_to(type);
+        scan(&t_instance);
     }
     return type;
 }
@@ -35,12 +44,19 @@ void global_declarations()
 {
     ASTnode *tree;
     Primitive_type type;
+    symtable *ctype;
     while (1)
     {
-        type = parse_type();
-        printf("type=%d\n", type);
+        if (t_instance.token == T_EOF)
+            break;
+        type = parse_type(&ctype);
+        if (t_instance.token == T_STRUCT || t_instance.token == T_SEMI)
+        {
+            scan(&t_instance);
+            continue;
+        }
         match_ident();
-        printf("Text=%s\n", Text);
+        // printf("Text=%s\n", Text);
         if (t_instance.token == T_LPAREN)
         {
             tree = function_declaration(type);
@@ -55,7 +71,6 @@ void global_declarations()
                 fprintf(stdout, "\n\n");
             }
             genAST(tree, NOLABEL, 0);
-            printf("? --\n");
             // Free up local space
             freeloclsyms();
         }
@@ -64,9 +79,7 @@ void global_declarations()
             var_declaration(type, C_GLOBAL);
             match_semi();
         }
-        printf("end t_instance.token=%d\n", t_instance.token);
-        if (t_instance.token == T_EOF)
-            break;
+        // printf("end t_instance.token=%d\n", t_instance.token);
     }
     Gsym_dump("gsym_demp.txt");
 }
@@ -159,7 +172,7 @@ ASTnode *function_declaration(Primitive_type type)
     return mkAST_left(A_FUNCTION, type, tree, oldfuncsym, endlabel);
 }
 
-symtable *var_declaration(Primitive_type type, Storage_class class)
+symtable *var_declaration(Primitive_type type, symtable *ctype, Storage_class class)
 {
     symtable *sym = NULL;
     switch (class)

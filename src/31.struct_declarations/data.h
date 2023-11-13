@@ -210,8 +210,8 @@ int O_verbose;  // -v If true, print info on compilation stages
 Token t_instance;
 FILE *Infile;
 FILE *Outfile;
-FILE *Gsym_dump_file;
-symtable Gsym[NSYMBOLS]; // global symbol table
+// FILE *Gsym_dump_file;
+// symtable Gsym[NSYMBOLS]; // global symbol table
 
 symtable *Functionid;          // Symbol ptr of the current function
 symtable *Globhead, *Globtail; // Global variables and functions

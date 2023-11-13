@@ -109,13 +109,13 @@ ASTnode *function_declaration(Primitive_type type);
 ASTnode *compound_statement();
 static ASTnode *single_statement(void);
 static ASTnode *print_statement(void);
-symtable *var_declaration(Primitive_type type, Storage_class class);
+symtable *var_declaration(Primitive_type type, symtable *ctype, Storage_class class);
 static ASTnode *assignment_statement(void);
 static ASTnode *if_statement(void);
 static ASTnode *while_statement();
 static ASTnode *for_statement();
 static ASTnode *return_statement(void);
-Primitive_type parse_type();
+Primitive_type parse_type(symtable **ctype);
 void global_declarations();
 static int param_declaration(symtable *funcsym);
 
