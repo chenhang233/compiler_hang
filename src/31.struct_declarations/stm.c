@@ -1,20 +1,6 @@
 #include "function.h"
 
-static struct symtable *struct_declaration(void)
-{
-    symtable *ctype = NULL;
-    scan(&t_instance);
-    if (t_instance.token == T_IDENT)
-    {
-        ctype = findstruct(Text);
-        scan(&t_instance);
-    }
-    if (t_instance.token != T_LBRACE)
-    {
-        if (ctype == NULL)
-            custom_error_chars("unknown struct type", Text);
-    }
-}
+static symtable *struct_declaration(void);
 
 Primitive_type parse_type(symtable **ctype)
 {
@@ -106,7 +92,7 @@ static int var_declaration_list(symtable *funcsym, Storage_class class,
     symtable *ctype;
     symtable *protoptr = NULL;
 
-    if (funcsym)
+    if (funcsym != NULL)
         protoptr = funcsym->member;
 
     while (t_instance.token != end_token)
@@ -137,6 +123,47 @@ static int var_declaration_list(symtable *funcsym, Storage_class class,
     return param_count;
 }
 
+static symtable *struct_declaration(void)
+{
+    symtable *ctype = NULL;
+    symtable *m;
+    int offset = 0;
+    scan(&t_instance);
+    if (t_instance.token == T_IDENT)
+    {
+        ctype = findstruct(Text);
+        scan(&t_instance);
+    }
+    if (t_instance.token != T_LBRACE)
+    {
+        if (ctype == NULL)
+            custom_error_chars("unknown struct type", Text);
+        return ctype;
+    }
+    if (ctype)
+        custom_error_chars("previously defined struct", Text);
+    ctype = addstruct(Text, P_STRUCT, NULL, 0, 0);
+    scan(&t_instance);
+    var_declaration_list(NULL, C_MEMBER, T_SEMI, T_RBRACE);
+    match_rbrace();
+    ctype->member = Membhead;
+    Membhead = Membtail = NULL;
+    // printf("111 %p %d\n", ctype, sizeof(ctype));
+
+    m = ctype->member;
+    m->posn = 0;
+    offset = typesize(m->type, m->ctype);
+
+    for (m = m->next; m; m = m->next)
+    {
+        m->posn = genalign(m->type, offset, 1);
+        offset += typesize(m->type, m->ctype);
+        printf("m.name=%s next offset=%d\n", m->name, offset);
+    }
+    ctype->size = offset;
+    return ctype;
+}
+
 ASTnode *function_declaration(Primitive_type type)
 {
     ASTnode *tree, *final_stm;
@@ -148,7 +175,7 @@ ASTnode *function_declaration(Primitive_type type)
     if (oldfuncsym == NULL)
     {
         endlabel = genlabel();
-        newfuncsym = addglob(Text, type, NULL, S_FUNCTION, C_GLOBAL, endlabel);
+        newfuncsym = addglob(Text, type, NULL, S_FUNCTION, endlabel);
     }
 
     match_lparen();
@@ -207,7 +234,7 @@ symtable *var_declaration(Primitive_type type, symtable *ctype, Storage_class cl
             {
             case C_GLOBAL:
                 sym =
-                    addglob(Text, pointer_to(type), ctype, S_ARRAY, class, t_instance.intvalue);
+                    addglob(Text, pointer_to(type), ctype, S_ARRAY, t_instance.intvalue);
                 break;
             case C_LOCAL:
             case C_PARAM:
@@ -223,13 +250,16 @@ symtable *var_declaration(Primitive_type type, symtable *ctype, Storage_class cl
         switch (class)
         {
         case C_GLOBAL:
-            sym = addglob(Text, type, ctype, S_VARIABLE, class, 1);
+            sym = addglob(Text, type, ctype, S_VARIABLE, 1);
             break;
         case C_LOCAL:
-            sym = addlocl(Text, type, ctype, S_VARIABLE, class, 1);
+            sym = addlocl(Text, type, ctype, S_VARIABLE, 1);
             break;
         case C_PARAM:
-            sym = addparm(Text, type, ctype, S_VARIABLE, class, 1);
+            sym = addparm(Text, type, ctype, S_VARIABLE, 1);
+            break;
+        case C_MEMBER:
+            sym = addmemb(Text, type, ctype, S_VARIABLE, 1);
             break;
         }
     }

@@ -149,12 +149,16 @@ symtable *newsym(char *name, Primitive_type type, symtable *ctype,
                  Structural_type stype, Storage_class class, int size, int posn);
 char *my_strdup(const char *source);
 symtable *addglob(char *name, Primitive_type type, symtable *ctype,
-                  Structural_type stype, Storage_class class, int size);
+                  Structural_type stype, int size);
 
 symtable *addlocl(char *name, Primitive_type type, symtable *ctype,
-                  Structural_type stype, Storage_class class, int size);
+                  Structural_type stype, int size);
 symtable *addparm(char *name, Primitive_type type, symtable *ctype,
-                  Structural_type stype, Storage_class class, int size);
+                  Structural_type stype, int size);
+symtable *addmemb(char *name, Primitive_type type, symtable *ctype,
+                  Structural_type stype, int size);
+symtable *addstruct(char *name, Primitive_type type, symtable *ctype,
+                    Structural_type stype, int size);
 symtable *findglob(char *name);
 // symtable *findcomposite(char *s);
 symtable *findlocl(char *name);
@@ -168,7 +172,7 @@ void freeloclsyms(void);
 int type_compatible(Primitive_type *left, Primitive_type *right, int onlyright);
 Primitive_type pointer_to(Primitive_type type);
 Primitive_type value_at(Primitive_type type);
-int typesize(int type, struct symtable *ctype);
+int typesize(Primitive_type type, struct symtable *ctype);
 ASTnode *modify_type(ASTnode *tree, Primitive_type rtype, AST_node_type op);
 int inttype(Primitive_type type);
 int ptrtype(Primitive_type type);

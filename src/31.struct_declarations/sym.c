@@ -45,35 +45,43 @@ symtable *newsym(char *name, Primitive_type type, symtable *ctype, Structural_ty
 }
 
 symtable *addglob(char *name, Primitive_type type, symtable *ctype,
-                  Structural_type stype, Storage_class class, int size)
+                  Structural_type stype, int size)
 {
-    symtable *sym = newsym(name, type, ctype, stype, class, size, 0);
+    symtable *sym = newsym(name, type, ctype, stype, C_GLOBAL, size, 0);
     appendsym(&Globhead, &Globtail, sym);
     return sym;
 }
 
 symtable *addlocl(char *name, Primitive_type type, symtable *ctype, Structural_type stype,
-                  Storage_class class, int size)
+                  int size)
 {
-    struct symtable *sym = newsym(name, type, ctype, stype, class, size, 0);
+    symtable *sym = newsym(name, type, ctype, stype, C_LOCAL, size, 0);
     appendsym(&Loclhead, &Locltail, sym);
     return (sym);
 }
 
 symtable *addparm(char *name, Primitive_type type, symtable *ctype, Structural_type stype,
-                  Storage_class class, int size)
+                  int size)
 {
-    struct symtable *sym = newsym(name, type, ctype, stype, class, size, 0);
+    symtable *sym = newsym(name, type, ctype, stype, C_PARAM, size, 0);
     appendsym(&Parmhead, &Parmtail, sym);
     return (sym);
 }
 
 // Add a symbol to the temporary member list
-struct symtable *addmemb(char *name, Primitive_type type, struct symtable *ctype,
-                         int stype, int size)
+symtable *addmemb(char *name, Primitive_type type, symtable *ctype,
+                  Structural_type stype, int size)
 {
-    struct symtable *sym = newsym(name, type, ctype, stype, C_MEMBER, size, 0);
+    symtable *sym = newsym(name, type, ctype, stype, C_MEMBER, size, 0);
     appendsym(&Membhead, &Membtail, sym);
+    return (sym);
+}
+
+symtable *addstruct(char *name, Primitive_type type, symtable *ctype,
+                    Structural_type stype, int size)
+{
+    symtable *sym = newsym(name, type, ctype, stype, C_STRUCT, size, 0);
+    appendsym(&Structhead, &Structhead, sym);
     return (sym);
 }
 
