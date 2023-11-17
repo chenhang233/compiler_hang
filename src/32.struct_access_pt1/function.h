@@ -131,6 +131,7 @@ ASTnode *mkAST_left(AST_node_type op, Primitive_type type, ASTnode *left,
 ASTnode *binexpr(int ptp);
 static ASTnode *primary(void);
 static ASTnode *array_access(void);
+static ASTnode *member_access(int withpointer);
 static int op_precedence(Token_type tokentype);
 static int rightassoc(Token_type tokentype);
 static AST_node_type binastop(Token_type tokentype);

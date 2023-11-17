@@ -11,7 +11,7 @@ int ptrtype(Primitive_type type)
 }
 
 Primitive_type pointer_to(Primitive_type type)
-{ // 0000 0000   位值 64 48 32 16 8 4 2 1
+{ // 0000 0000   位值  64 48 32 16 8 4 2 1
     if ((type & 0xf) == 0xf)
         custom_error_int("Unrecognised in pointer_to: type", type);
     return (type + 1);

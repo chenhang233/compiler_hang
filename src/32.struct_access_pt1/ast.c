@@ -134,6 +134,26 @@ static ASTnode *array_access(void)
     left = mkAST_left(A_DEREF, value_at(left->type), left, NULL, 0);
     return left;
 }
+// withpointer  0: . or 1: ->
+static ASTnode *member_access(int withpointer)
+{
+    ASTnode *left, *right;
+    symtable *compvar;
+    symtable *typeptr;
+    symtable *m;
+
+    if ((compvar = findsymbol(Text)) == NULL)
+        custom_error_chars("Undeclared variable", Text);
+    if (withpointer && compvar->type != pointer_to(P_STRUCT))
+        custom_error_chars("Undeclared variable", Text);
+    if (!withpointer && compvar->type != P_STRUCT)
+        custom_error_chars("Undeclared variable", Text);
+
+    if (withpointer)
+        left = mkAST_leaf(A_IDENT, pointer_to(P_STRUCT), compvar, 0);
+    else
+        left = mkastleaf(A_ADDR, P_STRUCT, compvar, 0);
+}
 
 static ASTnode *postfix(void)
 {
@@ -144,6 +164,12 @@ static ASTnode *postfix(void)
         return funccall();
     if (t_instance.token == T_LBRACKET)
         return array_access();
+
+    // Access into a struct or union
+    if (t_instance.token == T_DOT)
+        return (member_access(0));
+    if (t_instance.token == T_ARROW)
+        return (member_access(1));
 
     varptr = findsymbol(Text);
     if (varptr == NULL || varptr->stype != S_VARIABLE)
