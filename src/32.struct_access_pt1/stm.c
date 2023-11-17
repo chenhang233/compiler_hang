@@ -50,7 +50,7 @@ void global_declarations()
         if (t_instance.token == T_EOF)
             break;
         type = parse_type(&ctype);
-        if (type == P_STRUCT || t_instance.token == T_SEMI)
+        if (type == P_STRUCT && t_instance.token == T_SEMI)
         {
             scan(&t_instance);
             continue;
