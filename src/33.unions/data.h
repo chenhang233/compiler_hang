@@ -92,7 +92,8 @@ typedef enum Primitive_type
     P_CHAR = 32,
     P_INT = 48,
     P_LONG = 64,
-    P_STRUCT = 80
+    P_STRUCT = 80,
+    P_UNION = 96
 } Primitive_type;
 
 typedef enum AST_node_type
@@ -169,6 +170,7 @@ typedef enum storage_class
     C_LOCAL,      // Locally visible symbol
     C_PARAM,      // Locally visible function parameter
     C_STRUCT,     // A struct
+    C_UNION,      // A union
     C_MEMBER      // Member of a struct or union
 } Storage_class;
 
@@ -223,4 +225,4 @@ symtable *Parmhead, *Parmtail; // Local parameters
 // symtable *Comphead, *Comptail; // Composite types
 symtable *Structhead, *Structtail; // List of struct types
 symtable *Membhead, *Membtail;     // Temp list of struct/union members
-symtable *Structhead, *Structtail; // List of struct types
+symtable *Unionhead, *Uniontail;   // List of struct types

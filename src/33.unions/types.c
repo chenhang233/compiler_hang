@@ -26,7 +26,7 @@ Primitive_type value_at(Primitive_type type)
 
 int typesize(Primitive_type type, struct symtable *ctype)
 {
-    if (type == P_STRUCT)
+    if (type == P_STRUCT || type == P_UNION)
         return ctype->size;
     return genprimsize(type);
 }

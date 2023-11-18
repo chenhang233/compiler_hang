@@ -85,6 +85,14 @@ symtable *addstruct(char *name, Primitive_type type, symtable *ctype,
     return (sym);
 }
 
+symtable *addunion(char *name, int type, struct symtable *ctype,
+                   int stype, int size)
+{
+    struct symtable *sym = newsym(name, type, ctype, stype, C_UNION, size, 0);
+    appendsym(&Unionhead, &Uniontail, sym);
+    return (sym);
+}
+
 static struct symtable *findsyminlist(char *s, struct symtable *list)
 {
     for (; list != NULL; list = list->next)
@@ -142,6 +150,13 @@ symtable *findstruct(char *s)
     return (findsyminlist(s, Structhead));
 }
 
+// Find a struct in the union list
+// Return a pointer to the found node or NULL if not found.
+symtable *findunion(char *s)
+{
+    return (findsyminlist(s, Unionhead));
+}
+
 void clear_symtable(void)
 {
     Globhead = Globtail = NULL;
@@ -149,6 +164,7 @@ void clear_symtable(void)
     Parmhead = Parmtail = NULL;
     Membhead = Membtail = NULL;
     Structhead = Structtail = NULL;
+    Unionhead = Uniontail = NULL;
 }
 
 // Clear all the entries in the local symbol table

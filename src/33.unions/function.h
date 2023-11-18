@@ -160,12 +160,15 @@ symtable *addmemb(char *name, Primitive_type type, symtable *ctype,
                   Structural_type stype, int size);
 symtable *addstruct(char *name, Primitive_type type, symtable *ctype,
                     Structural_type stype, int size);
+symtable *addunion(char *name, int type, struct symtable *ctype,
+                   int stype, int size);
 symtable *findglob(char *name);
 // symtable *findcomposite(char *s);
 symtable *findlocl(char *name);
 symtable *findsymbol(char *s);
 symtable *findmember(char *s);
 symtable *findstruct(char *s);
+symtable *findunion(char *s);
 void clear_symtable(void);
 void freeloclsyms(void);
 

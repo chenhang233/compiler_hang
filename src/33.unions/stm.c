@@ -1,6 +1,6 @@
 #include "function.h"
 
-static symtable *struct_declaration(void);
+static symtable *composite_declaration(Primitive_type type);
 
 Primitive_type parse_type(symtable **ctype)
 {
@@ -25,7 +25,11 @@ Primitive_type parse_type(symtable **ctype)
         break;
     case T_STRUCT:
         type = P_STRUCT;
-        *ctype = struct_declaration();
+        *ctype = composite_declaration(P_STRUCT);
+        break;
+    case T_UNION:
+        type = P_UNION;
+        *ctype = composite_declaration(P_UNION);
         break;
     default:
         custom_error_int("Illegal type, token", t_instance.token);
@@ -50,7 +54,7 @@ void global_declarations()
         if (t_instance.token == T_EOF)
             break;
         type = parse_type(&ctype);
-        if (type == P_STRUCT && t_instance.token == T_SEMI)
+        if ((type == P_STRUCT || type == P_UNION) && t_instance.token == T_SEMI)
         {
             scan(&t_instance);
             continue;
@@ -79,7 +83,7 @@ void global_declarations()
             var_declaration(type, ctype, C_GLOBAL);
             match_semi();
         }
-        // printf("end t_instance.token=%d\n", t_instance.token);
+        //  printf("end t_instance.token=%d\n", t_instance.token);
     }
     Gsym_dump("gsym_demp.txt");
 }
@@ -123,7 +127,7 @@ static int var_declaration_list(symtable *funcsym, Storage_class class,
     return param_count;
 }
 
-static symtable *struct_declaration(void)
+static symtable *composite_declaration(Primitive_type type)
 {
     symtable *ctype = NULL;
     symtable *m;
@@ -131,7 +135,10 @@ static symtable *struct_declaration(void)
     scan(&t_instance);
     if (t_instance.token == T_IDENT)
     {
-        ctype = findstruct(Text);
+        if (type == P_STRUCT)
+            ctype = findstruct(Text);
+        else
+            ctype = findunion(Text);
         scan(&t_instance);
     }
     if (t_instance.token != T_LBRACE)
@@ -142,7 +149,10 @@ static symtable *struct_declaration(void)
     }
     if (ctype)
         custom_error_chars("previously defined struct", Text);
-    ctype = addstruct(Text, P_STRUCT, NULL, 0, 0);
+    if (type == P_STRUCT)
+        ctype = addstruct(Text, P_STRUCT, NULL, 0, 0);
+    else
+        ctype = addunion(Text, P_UNION, NULL, 0, 0);
     scan(&t_instance);
     var_declaration_list(NULL, C_MEMBER, T_SEMI, T_RBRACE);
     match_rbrace();
@@ -156,7 +166,10 @@ static symtable *struct_declaration(void)
 
     for (m = m->next; m; m = m->next)
     {
-        m->posn = genalign(m->type, offset, 1);
+        if (type == P_STRUCT)
+            m->posn = genalign(m->type, offset, 1);
+        else
+            m->posn = 0;
         offset += typesize(m->type, m->ctype);
         // printf("m.name=%s next offset=%d\n", m->name, offset);
     }

@@ -144,15 +144,15 @@ static ASTnode *member_access(int withpointer)
 
     if ((compvar = findsymbol(Text)) == NULL)
         custom_error_chars("Undeclared variable", Text);
-    if (withpointer && compvar->type != pointer_to(P_STRUCT))
+    if (withpointer && compvar->type != pointer_to(P_STRUCT) && compvar->type != pointer_to(P_UNION))
         custom_error_chars("Undeclared variable", Text);
-    if (!withpointer && compvar->type != P_STRUCT)
+    if (!withpointer && compvar->type != P_STRUCT && compvar->type != P_UNION)
         custom_error_chars("Undeclared variable", Text);
 
     if (withpointer)
-        left = mkAST_leaf(A_IDENT, pointer_to(P_STRUCT), compvar, 0);
+        left = mkAST_leaf(A_IDENT, pointer_to(compvar->type), compvar, 0);
     else
-        left = mkAST_leaf(A_ADDR, P_STRUCT, compvar, 0);
+        left = mkAST_leaf(A_ADDR, compvar->type, compvar, 0);
     left->rvalue = 1;
     typeptr = compvar->ctype;
 
