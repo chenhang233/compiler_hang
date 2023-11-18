@@ -619,7 +619,7 @@ void cgreturn(int reg, symtable *sym)
     cgjump(sym->endlabel);
 }
 
-// Generate code to load the address of a global
+// Generate code to load the address of an
 // identifier into a variable. Return a new register
 int cgaddress(symtable *sym)
 {

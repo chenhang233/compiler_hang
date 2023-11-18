@@ -152,7 +152,22 @@ static ASTnode *member_access(int withpointer)
     if (withpointer)
         left = mkAST_leaf(A_IDENT, pointer_to(P_STRUCT), compvar, 0);
     else
-        left = mkastleaf(A_ADDR, P_STRUCT, compvar, 0);
+        left = mkAST_leaf(A_ADDR, P_STRUCT, compvar, 0);
+    left->rvalue = 1;
+    typeptr = compvar->ctype;
+
+    scan(&t_instance);
+    match_ident();
+
+    for (m = typeptr->member; m != NULL; m = m->next)
+        if (!strcmp(m->name, Text))
+            break;
+    if (m == NULL)
+        custom_error_chars("No member found in struct/union: ", Text);
+    right = mkAST_leaf(A_INTLIT, P_INT, NULL, m->posn);
+    left = mkAST_node(A_ADD, pointer_to(m->type), left, NULL, right, NULL, 0);
+    left = mkAST_left(A_DEREF, m->type, left, NULL, 0);
+    return left;
 }
 
 static ASTnode *postfix(void)
