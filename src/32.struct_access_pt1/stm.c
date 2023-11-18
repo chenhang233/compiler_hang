@@ -158,7 +158,7 @@ static symtable *struct_declaration(void)
     {
         m->posn = genalign(m->type, offset, 1);
         offset += typesize(m->type, m->ctype);
-        printf("m.name=%s next offset=%d\n", m->name, offset);
+        // printf("m.name=%s next offset=%d\n", m->name, offset);
     }
     ctype->size = offset;
     return ctype;

@@ -496,20 +496,20 @@ int cgalign(Primitive_type type, int offset, int direction)
 // Generate a global symbol but not functions
 void cgglobsym(symtable *node)
 {
-    int typesize;
-
+    int size;
+    if (node == NULL)
+        return;
     if (node->stype == S_FUNCTION)
         return;
     // Get the size of the type
-    typesize = cgprimsize(node->type);
+    size = typesize(node->type, node->ctype);
     // Generate the global identity and the label
     cgdataseg();
     fprintf(Outfile, "\t.globl\t%s\n", node->name);
     fprintf(Outfile, "%s:", node->name);
-
     for (int i = 0; i < node->size; i++)
     {
-        switch (typesize)
+        switch (size)
         {
         case 1:
             fprintf(Outfile, "\t.byte\t0\n");
@@ -521,7 +521,8 @@ void cgglobsym(symtable *node)
             fprintf(Outfile, "\t.quad\t0\n");
             break;
         default:
-            custom_error_int("Unknown typesize in cgglobsym: ", typesize);
+            for (int i = 0; i < size; i++)
+                fprintf(Outfile, "\t.byte\t0\n");
         }
     }
 }
