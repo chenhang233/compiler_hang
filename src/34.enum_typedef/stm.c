@@ -1,9 +1,12 @@
 #include "function.h"
-
+// Parse an strcut / union
 static symtable *composite_declaration(Primitive_type type);
+// Parse an enum declaration
+static void enum_declaration(void);
 
 Primitive_type parse_type(symtable **ctype)
 {
+    // if we have a ';' ,parsing then there is no type, so return -1
     Primitive_type type;
     printf("Token.token=%d\n", t_instance.token);
     switch (t_instance.token)
@@ -27,10 +30,20 @@ Primitive_type parse_type(symtable **ctype)
     case T_STRUCT:
         type = P_STRUCT;
         *ctype = composite_declaration(P_STRUCT);
+        if (t_instance.token == T_SEMI)
+            type = -1;
         break;
     case T_UNION:
         type = P_UNION;
         *ctype = composite_declaration(P_UNION);
+        if (t_instance.token == T_SEMI)
+            type = -1;
+        break;
+    case T_ENUM:
+        type = P_INT; // Enums are really ints
+        enum_declaration();
+        if (t_instance.token == T_SEMI)
+            type = -1;
         break;
     default:
         custom_error_int("Illegal type, token", t_instance.token);
@@ -56,9 +69,9 @@ void global_declarations()
         if (t_instance.token == T_EOF)
             break;
         type = parse_type(&ctype);
-        if ((type == P_STRUCT || type == P_UNION) && t_instance.token == T_SEMI)
+        if (type == -1)
         {
-            scan(&t_instance);
+            match_semi();
             continue;
         }
         match_ident();
@@ -177,6 +190,10 @@ static symtable *composite_declaration(Primitive_type type)
     }
     ctype->size = offset;
     return ctype;
+}
+
+static void enum_declaration(void)
+{
 }
 
 ASTnode *function_declaration(Primitive_type type)
