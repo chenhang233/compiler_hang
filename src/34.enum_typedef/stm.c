@@ -194,6 +194,33 @@ static symtable *composite_declaration(Primitive_type type)
 
 static void enum_declaration(void)
 {
+    symtable *etype = NULL;
+    char *name;
+    int intval = 0;
+    match_enum();
+    if (t_instance.token == T_IDENT)
+    {
+        etype = findenumtype(Text);
+        name = my_strdup(Text);
+        match_ident();
+    }
+    if (t_instance.token != T_LBRACE)
+    {
+        if (etype == NULL)
+            custom_error_chars("undeclared enum type:", name);
+        return;
+    }
+    match_lbrace();
+
+    if (etype)
+        custom_error_chars("enum type redeclared:", etype->name);
+    else
+        addenum(name, C_ENUMTYPE, 0);
+
+    while (1)
+    {
+        /* code */
+    }
 }
 
 ASTnode *function_declaration(Primitive_type type)

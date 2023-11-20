@@ -93,11 +93,25 @@ symtable *addunion(char *name, int type, struct symtable *ctype,
     return (sym);
 }
 
-static struct symtable *findsyminlist(char *s, struct symtable *list)
+// Add an enum type or value to the enum list.
+// Class is C_ENUMTYPE or C_ENUMVAL.
+// Use posn to store the int value.
+symtable *addenum(char *name, Storage_class class, int value)
+{
+    struct symtable *sym = newsym(name, P_INT, NULL, 0, class, 0, value);
+    appendsym(&Enumhead, &Enumtail, sym);
+    return (sym);
+}
+
+// Search for a symbol in a specific list.
+// Return a pointer to the found node or NULL if not found.
+// If class is not zero, also match on the given class
+static struct symtable *findsyminlist(char *s, struct symtable *list, Storage_class class)
 {
     for (; list != NULL; list = list->next)
         if ((list->name != NULL) && !strcmp(s, list->name))
-            return (list);
+            if (class == 0 || class == list->class)
+                return (list);
     return (NULL);
 }
 
@@ -108,16 +122,16 @@ symtable *findlocl(char *s)
     symtable *node;
     if (Functionid)
     {
-        node = findsyminlist(s, Functionid->member);
+        node = findsyminlist(s, Functionid->member, 0);
         if (node)
             return node;
     }
-    return findsyminlist(s, Loclhead);
+    return findsyminlist(s, Loclhead, 0);
 }
 
 symtable *findglob(char *s)
 {
-    return (findsyminlist(s, Globhead));
+    return (findsyminlist(s, Globhead, 0));
 }
 
 symtable *findsymbol(char *s)
@@ -126,35 +140,48 @@ symtable *findsymbol(char *s)
 
     if (Functionid)
     {
-        node = findsyminlist(s, Functionid->member);
+        node = findsyminlist(s, Functionid->member, 0);
         if (node)
             return (node);
     }
-    node = findsyminlist(s, Loclhead);
+    node = findsyminlist(s, Loclhead, 0);
     if (node)
         return (node);
-    return (findsyminlist(s, Globhead));
+    return (findsyminlist(s, Globhead, 0));
 }
 
 // Find a member in the member list
 // Return a pointer to the found node or NULL if not found.
 symtable *findmember(char *s)
 {
-    return (findsyminlist(s, Membhead));
+    return (findsyminlist(s, Membhead, 0));
 }
 
 // Find a struct in the struct list
 // Return a pointer to the found node or NULL if not found.
 symtable *findstruct(char *s)
 {
-    return (findsyminlist(s, Structhead));
+    return (findsyminlist(s, Structhead, 0));
 }
 
 // Find a struct in the union list
 // Return a pointer to the found node or NULL if not found.
 symtable *findunion(char *s)
 {
-    return (findsyminlist(s, Unionhead));
+    return (findsyminlist(s, Unionhead, 0));
+}
+// Find an enum type in the enum list
+// Return a pointer to the found node or NULL if not found.
+symtable *findenumtype(char *s)
+{
+    return (findsyminlist(s, Enumhead, C_ENUMTYPE));
+}
+
+// Find an enum value in the enum list
+// Return a pointer to the found node or NULL if not found.
+symtable *findenumval(char *s)
+{
+    return (findsyminlist(s, Enumhead, C_ENUMVAL));
 }
 
 void clear_symtable(void)

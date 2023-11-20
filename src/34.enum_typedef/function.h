@@ -24,6 +24,7 @@ void match_return();
 void match_lbracket();
 void match_rbracket();
 void match_comma();
+void match_enum();
 void jsonify_tree(ASTnode *root, const char *filename);
 void Gsym_dump(char *name);
 
@@ -162,6 +163,7 @@ symtable *addstruct(char *name, Primitive_type type, symtable *ctype,
                     Structural_type stype, int size);
 symtable *addunion(char *name, int type, struct symtable *ctype,
                    int stype, int size);
+symtable *addenum(char *name, Storage_class class, int value);
 symtable *findglob(char *name);
 // symtable *findcomposite(char *s);
 symtable *findlocl(char *name);
@@ -169,6 +171,8 @@ symtable *findsymbol(char *s);
 symtable *findmember(char *s);
 symtable *findstruct(char *s);
 symtable *findunion(char *s);
+symtable *findenumtype(char *s);
+symtable *findenumval(char *s);
 void clear_symtable(void);
 void freeloclsyms(void);
 

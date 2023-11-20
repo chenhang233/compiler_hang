@@ -260,6 +260,8 @@ int scankey(char *s)
     case 'e':
         if (!strcmp(s, "else"))
             return (T_ELSE);
+        if (!strcmp(s, "enum"))
+            return (T_ENUM);
         break;
     case 'f':
         if (!strcmp(s, "for"))

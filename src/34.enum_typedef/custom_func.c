@@ -118,6 +118,11 @@ void match_comma()
     match(T_COMMA, ",");
 }
 
+void match_enum()
+{
+    match(T_ENUM, "enum");
+}
+
 static char *AST_node_type_keys[] = {
     "A_ASSIGN",
     "A_LOGOR",
