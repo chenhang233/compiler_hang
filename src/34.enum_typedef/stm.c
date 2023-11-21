@@ -219,8 +219,25 @@ static void enum_declaration(void)
 
     while (1)
     {
-        /* code */
+        match_ident();
+        name = my_strdup(Text);
+        etype = findenumv(name);
+        if (etype)
+            custom_error_chars("enum value redeclared:", Text);
+        if (t_instance.token == T_ASSIGN)
+        {
+            match_assign();
+            if (t_instance.token != T_INTLIT)
+                custom_error_chars("Expected int literal after '='", "");
+            intval = t_instance.intvalue;
+            scan(&t_instance);
+        }
+        addenum(name, C_ENUMVAL, intval++);
+        if (t_instance.token == T_RBRACE)
+            break;
+        match_comma();
     }
+    scan(&t_instance);
 }
 
 ASTnode *function_declaration(Primitive_type type)
