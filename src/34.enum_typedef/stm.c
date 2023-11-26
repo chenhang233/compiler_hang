@@ -8,7 +8,7 @@ Primitive_type parse_type(symtable **ctype)
 {
     // if we have a ';' ,parsing then there is no type, so return -1
     Primitive_type type;
-    printf("Token.token=%d\n", t_instance.token);
+    // printf("Token.token=%d\n", t_instance.token);
     switch (t_instance.token)
     {
     case T_VOID:
@@ -48,7 +48,7 @@ Primitive_type parse_type(symtable **ctype)
     default:
         custom_error_int("Illegal type, token", t_instance.token);
     }
-    printf("end %d\n", t_instance.token);
+    // printf("end %d\n", t_instance.token);
     while (1)
     {
         if (t_instance.token != T_STAR)
@@ -221,7 +221,7 @@ static void enum_declaration(void)
     {
         match_ident();
         name = my_strdup(Text);
-        etype = findenumv(name);
+        etype = findenumval(name);
         if (etype)
             custom_error_chars("enum value redeclared:", Text);
         if (t_instance.token == T_ASSIGN)

@@ -184,6 +184,13 @@ symtable *findenumval(char *s)
     return (findsyminlist(s, Enumhead, C_ENUMVAL));
 }
 
+// Find a type in the tyedef list
+// Return a pointer to the found node or NULL if not found.
+symtable *findtypedef(char *s)
+{
+    return (findsyminlist(s, Typehead, 0));
+}
+
 void clear_symtable(void)
 {
     Globhead = Globtail = NULL;
@@ -192,6 +199,7 @@ void clear_symtable(void)
     Membhead = Membtail = NULL;
     Structhead = Structtail = NULL;
     Unionhead = Uniontail = NULL;
+    Typehead = Typetail = NULL;
 }
 
 // Clear all the entries in the local symbol table

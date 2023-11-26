@@ -173,6 +173,7 @@ symtable *findstruct(char *s);
 symtable *findunion(char *s);
 symtable *findenumtype(char *s);
 symtable *findenumval(char *s);
+symtable *findtypedef(char *s);
 void clear_symtable(void);
 void freeloclsyms(void);
 

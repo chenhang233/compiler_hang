@@ -231,3 +231,4 @@ symtable *Structhead, *Structtail; // List of struct types
 symtable *Membhead, *Membtail;     // Temp list of struct/union members
 symtable *Unionhead, *Uniontail;   // List of struct types
 symtable *Enumhead, *Enumtail;     // List of enum types and values
+symtable *Typehead, *Typetail;     // List of typedefs
