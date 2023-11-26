@@ -174,6 +174,12 @@ static ASTnode *postfix(void)
 {
     ASTnode *n;
     symtable *varptr;
+    symtable *enumptr;
+    if (enumptr = findenumval(Text))
+    {
+        scan(&t_instance);
+        return mkAST_leaf(A_INTLIT, P_INT, NULL, enumptr->posn);
+    }
     scan(&t_instance);
     if (t_instance.token == T_LPAREN)
         return funccall();
