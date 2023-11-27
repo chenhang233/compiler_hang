@@ -176,6 +176,7 @@ typedef enum storage_class
     C_MEMBER,     // Member of a struct or union
     C_ENUMTYPE,   // A named enumeration type
     C_ENUMVAL,    // A named enumeration value
+    C_TYPEDEF     // A named typedef
 } Storage_class;
 
 typedef struct symtable

@@ -3,6 +3,8 @@
 static symtable *composite_declaration(Primitive_type type);
 // Parse an enum declaration
 static void enum_declaration(void);
+static Primitive_type typedef_declaration(symtable **ctype);
+static Primitive_type type_of_typedef(char *name, struct symtable **ctype);
 
 Primitive_type parse_type(symtable **ctype)
 {
@@ -45,6 +47,14 @@ Primitive_type parse_type(symtable **ctype)
         if (t_instance.token == T_SEMI)
             type = -1;
         break;
+    case T_TYPEDEF:
+        type = typedef_declaration(ctype);
+        if (t_instance.token == T_SEMI)
+            type = -1;
+        break;
+    case T_IDENT:
+        type = type_of_typedef(Text, ctype);
+        break;
     default:
         custom_error_int("Illegal type, token", t_instance.token);
     }
@@ -57,6 +67,19 @@ Primitive_type parse_type(symtable **ctype)
         scan(&t_instance);
     }
     return type;
+}
+
+// Given a typedef name, return the type it represents
+static Primitive_type type_of_typedef(char *name, struct symtable **ctype)
+{
+    struct symtable *t;
+
+    t = findtypedef(name);
+    if (t == NULL)
+        custom_error_chars("unknown type", name);
+    scan(&t_instance);
+    *ctype = t->ctype;
+    return (t->type);
 }
 
 void global_declarations()
@@ -238,6 +261,22 @@ static void enum_declaration(void)
         match_comma();
     }
     scan(&t_instance);
+}
+
+static Primitive_type typedef_declaration(struct symtable **ctype)
+{
+    Primitive_type type;
+
+    scan(&t_instance);
+
+    type = parse_type(ctype);
+
+    if (findtypedef(Text) != NULL)
+        custom_error_chars("redefinition of typedef", Text);
+
+    addtypedef(Text, type, *ctype, 0, 0);
+    scan(&t_instance);
+    return (type);
 }
 
 ASTnode *function_declaration(Primitive_type type)

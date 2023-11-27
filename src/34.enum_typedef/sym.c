@@ -103,6 +103,15 @@ symtable *addenum(char *name, Storage_class class, int value)
     return (sym);
 }
 
+// Add a typedef to the typedef list
+symtable *addtypedef(char *name, Primitive_type type, symtable *ctype,
+                     Structural_type stype, int size)
+{
+    struct symtable *sym = newsym(name, type, ctype, stype, C_TYPEDEF, size, 0);
+    appendsym(&Typehead, &Typetail, sym);
+    return (sym);
+}
+
 // Search for a symbol in a specific list.
 // Return a pointer to the found node or NULL if not found.
 // If class is not zero, also match on the given class
